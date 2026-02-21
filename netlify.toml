@@ -1,0 +1,37 @@
+[build]
+  command = "./scripts/build_github_pages_site.sh --skip-refresh && ./scripts/run_static_site_checks.sh"
+  publish = "site"
+
+[build.environment]
+  PYTHON_VERSION = "3.10"
+
+[[redirects]]
+  from = "/"
+  to = "/asreview-explainer.html"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/index.html"
+  to = "/asreview-explainer.html"
+  status = 301
+
+[[redirects]]
+  from = "/asreview-explainer"
+  to = "/asreview-explainer.html"
+  status = 301
+
+[[redirects]]
+  from = "/methods-results"
+  to = "/methods-results.html"
+  status = 301
+
+[[redirects]]
+  from = "/why-more-review"
+  to = "/why-more-review.html"
+  status = 301
+
+[[redirects]]
+  from = "/how-many-more"
+  to = "/how-many-more.html"
+  status = 301

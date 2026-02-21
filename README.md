@@ -76,6 +76,16 @@ CI deploy workflow: `.github/workflows/deploy-github-pages.yml`.
 Full runbook and go-live checklist:
 - `docs/runbooks/GITHUB_PAGES_DEPLOYMENT.md`
 
+### A2) Netlify (static explainer + custom domain)
+
+- Netlify build/publish settings are codified in `netlify.toml`.
+- Deterministic build command:
+  - `./scripts/build_github_pages_site.sh --skip-refresh && ./scripts/run_static_site_checks.sh`
+- Runbooks:
+  - `docs/runbooks/NETLIFY_DEPLOYMENT.md`
+  - `docs/runbooks/DOMAIN_DNS_SETUP.md`
+  - `analysis/NETLIFY_GO_LIVE_CHECKLIST.md`
+
 ### B) ASReview LAB runtime
 
 Local/staging:
