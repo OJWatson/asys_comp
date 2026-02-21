@@ -13,6 +13,11 @@ if [[ "$RUN_REFRESH" -eq 1 ]]; then
   scripts/run_data_refresh.sh
 fi
 
+if [[ ! -d "$REPO_ROOT/app/data/artifacts" ]]; then
+  echo "Missing app/data/artifacts. Run scripts/run_data_refresh.sh first." >&2
+  exit 1
+fi
+
 SITE_DIR="$REPO_ROOT/site"
 rm -rf "$SITE_DIR"
 mkdir -p "$SITE_DIR"

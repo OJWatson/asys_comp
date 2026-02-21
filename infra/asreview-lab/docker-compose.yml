@@ -4,12 +4,27 @@ services:
       context: .
       dockerfile: Dockerfile
     container_name: asreview-lab-local
+    init: true
     ports:
-      - "${ASREVIEW_LAB_PORT:-5000}:5000"
+      - "${ASREVIEW_LAB_BIND_HOST:-127.0.0.1}:${ASREVIEW_LAB_PORT:-5000}:5000"
     env_file:
       - .env
     volumes:
+      - asreview_state:/root/.asreview
       - ./data:/workspace/data
       - ../../analysis/outputs:/workspace/analysis_outputs:ro
       - ../../integration:/workspace/integration:ro
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "python -c \"import urllib.request; urllib.request.urlopen('http://127.0.0.1:5000', timeout=3)\"",
+        ]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
     restart: unless-stopped
+
+volumes:
+  asreview_state:
