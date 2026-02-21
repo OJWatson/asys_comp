@@ -1,7 +1,7 @@
-# Domain + DNS Setup for Netlify (`mojowatson.co.uk`)
+# Domain + DNS Setup for Netlify (`ojwatson.co.uk`)
 
 ## Scope
-This runbook covers DNS records for attaching a Netlify-hosted site to a custom domain under `mojowatson.co.uk`, with both recommended and fallback record sets.
+This runbook covers DNS records for attaching a Netlify-hosted site to a custom domain under `ojwatson.co.uk`, with both recommended and fallback record sets.
 
 Use with:
 - `docs/runbooks/NETLIFY_DEPLOYMENT.md`
@@ -10,7 +10,7 @@ Use with:
 
 ## Inputs you need first
 From Netlify Domain management, collect:
-1. **Custom hostname** (example: `screening.mojowatson.co.uk`)
+1. **Custom hostname** (example: `screening.ojwatson.co.uk`)
 2. **Netlify target** (usually `<site-name>.netlify.app`)
 
 ---
@@ -43,7 +43,7 @@ Use when:
 
 ### Fallback B: Apex/root on providers without ALIAS support
 
-If mapping root `mojowatson.co.uk` directly and ALIAS/ANAME is unavailable:
+If mapping root `ojwatson.co.uk` directly and ALIAS/ANAME is unavailable:
 
 | Type | Name/Host | Value | TTL |
 |---|---|---|---|
@@ -63,7 +63,7 @@ Also add `www` as:
 ## Netlify-side domain attach sequence
 
 1. Netlify → Site → **Domain management** → **Add a domain**.
-2. Enter full host (e.g. `screening.mojowatson.co.uk`).
+2. Enter full host (e.g. `screening.ojwatson.co.uk`).
 3. Add DNS record(s) at DNS provider per tables above.
 4. Return to Netlify and click **Verify DNS configuration**.
 5. Wait for certificate provisioning and confirm HTTPS is active.
@@ -73,9 +73,9 @@ Also add `www` as:
 ## Verification commands
 
 ```bash
-dig +short screening.mojowatson.co.uk CNAME
-dig +short screening.mojowatson.co.uk A
-curl -I https://screening.mojowatson.co.uk/
+dig +short screening.ojwatson.co.uk CNAME
+dig +short screening.ojwatson.co.uk A
+curl -I https://screening.ojwatson.co.uk/
 ```
 
 Expected:

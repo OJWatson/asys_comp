@@ -23,7 +23,7 @@
 
 ---
 
-## C) DNS + custom subdomain (`mojowatson.co.uk`)
+## C) DNS + custom subdomain (`ojwatson.co.uk`)
 
 - [ ] Domain added in Netlify Domain management.
 - [ ] DNS record created at provider:

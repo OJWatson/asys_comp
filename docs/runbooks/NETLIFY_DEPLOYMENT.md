@@ -1,7 +1,7 @@
 # Netlify Deployment Runbook (GitHub + Custom Domain)
 
 ## Purpose
-Deploy the static explainer site from `OJWatson/asys_e5cr7` to Netlify, attach a custom subdomain on `mojowatson.co.uk`, and keep a safe rollback path.
+Deploy the static explainer site from `OJWatson/asys_e5cr7` to Netlify, attach a custom subdomain on `ojwatson.co.uk`, and keep a safe rollback path.
 
 ## What this uses
 - Repo: `OJWatson/asys_e5cr7` (branch: `main`)
@@ -68,13 +68,13 @@ After deploy succeeds:
 
 ---
 
-## 4) Attach custom subdomain (`*.mojowatson.co.uk`)
+## 4) Attach custom subdomain (`*.ojwatson.co.uk`)
 
 1. In Netlify site, go to **Domain management**.
 2. Click **Add a domain**.
-3. Enter desired host, e.g. `screening.mojowatson.co.uk`.
+3. Enter desired host, e.g. `screening.ojwatson.co.uk`.
 4. Continue and keep Netlify’s DNS target value visible (usually `<site-name>.netlify.app`).
-5. Add DNS records at the `mojowatson.co.uk` DNS provider (see `docs/runbooks/DOMAIN_DNS_SETUP.md`).
+5. Add DNS records at the `ojwatson.co.uk` DNS provider (see `docs/runbooks/DOMAIN_DNS_SETUP.md`).
 6. Back in Netlify, click **Verify DNS configuration**.
 7. Once verified, enable **HTTPS / provision certificate**.
 
