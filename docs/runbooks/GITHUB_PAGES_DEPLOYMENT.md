@@ -1,67 +1,89 @@
-# GitHub Pages Deployment Runbook (Static Reviewer Site)
+# GitHub Pages Deployment Runbook
+
+## Purpose
+Deploy the reviewer-facing static explainer site from this repository using GitHub Actions.
 
 ## Deployment model
-This project now uses a **hybrid deployment split**:
+- Source pages: `app/*.html`, `app/static/*`, `app/data/artifacts/*.json`
+- Build output (ephemeral): `site/`
+- Publisher: `.github/workflows/deploy-github-pages.yml`
 
-- **GitHub Pages (static):** reviewer-facing explainer/results/risk/planner pages + generated JSON artifacts.
-- **Non-static services (elsewhere):** ASReview LAB container, label sync/reconciliation hooks, retraining pipeline jobs.
+`site/` is generated and not tracked in git.
 
-This keeps reviewer content low-friction and globally accessible while preserving operational workflows in controlled runtime environments.
+---
 
-## Repository structure for Pages
+## Pre-flight (local)
 
-```text
-app/
-  index.html
-  asreview-explainer.html
-  methods-results.html
-  why-more-review.html
-  how-many-more.html
-  static/
-  data/artifacts/
-scripts/
-  build_github_pages_site.sh
-  run_static_site_checks.sh
-  smoke_test_static_site.py
-  content_integrity_check.py
-.github/workflows/
-  deploy-github-pages.yml
-site/                      # generated build artifact (publish target)
-```
-
-## Local build and preview
 ```bash
 cd /home/kana/git/asys/screening-model
-scripts/build_github_pages_site.sh
+scripts/run_data_refresh.sh
+scripts/build_github_pages_site.sh --skip-refresh
 scripts/run_static_site_checks.sh
-python3 -m http.server 8080 --directory site
 ```
 
-Open: `http://127.0.0.1:8080/`
+Expected result:
+- static smoke test passes,
+- artifact integrity check passes,
+- `site/` contains all 5 pages + `data/artifacts/*.json`.
 
-## CI publishing workflow
-Workflow file: `.github/workflows/deploy-github-pages.yml`
+---
 
-Pipeline stages:
-1. Install pinned Python dependencies (`requirements.lock.txt`).
-2. Refresh app artifacts (`scripts/run_data_refresh.sh`).
-3. Build Pages bundle (`scripts/build_github_pages_site.sh --skip-refresh`).
-4. Validate integrity + static smoke (`scripts/run_static_site_checks.sh`).
-5. Upload `site/` as Pages artifact.
-6. Deploy to GitHub Pages via `actions/deploy-pages`.
+## GitHub settings (one-time)
 
-## GitHub repository settings
-In GitHub repo settings:
-1. **Settings → Pages → Source**: select **GitHub Actions**.
-2. Ensure branch protections allow workflow run on `main`.
-3. (Optional) Configure custom domain and enforce HTTPS.
+1. Open **Repo Settings → Pages**.
+2. Set **Build and deployment / Source = GitHub Actions**.
+3. Ensure Actions are allowed for the repository.
+4. (Optional) configure custom domain and enforce HTTPS.
 
-## Non-static components (explicit separation)
-- ASReview LAB local/staging operations: `docs/runbooks/ASREVIEW_LAB_LOCAL.md`
-- Integration roundtrip checks: `scripts/run_lab_roundtrip_checks.sh`
-- Full local deployment runbook: `analysis/DEPLOYMENT_RUNBOOK.md`
+---
+
+## Publish flow
+
+1. Push to `main`.
+2. Workflow runs:
+   - install pinned dependencies,
+   - refresh app artifacts,
+   - build static bundle,
+   - run static checks,
+   - upload and deploy Pages artifact.
+3. Confirm workflow status is green in Actions tab.
+
+Manual trigger fallback:
+- `deploy-github-pages` workflow supports `workflow_dispatch`.
+
+---
+
+## Go-live checklist
+
+- [ ] `scripts/run_static_site_checks.sh` passes locally.
+- [ ] `deploy-github-pages` workflow completed successfully on `main`.
+- [ ] GitHub Pages source set to **GitHub Actions**.
+- [ ] Live URL opens and serves latest commit content.
+- [ ] Navigation links and artifact-backed sections render on all pages.
+
+---
+
+## Post-deploy validation
+
+Use the live URL (typically `https://ojwatson.github.io/asys_e5cr7/`):
+
+1. `index.html` redirects to `asreview-explainer.html`.
+2. Verify each page loads:
+   - `/asreview-explainer.html`
+   - `/methods-results.html`
+   - `/why-more-review.html`
+   - `/how-many-more.html`
+3. Open browser devtools and confirm these JSON endpoints return `200`:
+   - `/data/artifacts/overview.json`
+   - `/data/artifacts/methods_results.json`
+   - `/data/artifacts/fn_fp_risk.json`
+   - `/data/artifacts/simulation_planner.json`
+4. Confirm no console errors related to missing assets or fetch failures.
+
+---
 
 ## Failure triage
-- If static smoke fails: run `scripts/run_static_site_checks.sh` locally and inspect missing/invalid files under `site/`.
-- If checksum integrity fails: rerun `scripts/run_data_refresh.sh` and confirm `app/data/artifacts/run_manifest.json` is regenerated.
-- If Pages deploy job fails but build passes: verify repo Pages source is set to **GitHub Actions**.
+
+- Build fails locally: rerun `scripts/run_data_refresh.sh` then static checks.
+- Workflow fails at deploy stage only: verify Pages source is set to **GitHub Actions**.
+- Live site is stale: confirm latest successful workflow corresponds to expected commit SHA.

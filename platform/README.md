@@ -1,6 +1,7 @@
-# Platform Skeleton
+# Platform Placeholder
 
-This directory is reserved for future backend/API services and workflow orchestration.
+This directory is reserved for future API/worker services.
 
-For the current MVP run, reviewer-facing functionality is implemented in `app/`, with
-local deployment scaffolding in `infra/asreview-lab/`.
+Current release architecture intentionally ships:
+- static explainer via `app/` + GitHub Pages,
+- LAB runtime via `infra/asreview-lab/`.
