@@ -1,0 +1,17 @@
+{
+  "generated_at": "2026-02-21T09:55:05+00:00",
+  "input": "analysis/outputs/next_steps/production_ranking_leakage_safe.csv",
+  "output": "infra/asreview-lab/data/queue_for_lab.csv",
+  "rows": 300,
+  "top_n": null,
+  "priority_bucket_counts": {
+    "medium": 102,
+    "high": 99,
+    "low": 99
+  },
+  "score_range": {
+    "min": 0.0128675913651282,
+    "max": 0.973941807117726
+  },
+  "queue_sha256": "3df31676397df3b4fd742707925a1e7346b8124876e0cf812f8942da315ed410"
+}

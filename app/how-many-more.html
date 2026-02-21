@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>How Many More To Screen</title>
+  <link rel="stylesheet" href="./static/styles.css" />
+</head>
+<body data-page="how-many-more">
+  <header class="site-header">
+    <h1>Simulation-Informed Screening Planner</h1>
+    <p>Estimate impact of additional screening on residual risk.</p>
+    <nav>
+      <a href="./asreview-explainer.html">ASReview Explainer</a>
+      <a href="./methods-results.html">Methods & Results</a>
+      <a href="./why-more-review.html">Why More Review</a>
+      <a href="./how-many-more.html">How Many More</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="panel">
+      <h2>Planner Controls</h2>
+      <div class="controls">
+        <label>Policy
+          <select id="planner-policy"></select>
+        </label>
+        <label>Prevalence Band
+          <select id="planner-band"></select>
+        </label>
+        <label>Additional Docs Requested
+          <select id="planner-additional"></select>
+        </label>
+      </div>
+      <div id="planner-result" class="grid two"></div>
+    </section>
+
+    <section class="panel">
+      <h2>Scenario Table</h2>
+      <div id="planner-table"></div>
+    </section>
+
+    <section class="panel accent">
+      <h2>Recommended Staged Targets</h2>
+      <div id="planner-recommendation"></div>
+    </section>
+  </main>
+
+  <script src="./static/app.js"></script>
+</body>
+</html>

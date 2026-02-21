@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ASReview Explainer</title>
+  <link rel="stylesheet" href="./static/styles.css" />
+</head>
+<body data-page="asreview-explainer">
+  <header class="site-header">
+    <h1>ASReview Reviewer Portal (MVP)</h1>
+    <p>Transparent screening status, risk framing, and next-step planning.</p>
+    <nav>
+      <a href="./asreview-explainer.html">ASReview Explainer</a>
+      <a href="./methods-results.html">Methods & Results</a>
+      <a href="./why-more-review.html">Why More Review</a>
+      <a href="./how-many-more.html">How Many More</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="panel">
+      <h2>What ASReview does in this project</h2>
+      <ul>
+        <li>Ranks records so reviewers see likely-relevant studies first.</li>
+        <li>Supports high-recall screening decisions with explicit uncertainty tracking.</li>
+        <li>Enables staged screening extensions when residual false-negative risk is still meaningful.</li>
+      </ul>
+    </section>
+
+    <section class="grid two">
+      <article class="card">
+        <h3>Dataset Snapshot</h3>
+        <div id="dataset-snapshot"></div>
+      </article>
+      <article class="card">
+        <h3>Model Snapshot</h3>
+        <div id="model-snapshot"></div>
+      </article>
+    </section>
+
+    <section class="panel">
+      <h2>Current Residual-Risk Baselines</h2>
+      <div id="risk-baselines"></div>
+    </section>
+
+    <section class="panel accent">
+      <h2>Current Recommendation</h2>
+      <div id="recommendation"></div>
+    </section>
+  </main>
+
+  <script src="./static/app.js"></script>
+</body>
+</html>

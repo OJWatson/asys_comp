@@ -1,0 +1,15 @@
+services:
+  asreview-lab:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: asreview-lab-local
+    ports:
+      - "${ASREVIEW_LAB_PORT:-5000}:5000"
+    env_file:
+      - .env
+    volumes:
+      - ./data:/workspace/data
+      - ../../analysis/outputs:/workspace/analysis_outputs:ro
+      - ../../integration:/workspace/integration:ro
+    restart: unless-stopped

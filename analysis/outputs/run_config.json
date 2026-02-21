@@ -1,0 +1,27 @@
+{
+  "input": "/home/kana/git/asys/screening-model/data/screening_input.xlsx",
+  "output_dir": "/home/kana/git/asys/screening-model/analysis/outputs",
+  "columns_detected": {
+    "title": "titles",
+    "abstract": "abstract",
+    "label": "final_decision"
+  },
+  "label_mapping": {
+    "include_tokens": [
+      "i",
+      "I",
+      "include",
+      "included",
+      "1"
+    ],
+    "exclude_tokens": [
+      "e",
+      "E",
+      "exclude",
+      "excluded",
+      "0"
+    ]
+  },
+  "test_size": 0.2,
+  "random_state": 42
+}

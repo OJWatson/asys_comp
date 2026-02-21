@@ -1,0 +1,59 @@
+{
+  "input": "/home/kana/git/asys/screening-model/data/screening_input.xlsx",
+  "output_dir": "/home/kana/git/asys/screening-model/analysis/outputs/improved",
+  "columns_detected": {
+    "title": "titles",
+    "abstract": "abstract",
+    "label": "final_decision"
+  },
+  "label_mapping": {
+    "include_tokens": [
+      "i",
+      "I",
+      "include",
+      "included",
+      "1"
+    ],
+    "exclude_tokens": [
+      "e",
+      "E",
+      "exclude",
+      "excluded",
+      "0"
+    ]
+  },
+  "split": {
+    "test_size": 0.2,
+    "val_size": 0.2,
+    "n_total_rows": 300,
+    "n_usable_rows": 300,
+    "n_dropped_rows": 0,
+    "n_train": 192,
+    "n_val": 48,
+    "n_test": 60,
+    "class_counts_usable": {
+      "0": 257,
+      "1": 43
+    },
+    "class_counts_train": {
+      "0": 165,
+      "1": 27
+    },
+    "class_counts_val": {
+      "0": 41,
+      "1": 7
+    },
+    "class_counts_test": {
+      "0": 51,
+      "1": 9
+    }
+  },
+  "random_state": 42,
+  "models_tested": [
+    "lr_word_tfidf_balanced",
+    "cnb_word_tfidf",
+    "calibrated_svm_word_char"
+  ],
+  "selection_rule": "max(average_precision, then wss@95, then recall@20, then recall@50)",
+  "best_model": "calibrated_svm_word_char"
+}

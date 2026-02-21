@@ -1,0 +1,61 @@
+{
+  "generated_at": "2026-02-21T09:56:07+00:00",
+  "project": {
+    "name": "ASReview Screening Model",
+    "dataset_records": 300,
+    "known_relevant": 43,
+    "estimated_prevalence": 0.143333,
+    "preferred_strategy": "asreview_prior_1p1n",
+    "prevalence_band": "medium"
+  },
+  "model_snapshot": {
+    "best_model": "calibrated_svm_word_char",
+    "average_precision": 0.34855720588479205,
+    "roc_auc": 0.6492374727668846,
+    "recall_at_20": 0.5555555555555556,
+    "recall_at_50": 0.8888888888888888,
+    "screen_fraction_recall_90": 0.9666666666666667,
+    "screen_fraction_recall_95": 0.9666666666666667
+  },
+  "lab_queue_snapshot": {
+    "n_records": 300,
+    "priority_bucket_counts": {
+      "medium": 102,
+      "high": 99,
+      "low": 99
+    },
+    "score_range": {
+      "min": 0.012867591365128231,
+      "max": 0.973941807117726,
+      "mean": 0.15678808667364058
+    }
+  },
+  "risk_baselines": [
+    {
+      "threshold_policy": "recall_target_90",
+      "target_recall": 0.9,
+      "docs_screened_mean": 197,
+      "work_saved_docs": 103,
+      "expected_fn": 4.0,
+      "expected_fp": 158.0,
+      "estimated_recall": 0.906977,
+      "estimated_precision": 0.19797
+    },
+    {
+      "threshold_policy": "recall_target_95",
+      "target_recall": 0.95,
+      "docs_screened_mean": 221,
+      "work_saved_docs": 79,
+      "expected_fn": 2.0,
+      "expected_fp": 180.0,
+      "estimated_recall": 0.953488,
+      "estimated_precision": 0.18552
+    }
+  ],
+  "recommendation": {
+    "immediate_additional_docs": 50,
+    "contingent_additional_docs": 100,
+    "expected_fn_after_immediate": 0.87,
+    "expected_fn_reduction_after_immediate": 3.13
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "analysis_outputs_dir": "analysis/outputs",
+  "app_artifacts_dir": "app/data/artifacts",
+  "preferred_strategy": "asreview_prior_1p1n",
+  "primary_prevalence_band": "medium",
+  "policy_aliases": {
+    "oracle_target_recall_90": "recall_target_90",
+    "oracle_target_recall_95": "recall_target_95"
+  }
+}

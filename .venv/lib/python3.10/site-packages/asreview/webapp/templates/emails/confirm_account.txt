@@ -1,0 +1,14 @@
+Hello {{ name }},
+
+{% if email_type == "create" %}
+Thank you for joining ASReview. You are almost ready!
+{% elif email_type == "change_email" %}
+You have changed your email address.
+{% endif %}
+
+  Below you find a 6-digits verification code. Use it to confirm your account.
+  Please note that the code will expire in 20 minutes.
+
+{{ token }}
+
+{{ footer_txt }}

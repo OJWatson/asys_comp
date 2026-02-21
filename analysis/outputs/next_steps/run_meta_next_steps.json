@@ -1,0 +1,24 @@
+{
+  "input": "/home/kana/git/asys/screening-model/data/screening_input.xlsx",
+  "output_dir": "/home/kana/git/asys/screening-model/analysis/outputs/next_steps",
+  "report_path": "/home/kana/git/asys/screening-model/analysis/NEXT_STEPS_EXECUTION_REPORT.md",
+  "columns_detected": {
+    "title": "titles",
+    "abstract": "abstract",
+    "label": "final_decision"
+  },
+  "n_records": 300,
+  "n_positives": 43,
+  "n_negatives": 257,
+  "seeds": [
+    11,
+    19,
+    42,
+    77,
+    2026
+  ],
+  "active_learning_runs": 15,
+  "active_learning_trace_rows": 4370,
+  "nested_cv_rows": 25,
+  "production_queue_rows": 300
+}

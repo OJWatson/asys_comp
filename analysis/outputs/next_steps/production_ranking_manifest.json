@@ -1,0 +1,32 @@
+{
+  "description": "Leakage-safe production ranking export for screening queue.",
+  "included_columns": [
+    "queue_rank",
+    "score_include",
+    "title",
+    "abstract",
+    "record_id",
+    "priority_bucket"
+  ],
+  "removed_sensitive_columns": [
+    "final_decision",
+    "final_decision_include_or_excude",
+    "exclude_code",
+    "include_or_excude_PC",
+    "exclude_code_PC",
+    "include_or_excude_BR",
+    "exclude_code_BR",
+    "_label"
+  ],
+  "n_records": 300,
+  "score_range": {
+    "min": 0.012867591365128231,
+    "max": 0.973941807117726,
+    "mean": 0.15678808667364058
+  },
+  "priority_bucket_counts": {
+    "medium": 102,
+    "high": 99,
+    "low": 99
+  }
+}

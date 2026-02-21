@@ -1,0 +1,62 @@
+[asreview.datasets]
+synergy = asreview.datasets:SynergyDataGroup
+
+[asreview.entry_points]
+algorithms = asreview.models.cli:cli_algorithms
+auth-tool = asreview.webapp._entry_points.auth_tool:AuthTool
+lab = asreview.webapp._entry_points.lab:lab_entry_point
+migrate = asreview.webapp._entry_points.migrate:MigrationTool
+simulate = asreview.simulation.cli:_cli_simulate
+
+[asreview.entry_points_internal]
+task-manager = asreview.webapp._entry_points.task_manager:main
+
+[asreview.models]
+_metadata = asreview.models._metadata:MODEL_METADATA
+
+[asreview.models.balancers]
+balanced = asreview.models.balancers:Balanced
+
+[asreview.models.classifiers]
+logistic = asreview.models.classifiers:Logistic
+nb = asreview.models.classifiers:NaiveBayes
+rf = asreview.models.classifiers:RandomForest
+svm = asreview.models.classifiers:SVM
+
+[asreview.models.feature_extractors]
+onehot = asreview.models.feature_extractors:OneHot
+tfidf = asreview.models.feature_extractors:Tfidf
+
+[asreview.models.queriers]
+max = asreview.models.queriers:Max
+max_random = asreview.models.queriers:HybridMaxRandom
+max_uncertainty = asreview.models.queriers:HybridMaxUncertainty
+random = asreview.models.queriers:Random
+top_down = asreview.models.queriers:TopDown
+uncertainty = asreview.models.queriers:Uncertainty
+
+[asreview.models.stoppers]
+is_fittable = asreview.models.stoppers:IsFittable
+last_relevant = asreview.models.stoppers:LastRelevant
+n_consecutive_irrelevant = asreview.models.stoppers:NConsecutiveIrrelevant
+n_labeled = asreview.models.stoppers:NLabeled
+q_labeled = asreview.models.stoppers:QuantileLabeled
+
+[asreview.readers]
+.csv = asreview.data:CSVReader
+.ris = asreview.data:RISReader
+.tab = asreview.data:CSVReader
+.tsv = asreview.data:CSVReader
+.txt = asreview.data:RISReader
+.xlsx = asreview.data:ExcelReader
+
+[asreview.writers]
+.csv = asreview.data:CSVWriter
+.ris = asreview.data:RISWriter
+.tab = asreview.data:TSVWriter
+.tsv = asreview.data:TSVWriter
+.txt = asreview.data:RISWriter
+.xlsx = asreview.data:ExcelWriter
+
+[console_scripts]
+asreview = asreview.__main__:main

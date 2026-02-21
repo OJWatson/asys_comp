@@ -1,0 +1,52 @@
+Metadata-Version: 2.1
+Name: synergy-dataset
+Version: 1.2
+Summary: Python package for the SYNERGY dataset
+Author-email: Jonathan de Bruin <asreview@uu.nl>
+License: MIT
+Classifier: Development Status :: 5 - Production/Stable
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 3.7
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Requires-Python: >=3.7
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: requests
+Requires-Dist: pyalex
+Requires-Dist: tabulate
+Requires-Dist: tqdm
+Provides-Extra: lint
+Requires-Dist: flake8 ; extra == 'lint'
+Requires-Dist: flake8-import-order ; extra == 'lint'
+Provides-Extra: test
+Requires-Dist: pytest ; extra == 'test'
+
+# Python package for the SYNERGY dataset
+
+![PyPI](https://img.shields.io/pypi/v/synergy-dataset)
+
+The `synergy-dataset` Python package is the easiest way to download and built
+the SYNERGY dataset to your local device.
+
+## Installation
+
+SYNERGY requires Python 3.6 or later.
+
+```sh
+pip install synergy-dataset
+```
+
+## Getting started
+
+See [https://github.com/asreview/synergy-dataset](https://github.com/asreview/synergy-dataset) for documentation and getting started.
+
+## License
+
+[MIT](/LICENSE)
+
+## Contact
+
+See [https://github.com/asreview/synergy-dataset](https://github.com/asreview/synergy-dataset) for contact details.

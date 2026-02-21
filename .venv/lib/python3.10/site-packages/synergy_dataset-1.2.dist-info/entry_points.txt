@@ -1,0 +1,4 @@
+[console_scripts]
+synergy = synergy_dataset.__main__:main
+synergy-dataset = synergy_dataset.__main__:main
+synergy_dataset = synergy_dataset.__main__:main

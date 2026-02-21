@@ -1,0 +1,2 @@
+[console_scripts]
+scitree = scitree.__main__:main

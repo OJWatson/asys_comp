@@ -1,0 +1,15 @@
+TESTING = true
+DEBUG = true
+SECRET_KEY = "my_very_secret_key"
+SECURITY_PASSWORD_SALT = "my_salt"
+AUTHENTICATION = true
+ALLOW_ACCOUNT_CREATION = true
+EMAIL_VERIFICATION = true
+
+MAIL_SERVER = "localhost"
+MAIL_PORT = 465
+MAIL_USERNAME = "admin@asreview.nl"
+MAIL_PASSWORD = "secret_password"
+MAIL_USE_TLS = false
+MAIL_USE_SSL = true
+MAIL_DEFAULT_SENDER = "no_reply@asreview.nl"

@@ -1,0 +1,7 @@
+node_modules
+build
+*.py
+package-lock.json
+package.json
+jsconfig.json
+tests/asreview-project-file-archive

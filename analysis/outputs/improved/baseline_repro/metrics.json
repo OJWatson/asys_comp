@@ -1,0 +1,26 @@
+{
+  "n_total_rows": 300,
+  "n_usable_rows": 300,
+  "n_dropped_rows": 0,
+  "train_size": 240,
+  "test_size": 60,
+  "class_counts_usable": {
+    "0": 257,
+    "1": 43
+  },
+  "accuracy": 0.8333333333333334,
+  "precision": 0.0,
+  "recall": 0.0,
+  "f1": 0.0,
+  "average_precision": 0.2593563749495953,
+  "roc_auc": 0.6601307189542484,
+  "r_precision": 0.2222222222222222,
+  "wss@95": -0.033333333333333326,
+  "ndcg": 0.561206129795655,
+  "precision@10": 0.3,
+  "recall@10": 0.3333333333333333,
+  "precision@20": 0.2,
+  "recall@20": 0.4444444444444444,
+  "precision@50": 0.16,
+  "recall@50": 0.8888888888888888
+}
