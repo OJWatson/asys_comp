@@ -1,0 +1,3 @@
+record_id,decision,decision_time
+example-1,include,2026-01-01T12:00:00Z
+example-2,exclude,2026-01-01T12:05:00Z
