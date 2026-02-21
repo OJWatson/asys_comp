@@ -1,19 +1,30 @@
-# Python
+# Python cache / bytecode
 __pycache__/
 *.py[cod]
 *.pyo
 *.pyd
-.python-version
+*.so
+
+# Python tooling caches
 .pytest_cache/
 .mypy_cache/
 .ruff_cache/
+.hypothesis/
+.tox/
+.nox/
 .coverage*
 htmlcov/
 
-# Local environments
+# Virtual environments
 .venv/
 venv/
 env/
+
+# Local environment files
+.env
+.env.*
+!.env.example
+.python-version
 
 # OS / editor
 .DS_Store
@@ -22,7 +33,16 @@ Thumbs.db
 .vscode/
 
 # Build outputs
+build/
+dist/
 site/
+
+# Notebook / temp
+.ipynb_checkpoints/
+*.log
+*.tmp
+tmp/
+.cache/
 
 # Local runtime artifacts for ASReview LAB integration
 infra/asreview-lab/data/*.csv
@@ -31,8 +51,3 @@ infra/asreview-lab/data/*.csv
 
 integration/outputs/*.json
 !integration/outputs/.gitkeep
-
-# Logs and temp
-*.log
-*.tmp
-tmp/
