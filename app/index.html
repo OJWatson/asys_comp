@@ -3,10 +3,52 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ASReview Reviewer Portal</title>
-  <meta http-equiv="refresh" content="0; url=./asreview-explainer.html" />
+  <title>ASYS Compendium</title>
+  <meta name="description" content="Front-facing ASYS compendium with project deep-dives and ASReview LAB entry points." />
+  <link rel="stylesheet" href="./static/styles.css" />
 </head>
-<body>
-  <p>Redirecting to <a href="./asreview-explainer.html">ASReview Explainer</a>...</p>
+<body data-page="compendium-home">
+  <header class="site-header">
+    <h1>ASYS Compendium</h1>
+    <p>Multi-project screening portfolio with transparent methods, risk framing, and operational LAB links.</p>
+    <nav>
+      <a href="./index.html">Compendium Home</a>
+      <a href="./projects-e5cr7.html">e5cr7 Deep Dive</a>
+      <a href="./asreview-explainer.html">e5cr7 Explainer</a>
+      <a href="./methods-results.html">Methods & Results</a>
+      <a href="./why-more-review.html">Why More Review</a>
+      <a href="./how-many-more.html">How Many More</a>
+      <a href="./lab.html">Shared LAB</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="panel accent">
+      <h2>Portfolio Overview</h2>
+      <p>This site now acts as a compendium shell: one landing page for all projects, and deep-dive pages per project.</p>
+      <div class="cta-row">
+        <a class="button-link primary" href="./projects-e5cr7.html">Open e5cr7 Deep Dive</a>
+        <a class="button-link" href="./lab.html">Open Shared LAB Access</a>
+      </div>
+    </section>
+
+    <section class="grid two">
+      <article class="card">
+        <h3>Shared LAB Strategy</h3>
+        <div id="shared-lab-summary"></div>
+      </article>
+      <article class="card">
+        <h3>Current e5cr7 Snapshot</h3>
+        <div id="compendium-e5cr7-snapshot"></div>
+      </article>
+    </section>
+
+    <section class="panel">
+      <h2>Projects</h2>
+      <div id="project-grid" class="project-grid"></div>
+    </section>
+  </main>
+
+  <script src="./static/app.js"></script>
 </body>
 </html>

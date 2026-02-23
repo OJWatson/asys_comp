@@ -12,10 +12,15 @@ APP_DIR = Path(__file__).resolve().parent
 
 ROUTES = {
     "/": "/index.html",
+    "/index": "/index.html",
+    "/projects": "/index.html",
+    "/projects/e5cr7": "/projects-e5cr7.html",
     "/asreview-explainer": "/asreview-explainer.html",
     "/methods-results": "/methods-results.html",
     "/why-more-review": "/why-more-review.html",
     "/how-many-more": "/how-many-more.html",
+    "/lab": "/lab.html",
+    "/lab/e5cr7": "/lab-e5cr7.html",
 }
 
 

@@ -1,0 +1,34 @@
+{
+  "generated_at": "2026-02-23T04:40:00Z",
+  "shared_lab": {
+    "display_name": "ASYS Shared LAB Gateway",
+    "entrypoint_url": "http://127.0.0.1:5000",
+    "entrypoint_note": "Set this to the shared production LAB URL during deployment; local default keeps current workflow functional."
+  },
+  "projects": [
+    {
+      "slug": "e5cr7",
+      "name": "e5cr7",
+      "status": "active",
+      "summary": "ASReview-assisted screening workflow with full explainer, methods, risk framing, and simulation planner pages.",
+      "focus": "High-recall prioritization with staged residual-risk reduction.",
+      "stage": "Active",
+      "deep_dive_path": "./projects-e5cr7.html",
+      "legacy_explainer_path": "./asreview-explainer.html",
+      "lab_path": "./lab-e5cr7.html",
+      "legacy_lab_url": "http://127.0.0.1:5000"
+    },
+    {
+      "slug": "next-slot",
+      "name": "Next project slot",
+      "status": "planned",
+      "summary": "Reserved slot for the next ASYS project deep-dive page.",
+      "focus": "Use MIGRATION_PLAN.md conventions to add a project.",
+      "stage": "Backlog",
+      "deep_dive_path": "./index.html",
+      "legacy_explainer_path": "./index.html",
+      "lab_path": "./lab.html",
+      "legacy_lab_url": "http://127.0.0.1:5000"
+    }
+  ]
+}

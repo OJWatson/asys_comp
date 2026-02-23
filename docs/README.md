@@ -1,10 +1,13 @@
 # Documentation Index
 
-Canonical docs for release operations:
+Canonical docs for compendium operations:
 
-- `runbooks/GITHUB_PAGES_DEPLOYMENT.md` — GitHub Pages go-live + post-deploy validation.
-- `runbooks/NETLIFY_DEPLOYMENT.md` — Netlify import/build/domain go-live + rollback.
-- `runbooks/DOMAIN_DNS_SETUP.md` — DNS record sets for Netlify custom domain cutover.
+- `../MIGRATION_PLAN.md` — migration rationale, information architecture, and conventions for adding projects.
+- `../DEPLOY_CHECKLIST.md` — exact Render/Netlify/DNS go-live checklist.
+- `runbooks/GITHUB_PAGES_DEPLOYMENT.md` — GitHub Pages deployment and validation.
+- `runbooks/NETLIFY_DEPLOYMENT.md` — Netlify import/build/domain deployment and rollback.
+- `runbooks/DOMAIN_DNS_SETUP.md` — DNS record sets for Netlify + shared LAB cutover.
+- `runbooks/RENDER_LAB_DEPLOYMENT.md` — Render-specific ASReview LAB deployment steps.
 - `runbooks/ASREVIEW_LAB_LOCAL.md` — local/staging LAB workflow.
 - `runbooks/ASREVIEW_LAB_LIVE_SERVER.md` — hardened live-server path and manual cutover.
 - `ENVIRONMENT_SETUP.md` — reproducible local environment bootstrap.

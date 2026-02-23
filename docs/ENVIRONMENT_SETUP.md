@@ -46,7 +46,7 @@ scripts/run_static_site_checks.sh
 scripts/run_web_app.sh
 ```
 
-Open: `http://127.0.0.1:8000/`
+Open: `http://127.0.0.1:8000/` (compendium home)
 
 ## 7) LAB integration checks
 

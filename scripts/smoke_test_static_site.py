@@ -14,11 +14,14 @@ from pathlib import Path
 
 
 REQUIRED_HTML = {
-    "index.html": "Redirecting to",
-    "asreview-explainer.html": "ASReview Reviewer Portal",
-    "methods-results.html": "Methods & Results Summary",
-    "why-more-review.html": "Why More Review Is Needed",
-    "how-many-more.html": "Simulation-Informed Screening Planner",
+    "index.html": "ASYS Compendium",
+    "projects-e5cr7.html": "Project Deep Dive · e5cr7",
+    "asreview-explainer.html": "ASReview Reviewer Portal · e5cr7",
+    "methods-results.html": "Methods & Results Summary · e5cr7",
+    "why-more-review.html": "Why More Review Is Needed · e5cr7",
+    "how-many-more.html": "Simulation-Informed Screening Planner · e5cr7",
+    "lab.html": "Shared ASReview LAB Access",
+    "lab-e5cr7.html": "LAB Endpoint · e5cr7",
 }
 
 REQUIRED_JSON = [
@@ -83,6 +86,10 @@ def main() -> None:
         if not (artifacts_dir / name).exists():
             raise FileNotFoundError(f"Missing static artifact JSON: {artifacts_dir / name}")
 
+    catalog_path = site_dir / "data" / "compendium_catalog.json"
+    if not catalog_path.exists():
+        raise FileNotFoundError(f"Missing static compendium catalog: {catalog_path}")
+
     manifest = json.loads((artifacts_dir / "run_manifest.json").read_text(encoding="utf-8"))
     for name, meta in manifest.get("artifacts", {}).items():
         path = artifacts_dir / name
@@ -109,6 +116,10 @@ def main() -> None:
             if not isinstance(payload, dict):
                 raise AssertionError(f"Expected JSON object from /data/artifacts/{name}")
 
+        catalog = fetch_json(f"http://127.0.0.1:{args.port}/data/compendium_catalog.json")
+        if "projects" not in catalog:
+            raise AssertionError("Compendium catalog missing 'projects' key")
+
     finally:
         proc.terminate()
         try:
@@ -116,7 +127,7 @@ def main() -> None:
         except subprocess.TimeoutExpired:
             proc.kill()
 
-    print("Static smoke test passed: GitHub Pages bundle is reachable and complete.")
+    print("Static smoke test passed: compendium bundle is reachable and complete.")
 
 
 if __name__ == "__main__":

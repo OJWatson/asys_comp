@@ -8,7 +8,7 @@ Run ASReview LAB locally (or on a staging host) and execute the queue → labels
 ## 1) Start LAB
 
 ```bash
-cd /home/kana/git/asys/screening-model/infra/asreview-lab
+cd /path/to/asys_e5cr7/infra/asreview-lab
 cp .env.example .env
 docker compose up --build -d
 ```
@@ -25,7 +25,7 @@ curl -I http://127.0.0.1:5000
 ## 2) Export queue for LAB
 
 ```bash
-cd /home/kana/git/asys/screening-model
+cd /path/to/asys_e5cr7
 python3 integration/asreview_lab_hooks.py export-queue \
   --ranking analysis/outputs/next_steps/production_ranking_leakage_safe.csv \
   --output infra/asreview-lab/data/queue_for_lab.csv \
@@ -71,7 +71,7 @@ scripts/run_lab_roundtrip_checks.sh
 ## 5) Stop LAB
 
 ```bash
-cd infra/asreview-lab
+cd /path/to/asys_e5cr7/infra/asreview-lab
 docker compose down
 ```
 
