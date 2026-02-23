@@ -15,6 +15,7 @@ from pathlib import Path
 
 REQUIRED_HTML = {
     "index.html": "ASYS Compendium",
+    "handbook.html": "ASYS Screening Workflow Handbook",
     "projects-e5cr7.html": "Project Deep Dive · e5cr7",
     "asreview-explainer.html": "ASReview Reviewer Portal · e5cr7 (Moved)",
     "methods-results.html": "Methods & Results · e5cr7 (Moved)",

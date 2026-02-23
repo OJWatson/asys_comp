@@ -58,6 +58,9 @@ function normalizeRoute(rawPath) {
   if (path === "/lab" || path.endsWith("/lab.html")) {
     return "lab";
   }
+  if (path === "/handbook" || path.endsWith("/handbook.html")) {
+    return "handbook";
+  }
   if (path === "/projects/e5cr7" || path.endsWith("/projects-e5cr7.html")) {
     return "projects-e5cr7";
   }

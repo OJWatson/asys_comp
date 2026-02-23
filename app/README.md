@@ -4,6 +4,7 @@ Static reviewer-facing app backed by generated JSON artifacts in `app/data/artif
 
 ## Pages
 - `index.html` (compendium home)
+- `handbook.html` (scan-first screening workflow handbook: quick start + key concepts + interpretation + pitfalls + expandable deep detail)
 - `projects-e5cr7.html` (consolidated deep dive: overview + methods + risk + planner + glossary)
 - `lab.html` (shared LAB landing)
 

@@ -20,6 +20,12 @@ If you only remember five things, remember these:
    They estimate likely false negatives/false positives under assumptions (including prevalence assumptions).
 5. **Use staged screening decisions (+50, then reassess) rather than one big irreversible jump.**
 
+### Web companion sync note (source-of-truth policy)
+
+- Canonical handbook content is this markdown file.
+- Website reader view lives at `app/handbook.html` and intentionally simplifies structure for scan-first onboarding.
+- Manual sync rule: update this markdown first, then mirror any changed guidance/decision logic in `app/handbook.html`, then run static site checks before publish.
+
 ---
 
 ## 1) End-to-end workflow map (dataset import -> screening decisions -> analysis outputs)

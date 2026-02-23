@@ -261,6 +261,67 @@ select {
   background: #fff;
 }
 
+.reading-layout {
+  max-width: 840px;
+}
+
+.summary-list {
+  margin: 0;
+  padding-left: 1.2rem;
+}
+
+.summary-list li {
+  margin-bottom: 0.45rem;
+}
+
+.concept-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 0.75rem;
+}
+
+.expander {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #fff;
+  margin: 0.6rem 0;
+  padding: 0.55rem 0.7rem;
+}
+
+.expander > summary {
+  cursor: pointer;
+  font-weight: 700;
+  color: #1f4f39;
+}
+
+.expander[open] {
+  background: #fffcf4;
+}
+
+.callout.compact {
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.callout.compact p {
+  margin: 0.3rem 0;
+}
+
+pre {
+  white-space: pre-wrap;
+  word-break: break-word;
+  background: #121913;
+  color: #e9fff4;
+  border-radius: 8px;
+  padding: 0.75rem;
+  overflow-x: auto;
+}
+
+code {
+  font-family: "JetBrains Mono", "Fira Code", Consolas, monospace;
+  font-size: 0.92em;
+}
+
 @media (max-width: 860px) {
   .grid.two,
   .glossary {
@@ -269,5 +330,15 @@ select {
 
   .site-header h1 {
     font-size: 1.5rem;
+  }
+
+  .project-nav a,
+  .global-nav a {
+    font-size: 0.82rem;
+  }
+
+  .panel,
+  .card {
+    padding: 0.85rem;
   }
 }
