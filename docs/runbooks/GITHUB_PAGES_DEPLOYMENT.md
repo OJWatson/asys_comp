@@ -15,7 +15,7 @@ Deploy the compendium static site from this repository using GitHub Actions.
 ## Pre-flight (local)
 
 ```bash
-cd /path/to/asys_e5cr7
+cd /path/to/asys_comp
 scripts/run_data_refresh.sh
 scripts/build_github_pages_site.sh --skip-refresh
 scripts/run_static_site_checks.sh
@@ -65,7 +65,7 @@ Manual trigger fallback:
 
 ## Post-deploy validation
 
-Use the live URL (typically `https://ojwatson.github.io/asys_e5cr7/`):
+Use the live URL (typically `https://ojwatson.github.io/asys_comp/`):
 
 1. Verify compendium and project pages load:
    - `/index.html`

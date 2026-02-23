@@ -1,10 +1,10 @@
 # Netlify Deployment Runbook (Compendium + Custom Domain)
 
 ## Purpose
-Deploy the static compendium site from `OJWatson/asys_e5cr7` to Netlify, attach a custom subdomain, and preserve backward-compatible routes.
+Deploy the static compendium site from `OJWatson/asys_comp` to Netlify, attach a custom subdomain, and preserve backward-compatible routes.
 
 ## What this uses
-- Repo: `OJWatson/asys_e5cr7` (branch: `main`)
+- Repo: `OJWatson/asys_comp` (branch: `main`)
 - Netlify config: `netlify.toml`
 - Build output directory: `site/` (generated during build)
 - Build command (deterministic):
@@ -15,7 +15,7 @@ Deploy the static compendium site from `OJWatson/asys_e5cr7` to Netlify, attach 
 ## 1) Pre-flight checks (local)
 
 ```bash
-cd /path/to/asys_e5cr7
+cd /path/to/asys_comp
 scripts/build_github_pages_site.sh --skip-refresh
 scripts/run_static_site_checks.sh
 ```
@@ -33,7 +33,7 @@ Expected:
 2. Click **Add new site** → **Import an existing project**.
 3. Choose **GitHub**.
 4. Authorize Netlify for GitHub (if prompted).
-5. Select repository: **OJWatson/asys_e5cr7**.
+5. Select repository: **OJWatson/asys_comp**.
 6. Branch to deploy: **main**.
 7. Build settings:
    - Netlify should auto-detect `netlify.toml`.

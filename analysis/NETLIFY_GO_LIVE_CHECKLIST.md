@@ -1,4 +1,4 @@
-# Netlify Go-Live Checklist (OJWatson/asys_e5cr7)
+# Netlify Go-Live Checklist (OJWatson/asys_comp)
 
 ## A) Repository readiness (must be green before Netlify import)
 
@@ -16,7 +16,7 @@
 
 - [ ] Netlify: **Add new site** → **Import existing project**.
 - [ ] Provider: **GitHub**.
-- [ ] Repo selected: `OJWatson/asys_e5cr7`.
+- [ ] Repo selected: `OJWatson/asys_comp`.
 - [ ] Branch: `main`.
 - [ ] Netlify detected `netlify.toml` (or manual build/publish values entered).
 - [ ] First deploy completed successfully.

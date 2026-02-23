@@ -8,7 +8,7 @@ Deploy ASReview LAB runtime from this repository to Render, then bind shared LAB
 ## 1) Create Render Web Service
 
 1. Render dashboard → **New +** → **Web Service**.
-2. Connect GitHub repo: `OJWatson/asys_e5cr7`.
+2. Connect GitHub repo: `OJWatson/asys_comp`.
 3. Root directory: `infra/asreview-lab`.
 4. Runtime: **Docker**.
 5. Branch: `main`.

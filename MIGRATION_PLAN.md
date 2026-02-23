@@ -1,13 +1,13 @@
 # MIGRATION_PLAN.md
 
 ## Objective
-Migrate `asys_e5cr7` from a single-project explainer into a compendium-style structure while preserving legacy routes and ASReview LAB operational continuity.
+Migrate `asys_comp` from a single-project explainer into a compendium-style structure while preserving legacy routes and ASReview LAB operational continuity.
 
 ---
 
 ## Decision: repo naming strategy (safe path now)
 
-**Chosen now:** keep repository name `asys_e5cr7` for low-risk migration.
+**Chosen now:** keep repository name `asys_comp` for low-risk migration.
 
 Rationale:
 - avoids breaking existing CI integrations and Pages/Netlify bindings,
@@ -81,13 +81,13 @@ When adding a new project `<slug>`:
 
 ---
 
-## Optional future repo rename (`asys_e5cr7` → `asys_comp`)
+## Optional future repo rename (`asys_comp` → `asys_comp`)
 
 If permissions allow:
 
 ```bash
 # from local clone with GitHub CLI authenticated
-gh repo rename asys_comp --repo OJWatson/asys_e5cr7
+gh repo rename asys_comp --repo OJWatson/asys_comp
 ```
 
 Post-rename local remote update:

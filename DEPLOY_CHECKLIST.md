@@ -7,7 +7,7 @@ Exact go-live checklist for compendium + LAB deployment.
 ## 0) Pre-deploy local verification (required)
 
 ```bash
-cd /path/to/asys_e5cr7
+cd /path/to/asys_comp
 python3.10 -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.lock.txt
@@ -28,7 +28,7 @@ Pass condition:
 
 ### 1.1 Create service
 1. Render dashboard → **New +** → **Web Service**.
-2. Connect repo `OJWatson/asys_e5cr7`.
+2. Connect repo `OJWatson/asys_comp`.
 3. Root directory: `infra/asreview-lab`.
 4. Environment: Docker.
 5. Branch: `main`.
@@ -71,7 +71,7 @@ curl -I https://lab.ojwatson.co.uk/
 
 ### 3.1 Import project
 1. Netlify → **Add new site** → **Import existing project**.
-2. Select `OJWatson/asys_e5cr7`.
+2. Select `OJWatson/asys_comp`.
 3. Branch: `main`.
 4. Build command:
    `./scripts/build_github_pages_site.sh --skip-refresh && ./scripts/run_static_site_checks.sh`

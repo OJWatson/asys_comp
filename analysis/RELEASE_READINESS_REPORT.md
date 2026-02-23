@@ -1,7 +1,7 @@
 # RELEASE_READINESS_REPORT
 
 Date: 2026-02-21
-Repository: `OJWatson/asys_e5cr7`
+Repository: `OJWatson/asys_comp`
 Branch: `main`
 
 ## Executive status
@@ -57,7 +57,7 @@ LAB roundtrip note:
 ## 3) Current live status
 
 ### GitHub Pages live URL
-- Target URL: `https://ojwatson.github.io/asys_e5cr7/`
+- Target URL: `https://ojwatson.github.io/asys_comp/`
 - **Current status:** not confirmed live from this repo run (requires Pages repo setting + deploy workflow completion).
 
 ### ASReview LAB production runtime

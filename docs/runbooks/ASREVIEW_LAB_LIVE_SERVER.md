@@ -33,8 +33,8 @@ Open only required ports (typically 80/443 at reverse proxy).
 ### 2) Deploy repository and configuration
 
 ```bash
-git clone git@github.com:OJWatson/asys_e5cr7.git
-cd asys_e5cr7/infra/asreview-lab
+git clone git@github.com:OJWatson/asys_comp.git
+cd asys_comp/infra/asreview-lab
 cp .env.example .env
 ```
 
@@ -61,7 +61,7 @@ curl -I http://127.0.0.1:5000
 ### 1) Create service
 
 1. Render dashboard → **New +** → **Web Service**.
-2. Connect repo `OJWatson/asys_e5cr7`.
+2. Connect repo `OJWatson/asys_comp`.
 3. Root directory: `infra/asreview-lab`.
 4. Environment: Docker.
 5. Auto-deploy: enable for `main` (recommended).
@@ -105,7 +105,7 @@ Set in Render service settings:
 Recommended command after first live run:
 
 ```bash
-cd /path/to/asys_e5cr7
+cd /path/to/asys_comp
 scripts/run_lab_roundtrip_checks.sh
 ```
 
