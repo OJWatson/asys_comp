@@ -2,6 +2,7 @@
 
 Canonical docs for compendium operations:
 
+- `PHD_ONBOARDING_SUPER_GUIDE.md` — comprehensive PhD onboarding explainer for the ASReview workflow, metrics, simulation, and screening decisions.
 - `../MIGRATION_PLAN.md` — migration rationale, information architecture, and conventions for adding projects.
 - `../DEPLOY_CHECKLIST.md` — exact Render/Netlify/DNS go-live checklist.
 - `runbooks/GITHUB_PAGES_DEPLOYMENT.md` — GitHub Pages deployment and validation.
