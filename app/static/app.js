@@ -46,26 +46,35 @@ async function loadJson(path) {
   return res.json();
 }
 
-function activateNav() {
-  const path = window.location.pathname.replace(/\/+$/, "") || "/";
-  let currentFile = path.split("/").pop() || "index.html";
+function normalizeRoute(rawPath) {
+  const path = String(rawPath || "").replace(/\/+$/, "") || "/";
 
-  if (path === "/projects/e5cr7") {
-    currentFile = "projects-e5cr7";
-  } else if (path === "/lab/e5cr7") {
-    currentFile = "lab";
-  } else if (path === "/lab") {
-    currentFile = "lab";
-  } else if (path === "/projects") {
-    currentFile = "index";
+  if (path === "/" || path === "/index" || path.endsWith("/index.html")) {
+    return "index";
+  }
+  if (path === "/projects" || path === "/projects/" || path.endsWith("/index.html#projects")) {
+    return "index";
+  }
+  if (path === "/lab" || path.endsWith("/lab.html")) {
+    return "lab";
+  }
+  if (path === "/projects/e5cr7" || path.endsWith("/projects-e5cr7.html")) {
+    return "projects-e5cr7";
   }
 
-  const normalize = (s) => String(s || "").replace(/\.html$/i, "");
+  return path.split("/").pop().replace(/\.html$/i, "");
+}
 
-  document.querySelectorAll("nav a").forEach((a) => {
+function activateNav() {
+  const current = normalizeRoute(window.location.pathname);
+  document.querySelectorAll(".global-nav a").forEach((a) => {
     const href = a.getAttribute("href") || "";
-    const hrefFile = href.replace(/^\.\//, "").split("/").pop();
-    if (normalize(hrefFile) === normalize(currentFile)) {
+    if (href.startsWith("#")) {
+      return;
+    }
+    const hrefPath = href.startsWith("./") ? href.slice(1) : href;
+    const route = normalizeRoute(hrefPath);
+    if (route === current) {
       a.classList.add("active");
     }
   });
@@ -89,6 +98,10 @@ function projectStatusBadge(status) {
   return `<span class="badge ${kind}">${toTitle(status)}</span>`;
 }
 
+function findProject(catalog, slug) {
+  return (catalog.projects || []).find((p) => p.slug === slug) || null;
+}
+
 async function renderCompendiumHome() {
   const [catalog, overview] = await Promise.all([
     loadJson("./data/compendium_catalog.json"),
@@ -98,7 +111,7 @@ async function renderCompendiumHome() {
   document.getElementById("shared-lab-summary").innerHTML = kvHtml([
     ["Gateway", catalog.shared_lab.display_name],
     ["Configured URL", `<a href="${catalog.shared_lab.entrypoint_url}">${catalog.shared_lab.entrypoint_url}</a>`],
-    ["Note", catalog.shared_lab.entrypoint_note],
+    ["Why this matters", "One stable runtime URL across projects and deployment environments."],
   ]);
 
   document.getElementById("compendium-e5cr7-snapshot").innerHTML = kvHtml([
@@ -106,7 +119,7 @@ async function renderCompendiumHome() {
     ["Known relevant", overview.project.known_relevant],
     ["Estimated prevalence", fmtPct(overview.project.estimated_prevalence)],
     ["Best model", overview.model_snapshot.best_model],
-    ["Immediate additional screening", `+${overview.recommendation.immediate_additional_docs}`],
+    ["Immediate recommendation", `Screen +${overview.recommendation.immediate_additional_docs}`],
   ]);
 
   const projectGrid = document.getElementById("project-grid");
@@ -121,235 +134,38 @@ async function renderCompendiumHome() {
       <p>${p.summary || ""}</p>
       <p class="muted"><strong>Focus:</strong> ${p.focus || "-"}</p>
       <div class="cta-row">
-        ${buttonLink(p.deep_dive_path || "./index.html", "Deep Dive", { newTab: false, primary: true })}
-        ${buttonLink(p.lab_path || "./lab.html", "LAB Endpoint", { newTab: false })}
+        ${buttonLink(p.deep_dive_path || "./index.html", "Open project deep dive", { newTab: false, primary: true })}
+        ${buttonLink(p.lab_path || "./lab.html", "LAB links", { newTab: false })}
       </div>
     `;
     projectGrid.appendChild(article);
   });
 }
 
-function findProject(catalog, slug) {
-  return (catalog.projects || []).find((p) => p.slug === slug) || null;
-}
-
-async function renderProjectE5cr7() {
-  const [catalog, overview] = await Promise.all([
-    loadJson("./data/compendium_catalog.json"),
-    loadJson("./data/artifacts/overview.json"),
-  ]);
-
-  const project = findProject(catalog, "e5cr7") || {};
-
-  document.getElementById("e5cr7-cta-row").innerHTML = [
-    buttonLink("./lab.html", "Shared LAB Gateway", { newTab: false, primary: true }),
-    buttonLink(project.lab_path || "./lab-e5cr7.html", "Project LAB Endpoint", { newTab: false }),
-    buttonLink(project.legacy_explainer_path || "./asreview-explainer.html", "Legacy Explainer", { newTab: false }),
-  ].join("");
-
-  document.getElementById("e5cr7-dataset").innerHTML = kvHtml([
-    ["Project", project.name || "e5cr7"],
-    ["Stage", project.stage || "Active"],
-    ["Dataset records", overview.project.dataset_records],
-    ["Known relevant", overview.project.known_relevant],
-    ["Estimated prevalence", fmtPct(overview.project.estimated_prevalence)],
-    ["Preferred strategy", overview.project.preferred_strategy],
-  ]);
-
-  document.getElementById("e5cr7-model").innerHTML = kvHtml([
-    ["Best model", overview.model_snapshot.best_model],
-    ["Average precision", fmtNum(overview.model_snapshot.average_precision, 3)],
-    ["ROC AUC", fmtNum(overview.model_snapshot.roc_auc, 3)],
-    ["Recall@20", fmtNum(overview.model_snapshot.recall_at_20, 3)],
-    ["Recall@50", fmtNum(overview.model_snapshot.recall_at_50, 3)],
-  ]);
-
-  const rec = overview.recommendation;
-  document.getElementById("e5cr7-recommendation").innerHTML = `
-    <p><strong>Immediate target:</strong> screen +${rec.immediate_additional_docs} additional records.</p>
-    <p><strong>Contingent target:</strong> extend to +${rec.contingent_additional_docs} if stricter residual-risk tolerance is required.</p>
-    <p>Projected false negatives after immediate stage: <strong>${fmtNum(rec.expected_fn_after_immediate, 2)}</strong>.
-    FN reduction versus baseline: <strong>${fmtNum(rec.expected_fn_reduction_after_immediate, 2)}</strong>.</p>
-  `;
-}
-
-async function renderLabShared() {
-  const catalog = await loadJson("./data/compendium_catalog.json");
-
-  document.getElementById("shared-lab-gateway").innerHTML = `
-    <p><strong>${catalog.shared_lab.display_name}</strong></p>
-    <p class="muted">${catalog.shared_lab.entrypoint_note}</p>
-    <div class="cta-row">
-      ${buttonLink(catalog.shared_lab.entrypoint_url, "Open Shared LAB URL", { primary: true })}
-      ${buttonLink("./projects-e5cr7.html", "Back to e5cr7 Deep Dive", { newTab: false })}
-    </div>
-  `;
-
-  const list = document.getElementById("lab-project-list");
-  list.innerHTML = "";
-
-  (catalog.projects || [])
-    .filter((p) => p.slug && p.slug !== "next-slot")
-    .forEach((p) => {
-      const item = document.createElement("article");
-      item.className = "card";
-      item.innerHTML = `
-        <h3>${p.name}</h3>
-        <p>${p.summary || ""}</p>
-        <div class="cta-row">
-          ${buttonLink(p.lab_path || "./lab.html", "Project LAB landing", { newTab: false, primary: true })}
-          ${buttonLink(p.legacy_lab_url || catalog.shared_lab.entrypoint_url, "Legacy/current URL")}
-        </div>
-      `;
-      list.appendChild(item);
-    });
-}
-
-async function renderLabE5cr7() {
-  const catalog = await loadJson("./data/compendium_catalog.json");
-  const project = findProject(catalog, "e5cr7") || {};
-
-  document.getElementById("e5cr7-lab-links").innerHTML = `
-    <p>Preferred route: shared gateway first, then project fallback if needed.</p>
-    <div class="cta-row">
-      ${buttonLink(catalog.shared_lab.entrypoint_url, "Open Shared Gateway", { primary: true })}
-      ${buttonLink(project.legacy_lab_url || catalog.shared_lab.entrypoint_url, "Open Current/Legacy e5cr7 URL")}
-      ${buttonLink("./lab.html", "All LAB Endpoints", { newTab: false })}
-    </div>
-  `;
-}
-
-async function renderExplainer() {
-  const overview = await loadJson("./data/artifacts/overview.json");
-
-  document.getElementById("dataset-snapshot").innerHTML = kvHtml([
-    ["Total records", overview.project.dataset_records],
-    ["Known relevant", overview.project.known_relevant],
-    ["Estimated prevalence", fmtPct(overview.project.estimated_prevalence)],
-    ["Preferred strategy", overview.project.preferred_strategy],
-  ]);
-
-  document.getElementById("model-snapshot").innerHTML = kvHtml([
-    ["Best model", overview.model_snapshot.best_model],
-    ["Average precision", fmtNum(overview.model_snapshot.average_precision, 3)],
-    ["ROC AUC", fmtNum(overview.model_snapshot.roc_auc, 3)],
-    ["Recall@20", fmtNum(overview.model_snapshot.recall_at_20, 3)],
-    ["Recall@50", fmtNum(overview.model_snapshot.recall_at_50, 3)],
-  ]);
-
-  document.getElementById("risk-baselines").innerHTML = tableHtml(
-    [
-      { key: "threshold_policy", label: "Policy", render: (v) => toTitle(v) },
-      { key: "target_recall", label: "Target Recall", render: (v) => fmtPct(v, 1) },
-      { key: "docs_screened_mean", label: "Docs Screened" },
-      { key: "work_saved_docs", label: "Work Saved" },
-      { key: "expected_fn", label: "Expected FN" },
-      { key: "expected_fp", label: "Expected FP" },
-      { key: "estimated_recall", label: "Estimated Recall", render: (v) => fmtPct(v, 1) },
-    ],
-    overview.risk_baselines
-  );
-
-  const rec = overview.recommendation;
-  document.getElementById("recommendation").innerHTML = `
-    <p><strong>Immediate target:</strong> screen +${rec.immediate_additional_docs} additional records.</p>
-    <p><strong>Contingent target:</strong> extend to +${rec.contingent_additional_docs} if residual risk tolerance is stricter.</p>
-    <p>Projected FN after immediate stage: <strong>${fmtNum(rec.expected_fn_after_immediate, 2)}</strong>
-       (reduction of <strong>${fmtNum(rec.expected_fn_reduction_after_immediate, 2)}</strong>).</p>
-  `;
-}
-
-async function renderMethodsResults() {
-  const data = await loadJson("./data/artifacts/methods_results.json");
-
-  document.getElementById("methods-list").innerHTML = data.methods
-    .map((m) => `<li>${m}</li>`)
-    .join("");
-
-  const leaderboardRows = data.model_leaderboard.map((r) => ({
-    model: r.model,
-    average_precision: fmtNum(r["average_precision"], 3),
-    wss95: fmtNum(r["wss@95"], 3),
-    recall20: fmtNum(r["recall@20"], 3),
-    recall50: fmtNum(r["recall@50"], 3),
-    precision10: fmtNum(r["precision@10"], 3),
-  }));
-
-  document.getElementById("leaderboard-table").innerHTML = tableHtml(
-    [
-      { key: "model", label: "Model" },
-      { key: "average_precision", label: "Average Precision" },
-      { key: "wss95", label: "WSS@95" },
-      { key: "recall20", label: "Recall@20" },
-      { key: "recall50", label: "Recall@50" },
-      { key: "precision10", label: "Precision@10" },
-    ],
-    leaderboardRows
-  );
-
-  document.getElementById("comparison-table").innerHTML = tableHtml(
-    [
-      { key: "metric", label: "Metric" },
-      { key: "baseline", label: "Baseline", render: (v) => fmtNum(v, 4) },
-      { key: "improved_best", label: "Improved", render: (v) => fmtNum(v, 4) },
-      {
-        key: "delta",
-        label: "Delta",
-        render: (v) => {
-          const n = Number(v);
-          const cls = n >= 0 ? "good" : "warn";
-          return `<span class="badge ${cls}">${n >= 0 ? "+" : ""}${fmtNum(n, 4)}</span>`;
-        },
-      },
-    ],
-    data.baseline_vs_improved
-  );
-
-  const nestedRows = data.nested_cv_summary || [];
-  const nested = Object.fromEntries(nestedRows.map((r) => [r.metric, r]));
-  document.getElementById("nested-cv").innerHTML = kvHtml([
-    ["AP mean ± std", `${fmtNum(nested.ap?.mean, 3)} ± ${fmtNum(nested.ap?.std, 3)}`],
-    ["ROC AUC mean ± std", `${fmtNum(nested.roc_auc?.mean, 3)} ± ${fmtNum(nested.roc_auc?.std, 3)}`],
-    [
-      "Threshold@Recall 0.90 mean ± std",
-      `${fmtNum(nested["threshold_recall_0.90"]?.mean, 3)} ± ${fmtNum(nested["threshold_recall_0.90"]?.std, 3)}`,
-    ],
-    [
-      "Threshold@Recall 0.95 mean ± std",
-      `${fmtNum(nested["threshold_recall_0.95"]?.mean, 3)} ± ${fmtNum(nested["threshold_recall_0.95"]?.std, 3)}`,
-    ],
-  ]);
-}
-
-async function renderWhyMoreReview() {
-  const data = await loadJson("./data/artifacts/fn_fp_risk.json");
-  const framing = data.framing || {};
-  const story = data.story || {};
-
-  document.getElementById("why-list").innerHTML = (framing.why_more_review || [])
-    .map((x) => `<li>${x}</li>`)
-    .join("");
-  document.getElementById("risk-source-note").textContent = framing.source_note || "";
-
-  const container = document.getElementById("fnfp-policies");
+function renderPolicyCards(policies, targetElId) {
+  const container = document.getElementById(targetElId);
   container.innerHTML = "";
 
-  (story.policies || []).forEach((policy) => {
+  (policies || []).forEach((policy) => {
     const block = document.createElement("article");
     block.className = "card";
 
     const heading = document.createElement("h3");
     heading.textContent = `${toTitle(policy.threshold_policy)} (target ${fmtPct(policy.target_recall)})`;
 
+    const intro = document.createElement("p");
+    intro.className = "muted";
+    intro.textContent = "Baseline row is +0 additional documents under this stopping policy.";
+
     const table = tableHtml(
       [
-        { key: "additional_docs_requested", label: "Additional" },
-        { key: "screened_docs_total", label: "Total Screened" },
+        { key: "additional_docs_requested", label: "Additional docs" },
+        { key: "screened_docs_total", label: "Total screened" },
         { key: "fn", label: "Expected FN", render: (v) => fmtNum(v, 2) },
         { key: "fp", label: "Expected FP", render: (v) => fmtNum(v, 2) },
         { key: "recall", label: "Recall", render: (v) => fmtPct(v, 1) },
         { key: "precision", label: "Precision", render: (v) => fmtPct(v, 1) },
-        { key: "work_saved_fraction", label: "Work Saved", render: (v) => fmtPct(v, 1) },
+        { key: "work_saved_fraction", label: "Work saved", render: (v) => fmtPct(v, 1) },
       ],
       policy.rows || [],
       {
@@ -358,6 +174,7 @@ async function renderWhyMoreReview() {
     );
 
     block.appendChild(heading);
+    block.appendChild(intro);
     block.innerHTML += table;
     container.appendChild(block);
   });
@@ -397,8 +214,7 @@ function renderPlannerResult(row) {
   return `<article class="card">${left}</article><article class="card">${right}</article>`;
 }
 
-async function renderHowManyMore() {
-  const planner = await loadJson("./data/artifacts/simulation_planner.json");
+function renderPlanner(planner) {
   const rows = planner.rows || [];
 
   const policyEl = document.getElementById("planner-policy");
@@ -433,13 +249,16 @@ async function renderHowManyMore() {
       [
         { key: "additional_docs_requested", label: "Additional" },
         { key: "additional_docs_effective", label: "Effective" },
-        { key: "fn", label: "FN", render: (v) => fmtNum(v, 2) },
-        { key: "fp", label: "FP", render: (v) => fmtNum(v, 2) },
+        { key: "fn", label: "Expected FN", render: (v) => fmtNum(v, 2) },
+        { key: "fp", label: "Expected FP", render: (v) => fmtNum(v, 2) },
         { key: "recall", label: "Recall", render: (v) => fmtPct(v, 1) },
         { key: "precision", label: "Precision", render: (v) => fmtPct(v, 1) },
-        { key: "work_saved_fraction", label: "Work Saved", render: (v) => fmtPct(v, 1) },
+        { key: "work_saved_fraction", label: "Work saved", render: (v) => fmtPct(v, 1) },
       ],
-      filtered
+      filtered,
+      {
+        rowClassFn: (r) => (Number(r.additional_docs_requested) === 0 ? "baseline" : ""),
+      }
     );
   }
 
@@ -449,12 +268,162 @@ async function renderHowManyMore() {
 
   const rec = planner.recommended_targets || {};
   document.getElementById("planner-recommendation").innerHTML = `
+    <h3>Recommended staged targets</h3>
     <p><strong>Immediate stage:</strong> +${rec.immediate_additional_docs || 50} records.</p>
     <p><strong>If stricter assurance is required:</strong> continue to +${rec.contingent_additional_docs || 100}.</p>
-    <p class="muted">These are planning estimates from current simulation outputs; rerun after new labels are synced.</p>
+    <p class="muted">Planning note: scenario values are approximations from current active-learning traces and should be refreshed after new labels are synced.</p>
   `;
 
   rerender();
+}
+
+async function renderProjectE5cr7() {
+  const [catalog, overview, methodsResults, fnFpRisk, planner] = await Promise.all([
+    loadJson("./data/compendium_catalog.json"),
+    loadJson("./data/artifacts/overview.json"),
+    loadJson("./data/artifacts/methods_results.json"),
+    loadJson("./data/artifacts/fn_fp_risk.json"),
+    loadJson("./data/artifacts/simulation_planner.json"),
+  ]);
+
+  const project = findProject(catalog, "e5cr7") || {};
+
+  document.getElementById("e5cr7-cta-row").innerHTML = [
+    buttonLink(catalog.shared_lab.entrypoint_url, "Open shared LAB URL", { primary: true }),
+    buttonLink("./lab.html", "Open LAB landing page", { newTab: false }),
+  ].join("");
+
+  document.getElementById("e5cr7-dataset").innerHTML = kvHtml([
+    ["Project", project.name || "e5cr7"],
+    ["Stage", project.stage || "Active"],
+    ["Dataset records", overview.project.dataset_records],
+    ["Known relevant", overview.project.known_relevant],
+    ["Estimated prevalence", fmtPct(overview.project.estimated_prevalence)],
+    ["Preferred strategy", overview.project.preferred_strategy],
+  ]);
+
+  document.getElementById("e5cr7-model").innerHTML = kvHtml([
+    ["Best model", overview.model_snapshot.best_model],
+    ["Average precision", fmtNum(overview.model_snapshot.average_precision, 3)],
+    ["ROC AUC", fmtNum(overview.model_snapshot.roc_auc, 3)],
+    ["Recall@20", fmtNum(overview.model_snapshot.recall_at_20, 3)],
+    ["Recall@50", fmtNum(overview.model_snapshot.recall_at_50, 3)],
+  ]);
+
+  const rec = overview.recommendation;
+  document.getElementById("e5cr7-recommendation").innerHTML = `
+    <p><strong>Current recommendation:</strong> screen <strong>+${rec.immediate_additional_docs}</strong> records now, then reassess.</p>
+    <p><strong>If stricter residual-risk tolerance is required:</strong> continue to <strong>+${rec.contingent_additional_docs}</strong>.</p>
+    <p>After the immediate stage, projected false negatives are <strong>${fmtNum(rec.expected_fn_after_immediate, 2)}</strong>
+    (reduction of <strong>${fmtNum(rec.expected_fn_reduction_after_immediate, 2)}</strong> vs current baseline stopping point).</p>
+  `;
+
+  document.getElementById("e5cr7-methods-list").innerHTML = (methodsResults.methods || [])
+    .map((m) => `<li>${m}</li>`)
+    .join("");
+
+  const leaderboardRows = (methodsResults.model_leaderboard || []).map((r) => ({
+    model: r.model,
+    average_precision: fmtNum(r["average_precision"], 3),
+    wss95: fmtNum(r["wss@95"], 3),
+    recall20: fmtNum(r["recall@20"], 3),
+    recall50: fmtNum(r["recall@50"], 3),
+    precision10: fmtNum(r["precision@10"], 3),
+  }));
+
+  document.getElementById("e5cr7-leaderboard-table").innerHTML = tableHtml(
+    [
+      { key: "model", label: "Model" },
+      { key: "average_precision", label: "Average precision" },
+      { key: "wss95", label: "WSS@95" },
+      { key: "recall20", label: "Recall@20" },
+      { key: "recall50", label: "Recall@50" },
+      { key: "precision10", label: "Precision@10" },
+    ],
+    leaderboardRows
+  );
+
+  document.getElementById("e5cr7-baseline-definition").innerHTML =
+    "<strong>Baseline definition:</strong> in this table, <em>Baseline</em> is the pre-improvement reference run (reproduced from the baseline pipeline), and <em>Improved</em> is the best current model configuration (<code>calibrated_svm_word_char</code>).";
+
+  document.getElementById("e5cr7-comparison-table").innerHTML = tableHtml(
+    [
+      { key: "metric", label: "Metric" },
+      { key: "baseline", label: "Baseline", render: (v) => fmtNum(v, 4) },
+      { key: "improved_best", label: "Improved", render: (v) => fmtNum(v, 4) },
+      {
+        key: "delta",
+        label: "Delta (improved - baseline)",
+        render: (v) => {
+          const n = Number(v);
+          const cls = n >= 0 ? "good" : "warn";
+          return `<span class="badge ${cls}">${n >= 0 ? "+" : ""}${fmtNum(n, 4)}</span>`;
+        },
+      },
+    ],
+    methodsResults.baseline_vs_improved || []
+  );
+
+  const nestedRows = methodsResults.nested_cv_summary || [];
+  const nested = Object.fromEntries(nestedRows.map((r) => [r.metric, r]));
+  document.getElementById("e5cr7-nested-cv").innerHTML = kvHtml([
+    ["AP mean ± std", `${fmtNum(nested.ap?.mean, 3)} ± ${fmtNum(nested.ap?.std, 3)}`],
+    ["ROC AUC mean ± std", `${fmtNum(nested.roc_auc?.mean, 3)} ± ${fmtNum(nested.roc_auc?.std, 3)}`],
+    [
+      "Threshold@Recall 0.90 mean ± std",
+      `${fmtNum(nested["threshold_recall_0.90"]?.mean, 3)} ± ${fmtNum(nested["threshold_recall_0.90"]?.std, 3)}`,
+    ],
+    [
+      "Threshold@Recall 0.95 mean ± std",
+      `${fmtNum(nested["threshold_recall_0.95"]?.mean, 3)} ± ${fmtNum(nested["threshold_recall_0.95"]?.std, 3)}`,
+    ],
+  ]);
+
+  document.getElementById("e5cr7-why-list").innerHTML = (fnFpRisk.framing?.why_more_review || [])
+    .map((x) => `<li>${x}</li>`)
+    .join("");
+  document.getElementById("e5cr7-risk-source-note").textContent = fnFpRisk.framing?.source_note || "";
+
+  renderPolicyCards(fnFpRisk.story?.policies || [], "e5cr7-fnfp-policies");
+  renderPlanner(planner);
+
+  document.getElementById("e5cr7-lab-links").innerHTML = `
+    <div class="cta-row">
+      ${buttonLink(catalog.shared_lab.entrypoint_url, "Open shared gateway", { primary: true })}
+      ${buttonLink("./lab.html", "All LAB endpoints", { newTab: false })}
+      ${buttonLink(project.legacy_lab_url || catalog.shared_lab.entrypoint_url, "Current/legacy URL")}
+    </div>
+  `;
+}
+
+async function renderLabShared() {
+  const catalog = await loadJson("./data/compendium_catalog.json");
+
+  document.getElementById("shared-lab-gateway").innerHTML = `
+    <p><strong>${catalog.shared_lab.display_name}</strong></p>
+    <p class="muted">${catalog.shared_lab.entrypoint_note}</p>
+    <div class="cta-row">
+      ${buttonLink(catalog.shared_lab.entrypoint_url, "Open shared LAB URL", { primary: true })}
+      ${buttonLink("./index.html#projects", "Back to projects", { newTab: false })}
+    </div>
+  `;
+
+  const list = document.getElementById("lab-project-list");
+  list.innerHTML = "";
+
+  (catalog.projects || []).forEach((p) => {
+    const item = document.createElement("article");
+    item.className = "card";
+    item.innerHTML = `
+      <h3>${p.name}</h3>
+      <p>${p.summary || ""}</p>
+      <div class="cta-row">
+        ${buttonLink(p.deep_dive_path || "./index.html", "Project deep dive", { newTab: false, primary: true })}
+        ${buttonLink(p.legacy_lab_url || catalog.shared_lab.entrypoint_url, "Current/legacy URL")}
+      </div>
+    `;
+    list.appendChild(item);
+  });
 }
 
 async function main() {
@@ -467,16 +436,6 @@ async function main() {
     await renderProjectE5cr7();
   } else if (page === "lab-shared") {
     await renderLabShared();
-  } else if (page === "lab-e5cr7") {
-    await renderLabE5cr7();
-  } else if (page === "asreview-explainer") {
-    await renderExplainer();
-  } else if (page === "methods-results") {
-    await renderMethodsResults();
-  } else if (page === "why-more-review") {
-    await renderWhyMoreReview();
-  } else if (page === "how-many-more") {
-    await renderHowManyMore();
   }
 }
 

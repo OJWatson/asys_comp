@@ -4,13 +4,15 @@ Static reviewer-facing app backed by generated JSON artifacts in `app/data/artif
 
 ## Pages
 - `index.html` (compendium home)
-- `projects-e5cr7.html` (deep dive)
+- `projects-e5cr7.html` (consolidated deep dive: overview + methods + risk + planner + glossary)
+- `lab.html` (shared LAB landing)
+
+### Compatibility stubs (legacy URLs)
 - `asreview-explainer.html`
 - `methods-results.html`
 - `why-more-review.html`
 - `how-many-more.html`
-- `lab.html` (shared LAB landing)
-- `lab-e5cr7.html` (project LAB landing)
+- `lab-e5cr7.html`
 
 ## Local preview server
 

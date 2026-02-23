@@ -81,12 +81,17 @@ def main() -> None:
         checks = {
             "/": "ASYS Compendium",
             "/projects/e5cr7": "Project Deep Dive · e5cr7",
-            "/asreview-explainer": "ASReview Reviewer Portal · e5cr7",
-            "/methods-results": "Methods & Results Summary · e5cr7",
-            "/why-more-review": "Why More Review Is Needed · e5cr7",
-            "/how-many-more": "Simulation-Informed Screening Planner · e5cr7",
+            "/asreview-explainer": "Project Deep Dive · e5cr7",
+            "/methods-results": "Project Deep Dive · e5cr7",
+            "/why-more-review": "Project Deep Dive · e5cr7",
+            "/how-many-more": "Project Deep Dive · e5cr7",
             "/lab": "Shared ASReview LAB Access",
-            "/lab/e5cr7": "LAB Endpoint · e5cr7",
+            "/lab/e5cr7": "Project Deep Dive · e5cr7",
+            "/asreview-explainer.html": "ASReview Reviewer Portal · e5cr7 (Moved)",
+            "/methods-results.html": "Methods & Results · e5cr7 (Moved)",
+            "/why-more-review.html": "Why More Review Is Needed · e5cr7 (Moved)",
+            "/how-many-more.html": "How Many More To Screen · e5cr7 (Moved)",
+            "/lab-e5cr7.html": "LAB Endpoint · e5cr7 (Moved)",
         }
         for path, marker in checks.items():
             content = fetch_text(f"http://127.0.0.1:{args.port}{path}")
@@ -112,7 +117,7 @@ def main() -> None:
         except subprocess.TimeoutExpired:
             proc.kill()
 
-    print("Smoke test passed: compendium routes, legacy routes, and data endpoints are reachable.")
+    print("Smoke test passed: compendium routes, legacy redirects/stubs, and data endpoints are reachable.")
 
 
 if __name__ == "__main__":

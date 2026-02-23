@@ -23,7 +23,7 @@ This repository packages analysis outputs, reviewer-facing narrative, and operat
 
 | Path | What it serves | Location | Runtime |
 |---|---|---|---|
-| Compendium static site | Home + project deep-dives + explainer/method pages | `app/` → built to `site/` | GitHub Actions + Pages / Netlify |
+| Compendium static site | Home + project deep-dives (consolidated per-project docs) | `app/` → built to `site/` | GitHub Actions + Pages / Netlify |
 | ASReview LAB (live) | Reviewer labeling runtime | `infra/asreview-lab/` | Docker Compose / Render / live server |
 | Integration bridge | Queue export, label sync, reconciliation | `integration/asreview_lab_hooks.py` | Local/server Python |
 
@@ -101,8 +101,8 @@ Live server hardening + cutover:
 ## Status and roadmap
 
 ### Current status
-- ✅ Compendium home and e5cr7 deep-dive structure implemented.
-- ✅ Legacy explainer pages retained for backward compatibility.
+- ✅ Compendium home and e5cr7 deep-dive structure implemented with novice-friendly orientation copy.
+- ✅ Legacy explainer routes retained via redirects/stub pages for backward compatibility.
 - ✅ Static Pages/Netlify build + smoke checks in place.
 - ✅ LAB integration hooks support export/sync/reconcile loop.
 - ⚠️ Production domain and LAB endpoint ownership still requires environment-specific manual setup.

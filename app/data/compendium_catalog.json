@@ -10,12 +10,12 @@
       "slug": "e5cr7",
       "name": "e5cr7",
       "status": "active",
-      "summary": "ASReview-assisted screening workflow with full explainer, methods, risk framing, and simulation planner pages.",
-      "focus": "High-recall prioritization with staged residual-risk reduction.",
+      "summary": "Consolidated one-page deep dive with overview, methods, risk framing, planner outputs, and glossary.",
+      "focus": "High-recall prioritisation with staged residual-risk reduction.",
       "stage": "Active",
       "deep_dive_path": "./projects-e5cr7.html",
-      "legacy_explainer_path": "./asreview-explainer.html",
-      "lab_path": "./lab-e5cr7.html",
+      "legacy_explainer_path": "./projects-e5cr7.html#overview",
+      "lab_path": "./projects-e5cr7.html#lab-access",
       "legacy_lab_url": "https://asys-lab.ojwatson.co.uk/projects"
     },
     {

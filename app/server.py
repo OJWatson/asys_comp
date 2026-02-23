@@ -10,17 +10,20 @@ from urllib.parse import urlparse
 
 APP_DIR = Path(__file__).resolve().parent
 
-ROUTES = {
+REWRITES = {
     "/": "/index.html",
     "/index": "/index.html",
     "/projects": "/index.html",
     "/projects/e5cr7": "/projects-e5cr7.html",
-    "/asreview-explainer": "/asreview-explainer.html",
-    "/methods-results": "/methods-results.html",
-    "/why-more-review": "/why-more-review.html",
-    "/how-many-more": "/how-many-more.html",
     "/lab": "/lab.html",
-    "/lab/e5cr7": "/lab-e5cr7.html",
+}
+
+REDIRECTS = {
+    "/asreview-explainer": "/projects/e5cr7#overview",
+    "/methods-results": "/projects/e5cr7#methods-results",
+    "/why-more-review": "/projects/e5cr7#why-more-review",
+    "/how-many-more": "/projects/e5cr7#how-many-more",
+    "/lab/e5cr7": "/projects/e5cr7#lab-access",
 }
 
 
@@ -32,14 +35,14 @@ class AppHandler(SimpleHTTPRequestHandler):
         parsed = urlparse(self.path)
         path = parsed.path
 
-        if path in ROUTES:
-            target = ROUTES[path]
-            if target in ROUTES:
-                self.send_response(302)
-                self.send_header("Location", ROUTES[target])
-                self.end_headers()
-                return
-            self.path = target
+        if path in REDIRECTS:
+            self.send_response(302)
+            self.send_header("Location", REDIRECTS[path])
+            self.end_headers()
+            return
+
+        if path in REWRITES:
+            self.path = REWRITES[path]
 
         return super().do_GET()
 

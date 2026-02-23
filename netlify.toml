@@ -12,7 +12,7 @@
 
 [[redirects]]
   from = "/projects"
-  to = "/"
+  to = "/index.html#projects"
   status = 301
 
 [[redirects]]
@@ -27,22 +27,22 @@
 
 [[redirects]]
   from = "/asreview-explainer"
-  to = "/asreview-explainer.html"
+  to = "/projects/e5cr7#overview"
   status = 301
 
 [[redirects]]
   from = "/methods-results"
-  to = "/methods-results.html"
+  to = "/projects/e5cr7#methods-results"
   status = 301
 
 [[redirects]]
   from = "/why-more-review"
-  to = "/why-more-review.html"
+  to = "/projects/e5cr7#why-more-review"
   status = 301
 
 [[redirects]]
   from = "/how-many-more"
-  to = "/how-many-more.html"
+  to = "/projects/e5cr7#how-many-more"
   status = 301
 
 [[redirects]]
@@ -52,5 +52,5 @@
 
 [[redirects]]
   from = "/lab/e5cr7"
-  to = "/lab-e5cr7.html"
+  to = "/projects/e5cr7#lab-access"
   status = 301

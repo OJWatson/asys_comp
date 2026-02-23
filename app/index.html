@@ -4,37 +4,46 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>ASYS Compendium</title>
-  <meta name="description" content="Front-facing ASYS compendium with project deep-dives and ASReview LAB entry points." />
+  <meta name="description" content="ASYS Compendium: a portfolio and control plane for multiple ASReview screening projects." />
   <link rel="stylesheet" href="./static/styles.css" />
 </head>
 <body data-page="compendium-home">
   <header class="site-header">
     <h1>ASYS Compendium</h1>
-    <p>Multi-project screening portfolio with transparent methods, risk framing, and operational LAB links.</p>
-    <nav>
-      <a href="./index.html">Compendium Home</a>
-      <a href="./projects-e5cr7.html">e5cr7 Deep Dive</a>
-      <a href="./asreview-explainer.html">e5cr7 Explainer</a>
-      <a href="./methods-results.html">Methods & Results</a>
-      <a href="./why-more-review.html">Why More Review</a>
-      <a href="./how-many-more.html">How Many More</a>
+    <p>A portfolio + control plane for ASReview projects: understand each project, compare status, and launch the shared LAB workflow.</p>
+    <nav class="global-nav" aria-label="Global navigation">
+      <a href="./index.html">Home</a>
+      <a href="#projects">Projects</a>
       <a href="./lab.html">Shared LAB</a>
+      <a href="#about">About this site</a>
     </nav>
   </header>
 
   <main>
-    <section class="panel accent">
-      <h2>Portfolio Overview</h2>
-      <p>This site now acts as a compendium shell: one landing page for all projects, and deep-dive pages per project.</p>
+    <section class="panel accent" id="about">
+      <h2>What this site is for</h2>
+      <p>
+        If you are new to this work: this is the front door for the ASYS screening programme.
+        Each project gets one deep-dive page with plain-language context, methods, and decision support.
+        Use this home page to choose a project; use project pages to understand screening choices; use Shared LAB to run day-to-day review.
+      </p>
+      <div class="callout">
+        <h3>How to read this site</h3>
+        <ol>
+          <li>Start with <strong>Projects</strong> below and open the project you need.</li>
+          <li>Read the project’s <strong>Overview</strong> and <strong>Recommendation</strong> first.</li>
+          <li>Use the project’s <strong>Methods, Risk, and Planner</strong> sections only when you need detail.</li>
+        </ol>
+      </div>
       <div class="cta-row">
         <a class="button-link primary" href="./projects-e5cr7.html">Open e5cr7 Deep Dive</a>
-        <a class="button-link" href="./lab.html">Open Shared LAB Access</a>
+        <a class="button-link" href="./lab.html">Open Shared LAB</a>
       </div>
     </section>
 
     <section class="grid two">
       <article class="card">
-        <h3>Shared LAB Strategy</h3>
+        <h3>Shared LAB Gateway</h3>
         <div id="shared-lab-summary"></div>
       </article>
       <article class="card">
@@ -43,8 +52,9 @@
       </article>
     </section>
 
-    <section class="panel">
+    <section class="panel" id="projects">
       <h2>Projects</h2>
+      <p class="muted">Project-specific explainers, methods, and planning content live inside each project page (not in global navigation).</p>
       <div id="project-grid" class="project-grid"></div>
     </section>
   </main>
