@@ -8,7 +8,7 @@
 
 ## Outputs
 - `outputs/improved/` model comparison and selected model artifacts
-- `outputs/benchmarks/` repeated-CV NLP benchmark outputs (baseline vs improved vs candidate models)
+- `outputs/benchmarks/` repeated-CV NLP benchmark outputs (baseline vs improved vs expanded candidate set, with blocked optional/heavy model diagnostics)
 - `outputs/next_steps/` active-learning and leakage-safe ranking outputs
 - `outputs/planning_simulations/` staged screening simulation outputs
 

@@ -31,6 +31,7 @@ def main() -> None:
     fold_df = pd.read_csv(bench_dir / "model_benchmark_fold_metrics.csv")
     summary_df = pd.read_csv(bench_dir / "model_benchmark_summary.csv")
     summary_json = json.loads((bench_dir / "model_benchmark_summary.json").read_text(encoding="utf-8"))
+    env_json = json.loads((bench_dir / "environment_model_availability.json").read_text(encoding="utf-8"))
 
     if fold_df.empty or summary_df.empty:
         raise AssertionError("Benchmark CSV outputs should not be empty")
@@ -44,6 +45,18 @@ def main() -> None:
 
     if not any(summary_df["cohort"] == "improved"):
         raise AssertionError("Benchmark summary missing improved cohort")
+
+    expected_lightweight_models = {
+        "candidate_calibrated_sgd_word_char",
+        "candidate_lr_elasticnet_word_char",
+        "candidate_linear_svc_isotonic_word_char",
+    }
+    missing_expected = sorted(expected_lightweight_models - set(summary_df["model_id"].astype(str)))
+    if missing_expected:
+        raise AssertionError(f"Benchmark summary missing expected advanced models: {missing_expected}")
+
+    if "nemo" not in (env_json.get("environment") or {}):
+        raise AssertionError("Environment availability JSON missing nemo diagnostics")
 
     winner = summary_json.get("summary_rows", [{}])[0]
     if "model_id" not in winner:

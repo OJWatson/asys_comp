@@ -1,0 +1,13 @@
+# Optional heavy NLP stack for advanced benchmark slots.
+# Install only when you need embedding-based models and have sufficient disk/CPU budget.
+#
+# Usage:
+#   source .venv/bin/activate
+#   pip install -r requirements-optional-heavy-nlp.lock.txt
+#
+# Notes:
+# - asreview-dory enables ASReview heavy/lang model extensions (elas_l2 / elas_h3).
+# - sentence-transformers enables candidate_st_minilm_lr in benchmark_nlp_models.py.
+# - This pulls torch/transformers dependencies and is intentionally separate from lightweight defaults.
+asreview-dory==1.2.2
+sentence-transformers==5.2.3

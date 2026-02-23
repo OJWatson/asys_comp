@@ -18,11 +18,13 @@ import sys
 import time
 from dataclasses import dataclass
 from importlib import metadata
+from importlib.util import find_spec
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Sequence, Tuple
 
 import numpy as np
 import pandas as pd
+from sklearn.base import BaseEstimator, TransformerMixin
 from sklearn.calibration import CalibratedClassifierCV
 from sklearn.decomposition import TruncatedSVD
 from sklearn.exceptions import NotFittedError
@@ -47,6 +49,71 @@ class ModelSpec:
     lightweight: bool
     builder_key: str
     notes: str
+    required_modules: Tuple[str, ...] = ()
+
+
+class SentenceTransformerEncoder(BaseEstimator, TransformerMixin):
+    """Light wrapper for sentence-transformers embeddings with process-local cache."""
+
+    _MODEL_CACHE: Dict[str, Any] = {}
+    _EMBED_CACHE: Dict[Tuple[str, str], np.ndarray] = {}
+
+    def __init__(
+        self,
+        model_name: str = "sentence-transformers/all-MiniLM-L6-v2",
+        batch_size: int = 32,
+        normalize_embeddings: bool = True,
+    ) -> None:
+        self.model_name = model_name
+        self.batch_size = int(batch_size)
+        self.normalize_embeddings = bool(normalize_embeddings)
+        self.n_features_out_: Optional[int] = None
+
+    def fit(self, X: Sequence[str], y: Optional[np.ndarray] = None) -> "SentenceTransformerEncoder":
+        return self
+
+    def _get_model(self) -> Any:
+        model = self._MODEL_CACHE.get(self.model_name)
+        if model is None:
+            from sentence_transformers import SentenceTransformer
+
+            model = SentenceTransformer(self.model_name)
+            self._MODEL_CACHE[self.model_name] = model
+        return model
+
+    def transform(self, X: Sequence[str]) -> np.ndarray:
+        texts = [str(x) for x in X]
+        if not texts:
+            return np.zeros((0, self.n_features_out_ or 0), dtype=np.float32)
+
+        model = self._get_model()
+
+        cache_keys = [(self.model_name, txt) for txt in texts]
+        missing_texts = [txt for key, txt in zip(cache_keys, texts) if key not in self._EMBED_CACHE]
+
+        if missing_texts:
+            try:
+                missing_emb = model.encode(
+                    missing_texts,
+                    batch_size=self.batch_size,
+                    show_progress_bar=False,
+                    normalize_embeddings=self.normalize_embeddings,
+                    convert_to_numpy=True,
+                )
+            except TypeError:
+                missing_emb = model.encode(
+                    missing_texts,
+                    batch_size=self.batch_size,
+                    show_progress_bar=False,
+                    convert_to_numpy=True,
+                )
+
+            for txt, vec in zip(missing_texts, missing_emb):
+                self._EMBED_CACHE[(self.model_name, txt)] = np.asarray(vec, dtype=np.float32)
+
+        arr = np.vstack([self._EMBED_CACHE[key] for key in cache_keys]).astype(np.float32)
+        self.n_features_out_ = int(arr.shape[1]) if arr.ndim == 2 else None
+        return arr
 
 
 def normalize_col_name(name: object) -> str:
@@ -184,6 +251,13 @@ def _word_char_features() -> FeatureUnion:
     )
 
 
+def is_module_available(module_name: str) -> bool:
+    try:
+        return find_spec(module_name) is not None
+    except Exception:
+        return False
+
+
 def build_model(spec: ModelSpec, random_state: int, y_train: np.ndarray) -> Pipeline:
     min_class = int(np.min(np.bincount(y_train, minlength=2)))
     calibration_cv = max(2, min(3, min_class))
@@ -281,6 +355,85 @@ def build_model(spec: ModelSpec, random_state: int, y_train: np.ndarray) -> Pipe
             ]
         )
 
+    if spec.builder_key == "candidate_calibrated_sgd_word_char":
+        return Pipeline(
+            steps=[
+                ("features", _word_char_features()),
+                (
+                    "clf",
+                    CalibratedClassifierCV(
+                        estimator=SGDClassifier(
+                            loss="modified_huber",
+                            alpha=5e-6,
+                            penalty="l2",
+                            max_iter=3000,
+                            class_weight="balanced",
+                            random_state=random_state,
+                        ),
+                        method="sigmoid",
+                        cv=calibration_cv,
+                    ),
+                ),
+            ]
+        )
+
+    if spec.builder_key == "candidate_lr_elasticnet_word_char":
+        return Pipeline(
+            steps=[
+                ("features", _word_char_features()),
+                (
+                    "clf",
+                    LogisticRegression(
+                        max_iter=5000,
+                        class_weight="balanced",
+                        solver="saga",
+                        penalty="elasticnet",
+                        l1_ratio=0.15,
+                        C=3.0,
+                        random_state=random_state,
+                    ),
+                ),
+            ]
+        )
+
+    if spec.builder_key == "candidate_linear_svc_isotonic_word_char":
+        return Pipeline(
+            steps=[
+                ("features", _word_char_features()),
+                (
+                    "clf",
+                    CalibratedClassifierCV(
+                        estimator=LinearSVC(C=0.75, class_weight="balanced", random_state=random_state),
+                        method="isotonic",
+                        cv=calibration_cv,
+                    ),
+                ),
+            ]
+        )
+
+    if spec.builder_key == "candidate_st_minilm_lr":
+        return Pipeline(
+            steps=[
+                (
+                    "embeddings",
+                    SentenceTransformerEncoder(
+                        model_name="sentence-transformers/all-MiniLM-L6-v2",
+                        batch_size=32,
+                        normalize_embeddings=True,
+                    ),
+                ),
+                (
+                    "clf",
+                    LogisticRegression(
+                        max_iter=4000,
+                        class_weight="balanced",
+                        solver="lbfgs",
+                        random_state=random_state,
+                    ),
+                ),
+            ]
+        )
+
     if spec.builder_key == "candidate_cnb_word_tfidf":
         return Pipeline(
             steps=[
@@ -324,6 +477,12 @@ def estimate_feature_count(model: Pipeline) -> Optional[int]:
                         found_any = True
                 if found_any:
                     return int(total)
+
+        if "embeddings" in model.named_steps:
+            emb = model.named_steps["embeddings"]
+            n_out = getattr(emb, "n_features_out_", None)
+            if n_out is not None:
+                return int(n_out)
     except NotFittedError:
         return None
     except Exception:
@@ -342,23 +501,46 @@ def detect_environment_model_options() -> Dict[str, Any]:
 
     asreview_dists = _has_dist("asreview")
 
-    entry_point_groups = {}
+    entry_point_groups: Dict[str, List[str]] = {}
+    entry_point_records: List[Dict[str, str]] = []
     try:
         eps = metadata.entry_points()
-        for group in [
+        groups = [
             "asreview.models",
-            "asreview.classifiers",
-            "asreview.feature_extractors",
-            "asreview.query_strategies",
-        ]:
+            "asreview.models.classifiers",
+            "asreview.models.feature_extractors",
+            "asreview.models.queriers",
+            "asreview.models.balancers",
+        ]
+        for group in groups:
             try:
                 selected = list(eps.select(group=group))
             except Exception:
                 selected = [ep for ep in eps if getattr(ep, "group", "") == group]
             if selected:
                 entry_point_groups[group] = sorted(ep.name for ep in selected)
+                for ep in selected:
+                    entry_point_records.append(
+                        {
+                            "group": group,
+                            "name": ep.name,
+                            "module": getattr(ep, "module", "") or "",
+                            "dist": getattr(getattr(ep, "dist", None), "name", "") or "",
+                        }
+                    )
     except Exception:
         entry_point_groups = {}
+        entry_point_records = []
+
+    asreview_metadata: Dict[str, Any] = {}
+    try:
+        meta = metadata.metadata("asreview")
+        asreview_metadata = {
+            "version": meta.get("Version"),
+            "provided_extras": sorted(meta.get_all("Provides-Extra") or []),
+        }
+    except Exception:
+        asreview_metadata = {}
 
     asreview_ai_model_configs: List[Dict[str, Any]] = []
     try:
@@ -385,11 +567,13 @@ def detect_environment_model_options() -> Dict[str, Any]:
     except Exception:
         asreview_ai_model_configs = []
 
-    possible_nemo_ep = []
-    for names in entry_point_groups.values():
-        for n in names:
-            if "nemo" in n.lower():
-                possible_nemo_ep.append(n)
+    possible_nemo_ep = sorted(
+        {
+            ep["name"]
+            for ep in entry_point_records
+            if "nemo" in ep["name"].lower() or "nemo" in ep["module"].lower()
+        }
+    )
 
     nemo_candidate_modules = [
         "asreview_nemo",
@@ -398,35 +582,42 @@ def detect_environment_model_options() -> Dict[str, Any]:
         "asreview_models.nemo",
         "nemo_toolkit",
     ]
+    available_modules = [m for m in nemo_candidate_modules if is_module_available(m)]
 
-    available_modules = []
-    for module_name in nemo_candidate_modules:
-        try:
-            __import__(module_name)
-            available_modules.append(module_name)
-        except Exception:
-            pass
+    available_classifiers = entry_point_groups.get("asreview.models.classifiers", [])
+    nemo_classifier_present = any(name.lower() == "nemo" for name in available_classifiers)
+    nemo_extra_declared = "nemo" in set(asreview_metadata.get("provided_extras", []))
 
     nemo_status: Dict[str, Any]
-    if possible_nemo_ep or available_modules:
+    if nemo_classifier_present or possible_nemo_ep or available_modules:
         nemo_status = {
             "status": "available",
-            "reason": "Detected Nemo-like extension/module in current environment.",
-            "entry_points": sorted(possible_nemo_ep),
+            "reason": "Detected Nemo-like classifier/module in current environment.",
+            "entry_points": possible_nemo_ep,
             "modules": sorted(available_modules),
+            "blocker_type": None,
         }
     else:
         nemo_status = {
             "status": "blocked",
             "reason": (
-                "No ASReview Nemo extension detected. ASReview core classifiers available are typically "
-                "logistic/nb/rf/svm unless extra classifier plugins are installed."
+                "ASReview Nemo is unavailable: no `nemo` classifier entry point is registered, "
+                "ASReview 2.2 does not expose a `nemo` extra, and no Nemo extension module is importable."
             ),
             "entry_points": [],
             "modules_checked": nemo_candidate_modules,
             "modules_available": [],
-            "blocker_type": "missing_dependency",
+            "blocker_type": "missing_extension_distribution",
+            "diagnostics": {
+                "asreview_version": asreview_metadata.get("version"),
+                "asreview_provided_extras": asreview_metadata.get("provided_extras", []),
+                "nemo_extra_declared": nemo_extra_declared,
+                "available_classifiers": available_classifiers,
+            },
         }
+
+    sentence_transformers_available = is_module_available("sentence_transformers")
+    asreview_dory_installed = "asreview-dory" in installed_norm
 
     return {
         "python": {
@@ -435,22 +626,71 @@ def detect_environment_model_options() -> Dict[str, Any]:
             "platform": platform.platform(),
         },
         "installed_asreview_related_packages": asreview_dists,
+        "asreview_metadata": asreview_metadata,
         "entry_points": entry_point_groups,
         "asreview_ai_model_configs": asreview_ai_model_configs,
         "nemo": nemo_status,
         "stronger_heavy_model_candidates": [
             {
                 "name": "sentence-transformers/all-MiniLM-L6-v2 + linear classifier",
-                "status": "not_enabled",
-                "reason": "Not included in default benchmark to keep install/runtime lightweight and reproducible.",
+                "status": "available" if sentence_transformers_available else "blocked",
+                "reason": (
+                    "Dependency import check passed."
+                    if sentence_transformers_available
+                    else "Install optional heavy NLP deps to enable embedding-based benchmark path."
+                ),
+                "required_modules": ["sentence_transformers"],
+            },
+            {
+                "name": "ASReview Dory extension models (elas_l2 / elas_h3)",
+                "status": "available" if asreview_dory_installed else "blocked",
+                "reason": (
+                    "asreview-dory detected in environment."
+                    if asreview_dory_installed
+                    else "asreview-dory not installed; heavy transformer feature extractors unavailable."
+                ),
+                "required_packages": ["asreview-dory"],
             },
             {
                 "name": "transformer cross-encoder rerankers",
-                "status": "not_enabled",
+                "status": "blocked",
                 "reason": "GPU/large-model dependency footprint exceeds default repo constraints.",
             },
         ],
     }
+
+
+def build_executable_specs(specs: Sequence[ModelSpec]) -> Tuple[List[ModelSpec], List[Dict[str, Any]]]:
+    executable: List[ModelSpec] = []
+    blocked: List[Dict[str, Any]] = []
+
+    for spec in specs:
+        if not spec.required_modules:
+            executable.append(spec)
+            continue
+
+        missing = [m for m in spec.required_modules if not is_module_available(m)]
+        if not missing:
+            executable.append(spec)
+            continue
+
+        blocked.append(
+            {
+                "model_id": spec.model_id,
+                "display_name": spec.display_name,
+                "cohort": spec.cohort,
+                "status": "blocked",
+                "reason": (
+                    "Missing optional dependency module(s): "
+                    + ", ".join(missing)
+                    + ". Install optional heavy NLP dependencies to enable this model."
+                ),
+                "blocker_type": "missing_optional_dependency",
+                "missing_modules": missing,
+            }
+        )
+
+    return executable, blocked
 
 
 def evaluate_fold_metrics(y_true: np.ndarray, scores: np.ndarray) -> Dict[str, float]:
@@ -495,6 +735,30 @@ def build_specs() -> List[ModelSpec]:
             notes="Adds character n-grams to linear baseline while retaining calibration-friendly LR.",
         ),
         ModelSpec(
+            model_id="candidate_calibrated_sgd_word_char",
+            display_name="Candidate Calibrated SGD (word+char TF-IDF)",
+            cohort="candidate",
+            lightweight=True,
+            builder_key="candidate_calibrated_sgd_word_char",
+            notes="Calibrated margin-based linear model; good compromise between speed and rank quality.",
+        ),
+        ModelSpec(
+            model_id="candidate_lr_elasticnet_word_char",
+            display_name="Candidate ElasticNet LR (word+char TF-IDF)",
+            cohort="candidate",
+            lightweight=True,
+            builder_key="candidate_lr_elasticnet_word_char",
+            notes="Elastic-net regularization can improve robustness on sparse noisy terms.",
+        ),
+        ModelSpec(
+            model_id="candidate_linear_svc_isotonic_word_char",
+            display_name="Candidate Calibrated LinearSVC isotonic (word+char TF-IDF)",
+            cohort="candidate",
+            lightweight=True,
+            builder_key="candidate_linear_svc_isotonic_word_char",
+            notes="Alternative calibration strategy for high-recall ranking stability.",
+        ),
+        ModelSpec(
             model_id="candidate_lsa_lr",
             display_name="Candidate LSA+LR (SVD semantic projection)",
             cohort="candidate",
@@ -517,6 +781,15 @@ def build_specs() -> List[ModelSpec]:
             lightweight=True,
             builder_key="candidate_cnb_word_tfidf",
             notes="Strong sparse-text baseline for imbalance, included for comparison.",
+        ),
+        ModelSpec(
+            model_id="candidate_st_minilm_lr",
+            display_name="Candidate MiniLM embedding + LR (sentence-transformers)",
+            cohort="candidate",
+            lightweight=False,
+            builder_key="candidate_st_minilm_lr",
+            notes="Optional embedding path for stronger semantic matching when heavier dependencies are available.",
+            required_modules=("sentence_transformers",),
         ),
     ]
 
@@ -585,7 +858,12 @@ def run_benchmark(
     if len(class_counts) < 2:
         raise ValueError(f"Need both classes after mapping; got class_counts={class_counts}")
 
-    specs = build_specs()
+    all_specs = build_specs()
+    env_info = detect_environment_model_options()
+    specs, blocked_models = build_executable_specs(all_specs)
+
+    if not specs:
+        raise RuntimeError("No executable model specs found for benchmark run.")
 
     cv = RepeatedStratifiedKFold(
         n_splits=n_splits,
@@ -666,10 +944,7 @@ def run_benchmark(
     summary_path = output_dir / "model_benchmark_summary.csv"
     grouped.to_csv(summary_path, index=False)
 
-    env_info = detect_environment_model_options()
-
     nemo_status = env_info.get("nemo", {})
-    blocked_models: List[Dict[str, Any]] = []
     if nemo_status.get("status") != "available":
         blocked_models.append(
             {
@@ -692,8 +967,20 @@ def run_benchmark(
                 "cohort": s.cohort,
                 "lightweight": s.lightweight,
                 "notes": s.notes,
+                "required_modules": list(s.required_modules),
             }
             for s in specs
+        ],
+        "declared_models": [
+            {
+                "model_id": s.model_id,
+                "display_name": s.display_name,
+                "cohort": s.cohort,
+                "lightweight": s.lightweight,
+                "notes": s.notes,
+                "required_modules": list(s.required_modules),
+            }
+            for s in all_specs
         ],
         "blocked_models": blocked_models,
     }
@@ -726,6 +1013,11 @@ def run_benchmark(
             f"({fastest['fit_seconds_mean']:.3f}s mean fit time/fold)."
         )
     )
+
+    if blocked_models:
+        key_findings.append(
+            f"Blocked model slots recorded: {len(blocked_models)} (see environment_model_availability.json)."
+        )
 
     summary_json = {
         "generated_at": pd.Timestamp.utcnow().isoformat(),

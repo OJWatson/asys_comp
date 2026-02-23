@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-02-23T07:45:02.757842+00:00",
+  "generated_at": "2026-02-23T08:08:35.192182+00:00",
   "environment": {
     "python": {
       "version": "3.10.12 (main, Jan 26 2026, 14:55:28) [GCC 11.4.0]",
@@ -9,9 +9,39 @@
     "installed_asreview_related_packages": [
       "asreview"
     ],
+    "asreview_metadata": {
+      "version": "2.2",
+      "provided_extras": [
+        "dev",
+        "docs",
+        "lint",
+        "test"
+      ]
+    },
     "entry_points": {
       "asreview.models": [
         "_metadata"
+      ],
+      "asreview.models.classifiers": [
+        "logistic",
+        "nb",
+        "rf",
+        "svm"
+      ],
+      "asreview.models.feature_extractors": [
+        "onehot",
+        "tfidf"
+      ],
+      "asreview.models.queriers": [
+        "max",
+        "max_random",
+        "max_uncertainty",
+        "random",
+        "top_down",
+        "uncertainty"
+      ],
+      "asreview.models.balancers": [
+        "balanced"
       ]
     },
     "asreview_ai_model_configs": [
@@ -66,7 +96,7 @@
     ],
     "nemo": {
       "status": "blocked",
-      "reason": "No ASReview Nemo extension detected. ASReview core classifiers available are typically logistic/nb/rf/svm unless extra classifier plugins are installed.",
+      "reason": "ASReview Nemo is unavailable: no `nemo` classifier entry point is registered, ASReview 2.2 does not expose a `nemo` extra, and no Nemo extension module is importable.",
       "entry_points": [],
       "modules_checked": [
         "asreview_nemo",
@@ -76,17 +106,44 @@
         "nemo_toolkit"
       ],
       "modules_available": [],
-      "blocker_type": "missing_dependency"
+      "blocker_type": "missing_extension_distribution",
+      "diagnostics": {
+        "asreview_version": "2.2",
+        "asreview_provided_extras": [
+          "dev",
+          "docs",
+          "lint",
+          "test"
+        ],
+        "nemo_extra_declared": false,
+        "available_classifiers": [
+          "logistic",
+          "nb",
+          "rf",
+          "svm"
+        ]
+      }
     },
     "stronger_heavy_model_candidates": [
       {
         "name": "sentence-transformers/all-MiniLM-L6-v2 + linear classifier",
-        "status": "not_enabled",
-        "reason": "Not included in default benchmark to keep install/runtime lightweight and reproducible."
+        "status": "blocked",
+        "reason": "Install optional heavy NLP deps to enable embedding-based benchmark path.",
+        "required_modules": [
+          "sentence_transformers"
+        ]
+      },
+      {
+        "name": "ASReview Dory extension models (elas_l2 / elas_h3)",
+        "status": "blocked",
+        "reason": "asreview-dory not installed; heavy transformer feature extractors unavailable.",
+        "required_packages": [
+          "asreview-dory"
+        ]
       },
       {
         "name": "transformer cross-encoder rerankers",
-        "status": "not_enabled",
+        "status": "blocked",
         "reason": "GPU/large-model dependency footprint exceeds default repo constraints."
       }
     ]
@@ -97,52 +154,177 @@
       "display_name": "Baseline LR (word TF-IDF)",
       "cohort": "baseline",
       "lightweight": true,
-      "notes": "Current baseline from analysis/train_asreview.py"
+      "notes": "Current baseline from analysis/train_asreview.py",
+      "required_modules": []
     },
     {
       "model_id": "improved_calibrated_svm_word_char",
       "display_name": "Improved Calibrated SVM (word+char TF-IDF)",
       "cohort": "improved",
       "lightweight": true,
-      "notes": "Current improved best from analysis/train_asreview_improved.py"
+      "notes": "Current improved best from analysis/train_asreview_improved.py",
+      "required_modules": []
     },
     {
       "model_id": "candidate_lr_word_char",
       "display_name": "Candidate LR (word+char TF-IDF)",
       "cohort": "candidate",
       "lightweight": true,
-      "notes": "Adds character n-grams to linear baseline while retaining calibration-friendly LR."
+      "notes": "Adds character n-grams to linear baseline while retaining calibration-friendly LR.",
+      "required_modules": []
+    },
+    {
+      "model_id": "candidate_calibrated_sgd_word_char",
+      "display_name": "Candidate Calibrated SGD (word+char TF-IDF)",
+      "cohort": "candidate",
+      "lightweight": true,
+      "notes": "Calibrated margin-based linear model; good compromise between speed and rank quality.",
+      "required_modules": []
+    },
+    {
+      "model_id": "candidate_lr_elasticnet_word_char",
+      "display_name": "Candidate ElasticNet LR (word+char TF-IDF)",
+      "cohort": "candidate",
+      "lightweight": true,
+      "notes": "Elastic-net regularization can improve robustness on sparse noisy terms.",
+      "required_modules": []
+    },
+    {
+      "model_id": "candidate_linear_svc_isotonic_word_char",
+      "display_name": "Candidate Calibrated LinearSVC isotonic (word+char TF-IDF)",
+      "cohort": "candidate",
+      "lightweight": true,
+      "notes": "Alternative calibration strategy for high-recall ranking stability.",
+      "required_modules": []
     },
     {
       "model_id": "candidate_lsa_lr",
       "display_name": "Candidate LSA+LR (SVD semantic projection)",
       "cohort": "candidate",
       "lightweight": true,
-      "notes": "Low-dimensional semantic projection can improve signal-to-noise on small corpora."
+      "notes": "Low-dimensional semantic projection can improve signal-to-noise on small corpora.",
+      "required_modules": []
     },
     {
       "model_id": "candidate_sgd_word_char",
       "display_name": "Candidate SGD log-loss (word+char TF-IDF)",
       "cohort": "candidate",
       "lightweight": true,
-      "notes": "Fast linear online learner suitable for frequent reruns."
+      "notes": "Fast linear online learner suitable for frequent reruns.",
+      "required_modules": []
     },
     {
       "model_id": "candidate_cnb_word_tfidf",
       "display_name": "Candidate ComplementNB (word TF-IDF)",
       "cohort": "candidate",
       "lightweight": true,
-      "notes": "Strong sparse-text baseline for imbalance, included for comparison."
+      "notes": "Strong sparse-text baseline for imbalance, included for comparison.",
+      "required_modules": []
+    }
+  ],
+  "declared_models": [
+    {
+      "model_id": "baseline_lr_word_tfidf",
+      "display_name": "Baseline LR (word TF-IDF)",
+      "cohort": "baseline",
+      "lightweight": true,
+      "notes": "Current baseline from analysis/train_asreview.py",
+      "required_modules": []
+    },
+    {
+      "model_id": "improved_calibrated_svm_word_char",
+      "display_name": "Improved Calibrated SVM (word+char TF-IDF)",
+      "cohort": "improved",
+      "lightweight": true,
+      "notes": "Current improved best from analysis/train_asreview_improved.py",
+      "required_modules": []
+    },
+    {
+      "model_id": "candidate_lr_word_char",
+      "display_name": "Candidate LR (word+char TF-IDF)",
+      "cohort": "candidate",
+      "lightweight": true,
+      "notes": "Adds character n-grams to linear baseline while retaining calibration-friendly LR.",
+      "required_modules": []
+    },
+    {
+      "model_id": "candidate_calibrated_sgd_word_char",
+      "display_name": "Candidate Calibrated SGD (word+char TF-IDF)",
+      "cohort": "candidate",
+      "lightweight": true,
+      "notes": "Calibrated margin-based linear model; good compromise between speed and rank quality.",
+      "required_modules": []
+    },
+    {
+      "model_id": "candidate_lr_elasticnet_word_char",
+      "display_name": "Candidate ElasticNet LR (word+char TF-IDF)",
+      "cohort": "candidate",
+      "lightweight": true,
+      "notes": "Elastic-net regularization can improve robustness on sparse noisy terms.",
+      "required_modules": []
+    },
+    {
+      "model_id": "candidate_linear_svc_isotonic_word_char",
+      "display_name": "Candidate Calibrated LinearSVC isotonic (word+char TF-IDF)",
+      "cohort": "candidate",
+      "lightweight": true,
+      "notes": "Alternative calibration strategy for high-recall ranking stability.",
+      "required_modules": []
+    },
+    {
+      "model_id": "candidate_lsa_lr",
+      "display_name": "Candidate LSA+LR (SVD semantic projection)",
+      "cohort": "candidate",
+      "lightweight": true,
+      "notes": "Low-dimensional semantic projection can improve signal-to-noise on small corpora.",
+      "required_modules": []
+    },
+    {
+      "model_id": "candidate_sgd_word_char",
+      "display_name": "Candidate SGD log-loss (word+char TF-IDF)",
+      "cohort": "candidate",
+      "lightweight": true,
+      "notes": "Fast linear online learner suitable for frequent reruns.",
+      "required_modules": []
+    },
+    {
+      "model_id": "candidate_cnb_word_tfidf",
+      "display_name": "Candidate ComplementNB (word TF-IDF)",
+      "cohort": "candidate",
+      "lightweight": true,
+      "notes": "Strong sparse-text baseline for imbalance, included for comparison.",
+      "required_modules": []
+    },
+    {
+      "model_id": "candidate_st_minilm_lr",
+      "display_name": "Candidate MiniLM embedding + LR (sentence-transformers)",
+      "cohort": "candidate",
+      "lightweight": false,
+      "notes": "Optional embedding path for stronger semantic matching when heavier dependencies are available.",
+      "required_modules": [
+        "sentence_transformers"
+      ]
     }
   ],
   "blocked_models": [
+    {
+      "model_id": "candidate_st_minilm_lr",
+      "display_name": "Candidate MiniLM embedding + LR (sentence-transformers)",
+      "cohort": "candidate",
+      "status": "blocked",
+      "reason": "Missing optional dependency module(s): sentence_transformers. Install optional heavy NLP dependencies to enable this model.",
+      "blocker_type": "missing_optional_dependency",
+      "missing_modules": [
+        "sentence_transformers"
+      ]
+    },
     {
       "model_id": "asreview_nemo",
       "display_name": "ASReview Nemo",
       "cohort": "candidate",
       "status": "blocked",
-      "reason": "No ASReview Nemo extension detected. ASReview core classifiers available are typically logistic/nb/rf/svm unless extra classifier plugins are installed.",
-      "blocker_type": "missing_dependency"
+      "reason": "ASReview Nemo is unavailable: no `nemo` classifier entry point is registered, ASReview 2.2 does not expose a `nemo` extra, and no Nemo extension module is importable.",
+      "blocker_type": "missing_extension_distribution"
     }
   ]
 }

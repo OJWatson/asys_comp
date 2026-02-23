@@ -10,13 +10,19 @@ This runbook describes how to run and extend the NLP benchmark used for the e5cr
    - `baseline_lr_word_tfidf`
 2. **Current improved model**
    - `improved_calibrated_svm_word_char`
-3. **Additional candidate models** (lightweight, reproducible)
-   - `candidate_lr_word_char`
-   - `candidate_lsa_lr`
-   - `candidate_sgd_word_char`
-   - `candidate_cnb_word_tfidf`
+3. **Additional candidate models**
+   - Lightweight candidates (always benchmarked by default):
+     - `candidate_lr_word_char`
+     - `candidate_calibrated_sgd_word_char`
+     - `candidate_lr_elasticnet_word_char`
+     - `candidate_linear_svc_isotonic_word_char`
+     - `candidate_lsa_lr`
+     - `candidate_sgd_word_char`
+     - `candidate_cnb_word_tfidf`
+   - Optional heavy candidate (auto-enabled only when dependency exists):
+     - `candidate_st_minilm_lr` (requires `sentence-transformers`)
 
-It also records blocked models (for example **ASReview Nemo**) when the required extension is not present in the environment.
+It also records blocked models (for example **ASReview Nemo** or optional heavy models) when required extensions/dependencies are not present.
 
 ---
 
@@ -124,13 +130,39 @@ If heavy models or Nemo are unavailable:
 2. Record blockers in `analysis/outputs/benchmarks/environment_model_availability.json`.
 3. Surface blocker reason in `methods_results.json` so the website remains transparent.
 
-Typical blocker for Nemo in this repo:
+### Nemo enablement diagnosis (current environment)
 
-- ASReview core is installed, but no Nemo classifier extension is detected (missing plugin/dependency).
+Observed state from environment discovery:
+
+- ASReview version: `2.2`
+- ASReview extras exposed: `dev`, `docs`, `lint`, `test` (no `nemo` extra)
+- Registered classifiers: `logistic`, `nb`, `rf`, `svm` (no `nemo` entry point)
+- Nemo modules import check: none available (`asreview_nemo`, `asreviewcontrib.*.nemo`, `asreview_models.nemo`)
+
+Install attempts run during this update:
+
+```bash
+pip install "asreview[nemo]"   # warns: asreview 2.2 does not provide the extra 'nemo'
+pip install asreview-nemo       # no matching distribution found
+pip install asreview-models     # no matching distribution found
+```
+
+Conclusion: Nemo is currently **blocked by missing extension distribution** in this environment.
+
+### Optional heavy stack instructions
+
+To enable heavier benchmark slots (including `candidate_st_minilm_lr` and ASReview dory-powered models), install:
+
+```bash
+source .venv/bin/activate
+pip install -r requirements-optional-heavy-nlp.lock.txt
+```
+
+This optional stack intentionally lives outside `requirements.lock.txt` because it pulls large dependencies (torch/transformers).
 
 When a Nemo extension becomes available:
 
-1. Install extension in environment.
-2. Confirm detection in `environment_model_availability.json`.
-3. Add Nemo model builder/evaluation path in `analysis/benchmark_nlp_models.py`.
+1. Install the Nemo extension package in the active benchmark environment.
+2. Confirm detection in `environment_model_availability.json` (`environment.nemo.status == "available"`).
+3. Add a Nemo model builder/evaluation path in `analysis/benchmark_nlp_models.py`.
 4. Re-run benchmark + site refresh.

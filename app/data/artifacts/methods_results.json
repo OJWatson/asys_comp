@@ -1,9 +1,9 @@
 {
-  "generated_at": "2026-02-23T07:45:06+00:00",
+  "generated_at": "2026-02-23T08:08:36+00:00",
   "methods": [
     "Text preprocessing with title+abstract concatenation and decision normalization.",
     "Model comparison across imbalance-aware baselines including calibrated SVM with word+char TF-IDF.",
-    "Expanded NLP benchmark with repeated stratified CV across baseline, improved, and additional lightweight candidates.",
+    "Expanded NLP benchmark with additional calibrated/regularized linear candidates plus optional heavy embedding paths with clean dependency fallbacks.",
     "Evaluation emphasizes ranking and high-recall screening behavior, not threshold-0.5 accuracy only.",
     "Active-learning simulations with policy-based stopping diagnostics and seed-strategy sweeps.",
     "Leakage-safe queue export for reviewer operations with sensitive decision fields removed."
@@ -230,10 +230,10 @@
         "precision@50_std": 0.0103279555898864,
         "recall@50_mean": 0.9851851851851852,
         "recall@50_std": 0.039096197252722,
-        "fit_seconds_mean": 1.29244892639108,
-        "fit_seconds_std": 0.1645975648271872,
-        "score_seconds_mean": 0.2489133627541984,
-        "score_seconds_std": 0.0336792412383126,
+        "fit_seconds_mean": 1.047006358858198,
+        "fit_seconds_std": 0.0237998629954382,
+        "score_seconds_mean": 0.2173007710138335,
+        "score_seconds_std": 0.0165885511591071,
         "n_features_mean": 130219.0,
         "n_folds": 15,
         "rank": 1
@@ -261,13 +261,44 @@
         "precision@50_std": 0.0103279555898864,
         "recall@50_mean": 0.9851851851851852,
         "recall@50_std": 0.039096197252722,
-        "fit_seconds_mean": 1.3563804214044164,
-        "fit_seconds_std": 0.149335887292368,
-        "score_seconds_mean": 0.2585629729942108,
-        "score_seconds_std": 0.0321300602080663,
+        "fit_seconds_mean": 1.0084545638489848,
+        "fit_seconds_std": 0.0289311729318954,
+        "score_seconds_mean": 0.2164562138728797,
+        "score_seconds_std": 0.0150526281131685,
         "n_features_mean": 130219.0,
         "n_folds": 15,
         "rank": 2
+      },
+      {
+        "model_id": "candidate_linear_svc_isotonic_word_char",
+        "display_name": "Candidate Calibrated LinearSVC isotonic (word+char TF-IDF)",
+        "cohort": "candidate",
+        "lightweight": true,
+        "average_precision_mean": 0.5468871054827446,
+        "average_precision_std": 0.1051908405916894,
+        "roc_auc_mean": 0.8091672602089268,
+        "roc_auc_std": 0.0724427406447821,
+        "wss@95_mean": 0.2799999999999999,
+        "wss@95_std": 0.2101775515477406,
+        "precision@10_mean": 0.5,
+        "precision@10_std": 0.0845154254728516,
+        "recall@10_mean": 0.5842592592592593,
+        "recall@10_std": 0.1114165774608885,
+        "precision@20_mean": 0.3133333333333333,
+        "precision@20_std": 0.0549891764241793,
+        "recall@20_mean": 0.7305555555555555,
+        "recall@20_std": 0.1344324735586232,
+        "precision@50_mean": 0.168,
+        "precision@50_std": 0.0101418510567421,
+        "recall@50_mean": 0.9777777777777776,
+        "recall@50_std": 0.0460043706228236,
+        "fit_seconds_mean": 1.0196210827212782,
+        "fit_seconds_std": 0.0245923878929014,
+        "score_seconds_mean": 0.1792090570631747,
+        "score_seconds_std": 0.0237114363739669,
+        "n_features_mean": 130219.0,
+        "n_folds": 15,
+        "rank": 3
       },
       {
         "model_id": "candidate_sgd_word_char",
@@ -292,13 +323,75 @@
         "precision@50_std": 0.0140746310109799,
         "recall@50_mean": 0.9388888888888888,
         "recall@50_std": 0.0727014018239022,
-        "fit_seconds_mean": 1.2207061610805492,
-        "fit_seconds_std": 0.1245257288820095,
-        "score_seconds_mean": 0.2421356642153114,
-        "score_seconds_std": 0.0318184059113778,
+        "fit_seconds_mean": 1.0065935804741457,
+        "fit_seconds_std": 0.0262423453220738,
+        "score_seconds_mean": 0.2115104894076163,
+        "score_seconds_std": 0.0171507980984019,
         "n_features_mean": 130219.0,
         "n_folds": 15,
-        "rank": 3
+        "rank": 4
+      },
+      {
+        "model_id": "candidate_calibrated_sgd_word_char",
+        "display_name": "Candidate Calibrated SGD (word+char TF-IDF)",
+        "cohort": "candidate",
+        "lightweight": true,
+        "average_precision_mean": 0.530616534672411,
+        "average_precision_std": 0.1305599322719117,
+        "roc_auc_mean": 0.7868079995530975,
+        "roc_auc_std": 0.0863148359139997,
+        "wss@95_mean": 0.2566666666666666,
+        "wss@95_std": 0.1962748316107022,
+        "precision@10_mean": 0.4733333333333333,
+        "precision@10_std": 0.0961150104723254,
+        "recall@10_mean": 0.5518518518518519,
+        "recall@10_std": 0.1154254966092401,
+        "precision@20_mean": 0.29,
+        "precision@20_std": 0.0603560862122217,
+        "recall@20_mean": 0.675,
+        "recall@20_std": 0.1430719284820635,
+        "precision@50_mean": 0.1666666666666666,
+        "precision@50_std": 0.0097590007294853,
+        "recall@50_mean": 0.9703703703703704,
+        "recall@50_std": 0.0508597453574515,
+        "fit_seconds_mean": 1.0391114324952164,
+        "fit_seconds_std": 0.0491901933552128,
+        "score_seconds_mean": 0.227930193929933,
+        "score_seconds_std": 0.0149136401655141,
+        "n_features_mean": 130219.0,
+        "n_folds": 15,
+        "rank": 5
+      },
+      {
+        "model_id": "candidate_lr_elasticnet_word_char",
+        "display_name": "Candidate ElasticNet LR (word+char TF-IDF)",
+        "cohort": "candidate",
+        "lightweight": true,
+        "average_precision_mean": 0.5273982478741767,
+        "average_precision_std": 0.1150214314899619,
+        "roc_auc_mean": 0.796999818445897,
+        "roc_auc_std": 0.0566099129361279,
+        "wss@95_mean": 0.2455555555555554,
+        "wss@95_std": 0.1539772538688578,
+        "precision@10_mean": 0.4466666666666666,
+        "precision@10_std": 0.0915475416434126,
+        "recall@10_mean": 0.5194444444444444,
+        "recall@10_std": 0.1010853795969227,
+        "precision@20_mean": 0.3,
+        "precision@20_std": 0.0327326835353988,
+        "recall@20_mean": 0.700925925925926,
+        "recall@20_std": 0.0959190821035179,
+        "precision@50_mean": 0.1693333333333333,
+        "precision@50_std": 0.0103279555898864,
+        "recall@50_mean": 0.9851851851851852,
+        "recall@50_std": 0.039096197252722,
+        "fit_seconds_mean": 8.099050605669618,
+        "fit_seconds_std": 1.645458092645678,
+        "score_seconds_mean": 0.1692053822024415,
+        "score_seconds_std": 0.0174714935682142,
+        "n_features_mean": 130219.0,
+        "n_folds": 15,
+        "rank": 6
       },
       {
         "model_id": "candidate_lsa_lr",
@@ -323,13 +416,13 @@
         "precision@50_std": 0.0101418510567421,
         "recall@50_mean": 0.9777777777777776,
         "recall@50_std": 0.0460043706228236,
-        "fit_seconds_mean": 3.246093624193842,
-        "fit_seconds_std": 0.3288262248688093,
-        "score_seconds_mean": 0.0553982252875963,
-        "score_seconds_std": 0.005862350175347,
+        "fit_seconds_mean": 2.6925139307975767,
+        "fit_seconds_std": 0.0786467813825154,
+        "score_seconds_mean": 0.051867062288026,
+        "score_seconds_std": 0.0109607761066412,
         "n_features_mean": 54451.2,
         "n_folds": 15,
-        "rank": 4
+        "rank": 7
       },
       {
         "model_id": "baseline_lr_word_tfidf",
@@ -354,13 +447,13 @@
         "precision@50_std": 0.0101418510567421,
         "recall@50_mean": 0.9777777777777776,
         "recall@50_std": 0.0460043706228236,
-        "fit_seconds_mean": 0.1975241910666227,
-        "fit_seconds_std": 0.0236993460049378,
-        "score_seconds_mean": 0.0441305234795436,
-        "score_seconds_std": 0.0088378101986833,
+        "fit_seconds_mean": 0.1672705656538407,
+        "fit_seconds_std": 0.0128862511668502,
+        "score_seconds_mean": 0.040499053018478,
+        "score_seconds_std": 0.0076068359435305,
         "n_features_mean": 10078.333333333334,
         "n_folds": 15,
-        "rank": 5
+        "rank": 8
       },
       {
         "model_id": "candidate_cnb_word_tfidf",
@@ -385,13 +478,13 @@
         "precision@50_std": 0.0183095083286825,
         "recall@50_mean": 0.8768518518518519,
         "recall@50_std": 0.1027169847374655,
-        "fit_seconds_mean": 0.2970700515356536,
-        "fit_seconds_std": 0.0192863687249695,
-        "score_seconds_mean": 0.042258567456156,
-        "score_seconds_std": 0.0033209087565171,
+        "fit_seconds_mean": 0.2210572015261277,
+        "fit_seconds_std": 0.0053569196541972,
+        "score_seconds_mean": 0.036399977421388,
+        "score_seconds_std": 0.0033881755125509,
         "n_features_mean": 54451.2,
         "n_folds": 15,
-        "rank": 6
+        "rank": 9
       }
     ],
     "winner": {
@@ -417,10 +510,10 @@
       "precision@50_std": 0.0103279555898864,
       "recall@50_mean": 0.9851851851851852,
       "recall@50_std": 0.039096197252722,
-      "fit_seconds_mean": 1.29244892639108,
-      "fit_seconds_std": 0.1645975648271872,
-      "score_seconds_mean": 0.2489133627541984,
-      "score_seconds_std": 0.0336792412383126,
+      "fit_seconds_mean": 1.047006358858198,
+      "fit_seconds_std": 0.0237998629954382,
+      "score_seconds_mean": 0.2173007710138335,
+      "score_seconds_std": 0.0165885511591071,
       "n_features_mean": 130219.0,
       "n_folds": 15,
       "rank": 1
@@ -448,10 +541,10 @@
       "precision@50_std": 0.0103279555898864,
       "recall@50_mean": 0.9851851851851852,
       "recall@50_std": 0.039096197252722,
-      "fit_seconds_mean": 1.3563804214044164,
-      "fit_seconds_std": 0.149335887292368,
-      "score_seconds_mean": 0.2585629729942108,
-      "score_seconds_std": 0.0321300602080663,
+      "fit_seconds_mean": 1.0084545638489848,
+      "fit_seconds_std": 0.0289311729318954,
+      "score_seconds_mean": 0.2164562138728797,
+      "score_seconds_std": 0.0150526281131685,
       "n_features_mean": 130219.0,
       "n_folds": 15,
       "rank": 2
@@ -459,23 +552,35 @@
     "interpretation": [
       "Top model by AP: Improved Calibrated SVM (word+char TF-IDF) (AP 0.569 \u00b1 0.099, WSS@95 0.316).",
       "Runner-up: Candidate LR (word+char TF-IDF) (AP 0.568 \u00b1 0.098).",
-      "Fastest training model: Baseline LR (word TF-IDF) (0.198s mean fit time/fold).",
+      "Fastest training model: Baseline LR (word TF-IDF) (0.167s mean fit time/fold).",
+      "Blocked model slots recorded: 2 (see environment_model_availability.json).",
       "Winner vs runner-up AP gap is 0.0006; treat as near-tie and prioritize operational stability if both perform similarly in future refreshes.",
-      "Runtime trade-off: Baseline LR (word TF-IDF) trains fastest (0.198s/fold mean)."
+      "Runtime trade-off: Baseline LR (word TF-IDF) trains fastest (0.167s/fold mean)."
     ],
     "blocked_models": [
+      {
+        "model_id": "candidate_st_minilm_lr",
+        "display_name": "Candidate MiniLM embedding + LR (sentence-transformers)",
+        "cohort": "candidate",
+        "status": "blocked",
+        "reason": "Missing optional dependency module(s): sentence_transformers. Install optional heavy NLP dependencies to enable this model.",
+        "blocker_type": "missing_optional_dependency",
+        "missing_modules": [
+          "sentence_transformers"
+        ]
+      },
       {
         "model_id": "asreview_nemo",
         "display_name": "ASReview Nemo",
         "cohort": "candidate",
         "status": "blocked",
-        "reason": "No ASReview Nemo extension detected. ASReview core classifiers available are typically logistic/nb/rf/svm unless extra classifier plugins are installed.",
-        "blocker_type": "missing_dependency"
+        "reason": "ASReview Nemo is unavailable: no `nemo` classifier entry point is registered, ASReview 2.2 does not expose a `nemo` extra, and no Nemo extension module is importable.",
+        "blocker_type": "missing_extension_distribution"
       }
     ],
     "nemo_status": {
       "status": "blocked",
-      "reason": "No ASReview Nemo extension detected. ASReview core classifiers available are typically logistic/nb/rf/svm unless extra classifier plugins are installed.",
+      "reason": "ASReview Nemo is unavailable: no `nemo` classifier entry point is registered, ASReview 2.2 does not expose a `nemo` extra, and no Nemo extension module is importable.",
       "entry_points": [],
       "modules_checked": [
         "asreview_nemo",
@@ -485,17 +590,44 @@
         "nemo_toolkit"
       ],
       "modules_available": [],
-      "blocker_type": "missing_dependency"
+      "blocker_type": "missing_extension_distribution",
+      "diagnostics": {
+        "asreview_version": "2.2",
+        "asreview_provided_extras": [
+          "dev",
+          "docs",
+          "lint",
+          "test"
+        ],
+        "nemo_extra_declared": false,
+        "available_classifiers": [
+          "logistic",
+          "nb",
+          "rf",
+          "svm"
+        ]
+      }
     },
     "environment_notes": [
       {
         "name": "sentence-transformers/all-MiniLM-L6-v2 + linear classifier",
-        "status": "not_enabled",
-        "reason": "Not included in default benchmark to keep install/runtime lightweight and reproducible."
+        "status": "blocked",
+        "reason": "Install optional heavy NLP deps to enable embedding-based benchmark path.",
+        "required_modules": [
+          "sentence_transformers"
+        ]
+      },
+      {
+        "name": "ASReview Dory extension models (elas_l2 / elas_h3)",
+        "status": "blocked",
+        "reason": "asreview-dory not installed; heavy transformer feature extractors unavailable.",
+        "required_packages": [
+          "asreview-dory"
+        ]
       },
       {
         "name": "transformer cross-encoder rerankers",
-        "status": "not_enabled",
+        "status": "blocked",
         "reason": "GPU/large-model dependency footprint exceeds default repo constraints."
       }
     ]
