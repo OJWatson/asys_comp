@@ -34,6 +34,7 @@ This repository packages analysis outputs, reviewer-facing narrative, and operat
 - `analysis/` reproducible model outputs and reports
 - `app/` static app source and generated JSON artifacts (`app/data/artifacts/`)
 - `docs/SCREENING_WORKFLOW_HANDBOOK.md` comprehensive screening workflow handbook for model workflow, metrics, and decision-making
+- `docs/SCALING_PLAYBOOK_ASREVIEW_CROWDSCREEN_DORY.md` practical scaling playbook for very large screening corpora (run versioning, overlap/kappa, CrowdScreen, Dory, and automation guardrails)
 - `docs/runbooks/` deployment runbooks (Pages + Netlify + LAB local/live)
 - `infra/asreview-lab/` LAB container scaffolding and config templates
 - `integration/` queue/label integration hooks
