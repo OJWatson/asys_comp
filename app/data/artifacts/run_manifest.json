@@ -1,7 +1,7 @@
 {
-  "run_id": "20260223T131540Z-25f3c7c3",
-  "generated_at": "2026-02-23T13:15:40+00:00",
-  "code_sha": "1939078604426ec2abcbbd463efbf1d2dc7ef7e0",
+  "run_id": "20260223T132414Z-9772fa1f",
+  "generated_at": "2026-02-23T13:24:14+00:00",
+  "code_sha": "7c1fd65f8964db84803580d74443bf73ded48c11",
   "config": {
     "analysis_outputs_dir": "analysis/outputs",
     "app_artifacts_dir": "app/data/artifacts",
@@ -17,106 +17,106 @@
       "name": "metrics_best",
       "path": "analysis/outputs/improved/metrics_best.json",
       "sha256": "954e259bb84ac20b850ba0ddada8cf310d184397e57aa8289b1539238a3fcd9f",
-      "modified_at": "2026-02-23T12:57:30+00:00"
+      "modified_at": "2026-02-23T13:24:14+00:00"
     },
     {
       "name": "model_summary",
       "path": "analysis/outputs/improved/model_summary.csv",
       "sha256": "3b52bb1b3e9af35134df0d8c0d4fc298f7d1fc7e5e3e00eabb19cd447b0f5576",
-      "modified_at": "2026-02-23T12:57:30+00:00"
+      "modified_at": "2026-02-23T13:24:14+00:00"
     },
     {
       "name": "comparison",
       "path": "analysis/outputs/improved/comparison_baseline_vs_improved.csv",
       "sha256": "ba779a0e0c06f8737150a2d852d1efdef9531d6bbe851509879a0128a9c1a58b",
-      "modified_at": "2026-02-23T12:57:30+00:00"
+      "modified_at": "2026-02-23T13:24:14+00:00"
     },
     {
       "name": "next_meta",
       "path": "analysis/outputs/next_steps/run_meta_next_steps.json",
       "sha256": "3770127f09f61251cf9d9214632ab98e1439fa8de1431464aabfcf90ac7470f4",
-      "modified_at": "2026-02-23T13:15:36+00:00"
+      "modified_at": "2026-02-23T13:24:14+00:00"
     },
     {
       "name": "stopping_policy",
       "path": "analysis/outputs/next_steps/stopping_policy_summary.csv",
       "sha256": "3eee2929495a7963b5cea3769d825d539ab4f45d5c74db2157fad5f931231d14",
-      "modified_at": "2026-02-23T12:57:30+00:00"
+      "modified_at": "2026-02-23T13:24:14+00:00"
     },
     {
       "name": "nested_cv_summary",
       "path": "analysis/outputs/next_steps/nested_cv_seed_sweep_summary.csv",
       "sha256": "258cc155eaa7d03c73aa2951412a4917b05210c34c5c740602be4a1cd3d1e348",
-      "modified_at": "2026-02-23T12:57:30+00:00"
+      "modified_at": "2026-02-23T13:24:14+00:00"
     },
     {
       "name": "benchmark_summary",
       "path": "analysis/outputs/benchmarks/model_benchmark_summary.csv",
       "sha256": "ff1614a9f98c5d40ef28ea8db06d2df0a01392f9c4f1717e47bfdd430810a10b",
-      "modified_at": "2026-02-23T13:14:28+00:00"
+      "modified_at": "2026-02-23T13:24:14+00:00"
     },
     {
       "name": "benchmark_summary_json",
       "path": "analysis/outputs/benchmarks/model_benchmark_summary.json",
       "sha256": "71c5f0fb74251b4daa89072e8e965bc238c4ca7e4bbc417bff145f8a9eaef282",
-      "modified_at": "2026-02-23T13:14:28+00:00"
+      "modified_at": "2026-02-23T13:24:14+00:00"
     },
     {
       "name": "benchmark_env",
       "path": "analysis/outputs/benchmarks/environment_model_availability.json",
       "sha256": "ebd09f2e5a942256a985ee36b5bb0e6fbc9f1f9b054b3d0d009f79dba1736363",
-      "modified_at": "2026-02-23T13:14:28+00:00"
+      "modified_at": "2026-02-23T13:24:14+00:00"
     },
     {
       "name": "benchmark_report",
       "path": "analysis/outputs/benchmarks/MODEL_BENCHMARK_REPORT.md",
       "sha256": "0f8586146dfb095016e3deeaae8b4eec27f4dd8359e7a1a18bbf24e0fd3b1ced",
-      "modified_at": "2026-02-23T13:14:28+00:00"
+      "modified_at": "2026-02-23T13:24:14+00:00"
     },
     {
       "name": "lab_manifest",
       "path": "analysis/outputs/next_steps/production_ranking_manifest.json",
       "sha256": "347b97c3536c7ec5b262d3fefbc83a9a3882d5ea1d27524af28d765d52f22961",
-      "modified_at": "2026-02-23T12:57:30+00:00"
+      "modified_at": "2026-02-23T13:24:14+00:00"
     },
     {
       "name": "sim_results",
       "path": "analysis/outputs/planning_simulations/simulation_results.csv",
       "sha256": "d0cb0162a23581d3e69d12bb83035644b5ab8f4919d7e7f916d1f8f9018b1f76",
-      "modified_at": "2026-02-23T12:57:30+00:00"
+      "modified_at": "2026-02-23T13:24:14+00:00"
     },
     {
       "name": "recommended_targets",
       "path": "analysis/outputs/planning_simulations/recommended_next_screening_targets.md",
       "sha256": "5893af17879c18fbd833e78e808ff2e894550baefa4dd16d93d2bf764977d734",
-      "modified_at": "2026-02-23T12:57:30+00:00"
+      "modified_at": "2026-02-23T13:24:14+00:00"
     },
     {
       "name": "sim_summary",
       "path": "analysis/outputs/planning_simulations/SIMULATION_SUMMARY.md",
       "sha256": "cf452a6a7fbb883e599fc11bb7fadb8f74095dc11955c7482276d7c3f0e54e79",
-      "modified_at": "2026-02-23T12:57:30+00:00"
+      "modified_at": "2026-02-23T13:24:14+00:00"
     }
   ],
   "artifacts": {
     "overview.json": {
       "path": "app/data/artifacts/overview.json",
-      "sha256": "5a907a09bb9ec9ff6364f71af275d31f9da7c5bc32fbee5b1ca047e5ad32b24b",
+      "sha256": "c6a3e6dc839e9a679563b4cc1e3697ae8dc09a40c4d0a2836943d0ee527f7f71",
       "size_bytes": 1834
     },
     "methods_results.json": {
       "path": "app/data/artifacts/methods_results.json",
-      "sha256": "01ffa76b925116bf34369959448f8641c7b7e84a284cde9b41eb64af66dfe027",
+      "sha256": "eadde4aed6bfbb017b4fe8be7733716ccb70271556e96d21246de80968808b8a",
       "size_bytes": 46988
     },
     "fn_fp_risk.json": {
       "path": "app/data/artifacts/fn_fp_risk.json",
-      "sha256": "627983fb85a8370905d13ad313d1c0d8e69d51f415dcf76da45e4fde602e0c7b",
+      "sha256": "6407aa153e99a95802b03a194684c02751d9f7d19d2143c1aa6fe90fdd9d097a",
       "size_bytes": 9510
     },
     "simulation_planner.json": {
       "path": "app/data/artifacts/simulation_planner.json",
-      "sha256": "32ed6407464bd60cb45393ba92c965c77aceb95fc83e46f53aff20a93a21ed46",
+      "sha256": "643b9699289cbf7b9235190d002e69b7d5a419c4523149c6b0847d8028432cb4",
       "size_bytes": 24308
     }
   }
