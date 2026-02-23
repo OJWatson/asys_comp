@@ -249,6 +249,26 @@ def build_artifacts(repo_root: Path, config: Dict[str, Any]) -> Dict[str, Any]:
 
     benchmark_winner = benchmark_rows[0] if benchmark_rows else None
     benchmark_runner_up = benchmark_rows[1] if len(benchmark_rows) > 1 else None
+    combo_matrix_counts = benchmark_summary_json.get("combo_matrix_counts", {})
+    combo_matrix = benchmark_summary_json.get("combo_matrix", [])
+
+    dory_rows = benchmark_rows_df[benchmark_rows_df["cohort"].astype(str) == "dory"]
+    non_dory_rows = benchmark_rows_df[benchmark_rows_df["cohort"].astype(str) != "dory"]
+    neural_rows = benchmark_rows_df[
+        benchmark_rows_df["model_id"].astype(str).str.contains("nn|mlp", case=False, regex=True)
+    ]
+
+    best_dory = dory_rows.sort_values("average_precision_mean", ascending=False).iloc[0].to_dict() if not dory_rows.empty else None
+    best_non_dory = (
+        non_dory_rows.sort_values("average_precision_mean", ascending=False).iloc[0].to_dict()
+        if not non_dory_rows.empty
+        else None
+    )
+    best_neural = (
+        neural_rows.sort_values("average_precision_mean", ascending=False).iloc[0].to_dict()
+        if not neural_rows.empty
+        else None
+    )
 
     benchmark_insights: List[str] = list(benchmark_summary_json.get("key_findings", []))
     if benchmark_winner and benchmark_runner_up:
@@ -267,6 +287,24 @@ def build_artifacts(repo_root: Path, config: Dict[str, Any]) -> Dict[str, Any]:
             f"({float(fastest_row['fit_seconds_mean']):.3f}s/fold mean)."
         )
     )
+
+    if best_dory and best_non_dory:
+        dory_gap = float(best_dory["average_precision_mean"] - best_non_dory["average_precision_mean"])
+        benchmark_insights.append(
+            (
+                f"Best Dory AP gap vs best non-Dory is {dory_gap:+.4f} "
+                f"({best_dory['display_name']} vs {best_non_dory['display_name']})."
+            )
+        )
+
+    if best_neural and best_non_dory:
+        neural_gap = float(best_neural["average_precision_mean"] - best_non_dory["average_precision_mean"])
+        benchmark_insights.append(
+            (
+                f"Best neural AP gap vs best non-Dory is {neural_gap:+.4f} "
+                f"({best_neural['display_name']} vs {best_non_dory['display_name']})."
+            )
+        )
 
     blocked_models = benchmark_summary_json.get("blocked_models", [])
     env_blocked = benchmark_env.get("blocked_models", [])
@@ -357,7 +395,7 @@ def build_artifacts(repo_root: Path, config: Dict[str, Any]) -> Dict[str, Any]:
         "methods": [
             "Text preprocessing with title+abstract concatenation and decision normalization.",
             "Model comparison across imbalance-aware baselines including calibrated SVM with word+char TF-IDF.",
-            "Expanded NLP benchmark with additional calibrated/regularized linear candidates plus optional heavy embedding paths with clean dependency fallbacks.",
+            "Expanded NLP benchmark with staged protocol (lightweight + heavier feasible slots), including Dory extension comparisons and neural baselines with explicit runtime controls.",
             "Evaluation emphasizes ranking and high-recall screening behavior, not threshold-0.5 accuracy only.",
             "Active-learning simulations with policy-based stopping diagnostics and seed-strategy sweeps.",
             "Leakage-safe queue export for reviewer operations with sensitive decision fields removed.",
@@ -371,6 +409,11 @@ def build_artifacts(repo_root: Path, config: Dict[str, Any]) -> Dict[str, Any]:
             "model_results": benchmark_rows,
             "winner": benchmark_winner,
             "runner_up": benchmark_runner_up,
+            "combo_matrix_counts": combo_matrix_counts,
+            "combo_matrix": combo_matrix,
+            "best_dory": best_dory,
+            "best_neural": best_neural,
+            "best_non_dory": best_non_dory,
             "interpretation": benchmark_insights,
             "blocked_models": blocked_models,
             "nemo_status": benchmark_env.get("environment", {}).get("nemo", {}),

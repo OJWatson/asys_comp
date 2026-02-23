@@ -29,4 +29,4 @@ scripts/content_integrity_check.py --artifacts-dir app/data/artifacts
 ```
 
 For release status, see:
-- `analysis/RELEASE_READINESS_REPORT.md`
+- `analysis/archive/reports/RELEASE_READINESS_REPORT.md`

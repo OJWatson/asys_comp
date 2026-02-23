@@ -1,13 +1,14 @@
 {
-  "generated_at": "2026-02-23T08:08:35.192182+00:00",
+  "generated_at": "2026-02-23T13:14:28.034049+00:00",
   "environment": {
     "python": {
-      "version": "3.10.12 (main, Jan 26 2026, 14:55:28) [GCC 11.4.0]",
-      "executable": "/home/kana/.openclaw/workspace/asys_comp/.venv/bin/python",
+      "version": "3.10.19 (main, Feb  3 2026, 22:54:15) [Clang 21.1.4 ]",
+      "executable": "/home/kana/.openclaw/workspace/asys_comp/.venv-dory/bin/python",
       "platform": "Linux-6.8.0-94-generic-x86_64-with-glibc2.35"
     },
     "installed_asreview_related_packages": [
-      "asreview"
+      "asreview",
+      "asreview-dory"
     ],
     "asreview_metadata": {
       "version": "2.2",
@@ -20,28 +21,149 @@
     },
     "entry_points": {
       "asreview.models": [
-        "_metadata"
+        {
+          "name": "_metadata",
+          "value": "asreview.models._metadata:MODEL_METADATA",
+          "distribution": "asreview"
+        },
+        {
+          "name": "_metadata",
+          "value": "asreviewcontrib.dory._metadata:MODEL_METADATA",
+          "distribution": "asreview-dory"
+        }
       ],
       "asreview.models.classifiers": [
-        "logistic",
-        "nb",
-        "rf",
-        "svm"
+        {
+          "name": "adaboost",
+          "value": "asreviewcontrib.dory.classifiers.adaboost:AdaBoost",
+          "distribution": "asreview-dory"
+        },
+        {
+          "name": "dynamic-nn",
+          "value": "asreviewcontrib.dory.classifiers.neural_networks:DynamicNNClassifier",
+          "distribution": "asreview-dory"
+        },
+        {
+          "name": "logistic",
+          "value": "asreview.models.classifiers:Logistic",
+          "distribution": "asreview"
+        },
+        {
+          "name": "nb",
+          "value": "asreview.models.classifiers:NaiveBayes",
+          "distribution": "asreview"
+        },
+        {
+          "name": "nn-2-layer",
+          "value": "asreviewcontrib.dory.classifiers.neural_networks:NN2LayerClassifier",
+          "distribution": "asreview-dory"
+        },
+        {
+          "name": "rf",
+          "value": "asreview.models.classifiers:RandomForest",
+          "distribution": "asreview"
+        },
+        {
+          "name": "svm",
+          "value": "asreview.models.classifiers:SVM",
+          "distribution": "asreview"
+        },
+        {
+          "name": "warmstart-nn",
+          "value": "asreviewcontrib.dory.classifiers.neural_networks:WarmStartNNClassifier",
+          "distribution": "asreview-dory"
+        },
+        {
+          "name": "xgboost",
+          "value": "asreviewcontrib.dory.classifiers.xgboost:XGBoost",
+          "distribution": "asreview-dory"
+        }
       ],
       "asreview.models.feature_extractors": [
-        "onehot",
-        "tfidf"
-      ],
-      "asreview.models.queriers": [
-        "max",
-        "max_random",
-        "max_uncertainty",
-        "random",
-        "top_down",
-        "uncertainty"
+        {
+          "name": "doc2vec",
+          "value": "asreviewcontrib.dory.feature_extractors.doc2vec:Doc2Vec",
+          "distribution": "asreview-dory"
+        },
+        {
+          "name": "gtr-t5-large",
+          "value": "asreviewcontrib.dory.feature_extractors.sentence_transformer_embeddings:GTR",
+          "distribution": "asreview-dory"
+        },
+        {
+          "name": "labse",
+          "value": "asreviewcontrib.dory.feature_extractors.sentence_transformer_embeddings:LaBSE",
+          "distribution": "asreview-dory"
+        },
+        {
+          "name": "multilingual-e5-large",
+          "value": "asreviewcontrib.dory.feature_extractors.sentence_transformer_embeddings:MultilingualE5Large",
+          "distribution": "asreview-dory"
+        },
+        {
+          "name": "mxbai",
+          "value": "asreviewcontrib.dory.feature_extractors.sentence_transformer_embeddings:MXBAI",
+          "distribution": "asreview-dory"
+        },
+        {
+          "name": "onehot",
+          "value": "asreview.models.feature_extractors:OneHot",
+          "distribution": "asreview"
+        },
+        {
+          "name": "sbert",
+          "value": "asreviewcontrib.dory.feature_extractors.sentence_transformer_embeddings:SBERT",
+          "distribution": "asreview-dory"
+        },
+        {
+          "name": "tfidf",
+          "value": "asreview.models.feature_extractors:Tfidf",
+          "distribution": "asreview"
+        },
+        {
+          "name": "xlm-roberta-large",
+          "value": "asreviewcontrib.dory.feature_extractors.huggingface_embeddings:XLMRoBERTaLarge",
+          "distribution": "asreview-dory"
+        }
       ],
       "asreview.models.balancers": [
-        "balanced"
+        {
+          "name": "balanced",
+          "value": "asreview.models.balancers:Balanced",
+          "distribution": "asreview"
+        }
+      ],
+      "asreview.models.queriers": [
+        {
+          "name": "max",
+          "value": "asreview.models.queriers:Max",
+          "distribution": "asreview"
+        },
+        {
+          "name": "max_random",
+          "value": "asreview.models.queriers:HybridMaxRandom",
+          "distribution": "asreview"
+        },
+        {
+          "name": "max_uncertainty",
+          "value": "asreview.models.queriers:HybridMaxUncertainty",
+          "distribution": "asreview"
+        },
+        {
+          "name": "random",
+          "value": "asreview.models.queriers:Random",
+          "distribution": "asreview"
+        },
+        {
+          "name": "top_down",
+          "value": "asreview.models.queriers:TopDown",
+          "distribution": "asreview"
+        },
+        {
+          "name": "uncertainty",
+          "value": "asreview.models.queriers:Uncertainty",
+          "distribution": "asreview"
+        }
       ]
     },
     "asreview_ai_model_configs": [
@@ -74,10 +196,8 @@
         "required_extensions": [
           "asreview-dory"
         ],
-        "missing_extensions": [
-          "asreview-dory"
-        ],
-        "status": "blocked"
+        "missing_extensions": [],
+        "status": "available"
       },
       {
         "name": "elas_h3",
@@ -88,12 +208,118 @@
         "required_extensions": [
           "asreview-dory"
         ],
-        "missing_extensions": [
-          "asreview-dory"
-        ],
-        "status": "blocked"
+        "missing_extensions": [],
+        "status": "available"
       }
     ],
+    "dory": {
+      "status": "available",
+      "version": "1.2.2",
+      "reason": "ASReview Dory distribution detected.",
+      "docs_source": "https://github.com/asreview/asreview-dory",
+      "docs_classifier_names": [
+        "adaboost",
+        "dynamic-nn",
+        "nn-2-layer",
+        "warmstart-nn",
+        "xgboost"
+      ],
+      "docs_feature_extractor_names": [
+        "doc2vec",
+        "gtr-t5-large",
+        "labse",
+        "multilingual-e5-large",
+        "mxbai",
+        "sbert",
+        "xlm-roberta-large"
+      ],
+      "entry_point_classifiers": [
+        "adaboost",
+        "dynamic-nn",
+        "nn-2-layer",
+        "warmstart-nn",
+        "xgboost"
+      ],
+      "entry_point_feature_extractors": [
+        "doc2vec",
+        "gtr-t5-large",
+        "labse",
+        "multilingual-e5-large",
+        "mxbai",
+        "sbert",
+        "xlm-roberta-large"
+      ],
+      "entry_point_query_strategies": [],
+      "runnable_classifier_probes": [
+        {
+          "classifier": "adaboost",
+          "status": "available",
+          "probe": "mini_fit_predict_proba",
+          "entry_point": "asreviewcontrib.dory.classifiers.adaboost:AdaBoost",
+          "probe_kwargs": {
+            "n_estimators": 40,
+            "learning_rate": 0.8,
+            "random_state": 42
+          },
+          "input_representation": "sparse",
+          "reason": "Entry point loads and mini probe fit/predict succeeds."
+        },
+        {
+          "classifier": "dynamic-nn",
+          "status": "available",
+          "probe": "mini_fit_predict_proba",
+          "entry_point": "asreviewcontrib.dory.classifiers.neural_networks:DynamicNNClassifier",
+          "probe_kwargs": {
+            "epochs": 1,
+            "batch_size": 4,
+            "verbose": 0
+          },
+          "input_representation": "dense",
+          "reason": "Entry point loads and mini probe fit/predict succeeds."
+        },
+        {
+          "classifier": "nn-2-layer",
+          "status": "available",
+          "probe": "mini_fit_predict_proba",
+          "entry_point": "asreviewcontrib.dory.classifiers.neural_networks:NN2LayerClassifier",
+          "probe_kwargs": {
+            "epochs": 1,
+            "batch_size": 4,
+            "verbose": 0
+          },
+          "input_representation": "dense",
+          "reason": "Entry point loads and mini probe fit/predict succeeds."
+        },
+        {
+          "classifier": "warmstart-nn",
+          "status": "available",
+          "probe": "mini_fit_predict_proba",
+          "entry_point": "asreviewcontrib.dory.classifiers.neural_networks:WarmStartNNClassifier",
+          "probe_kwargs": {
+            "epochs": 1,
+            "batch_size": 4,
+            "verbose": 0
+          },
+          "input_representation": "dense",
+          "reason": "Entry point loads and mini probe fit/predict succeeds."
+        },
+        {
+          "classifier": "xgboost",
+          "status": "available",
+          "probe": "mini_fit_predict_proba",
+          "entry_point": "asreviewcontrib.dory.classifiers.xgboost:XGBoost",
+          "probe_kwargs": {
+            "n_estimators": 40,
+            "max_depth": 6,
+            "learning_rate": 0.2,
+            "verbosity": 0,
+            "random_state": 42
+          },
+          "input_representation": "sparse",
+          "reason": "Entry point loads and mini probe fit/predict succeeds."
+        }
+      ]
+    },
     "nemo": {
       "status": "blocked",
       "reason": "ASReview Nemo is unavailable: no `nemo` classifier entry point is registered, ASReview 2.2 does not expose a `nemo` extra, and no Nemo extension module is importable.",
@@ -115,28 +341,32 @@
           "lint",
           "test"
         ],
-        "nemo_extra_declared": false,
         "available_classifiers": [
+          "adaboost",
+          "dynamic-nn",
           "logistic",
           "nb",
+          "nn-2-layer",
           "rf",
-          "svm"
+          "svm",
+          "warmstart-nn",
+          "xgboost"
         ]
       }
     },
     "stronger_heavy_model_candidates": [
       {
-        "name": "sentence-transformers/all-MiniLM-L6-v2 + linear classifier",
-        "status": "blocked",
-        "reason": "Install optional heavy NLP deps to enable embedding-based benchmark path.",
+        "name": "sentence-transformers/all-MiniLM-L6-v2 + linear / mlp",
+        "status": "available",
+        "reason": "Dependency import check passed.",
         "required_modules": [
           "sentence_transformers"
         ]
       },
       {
-        "name": "ASReview Dory extension models (elas_l2 / elas_h3)",
-        "status": "blocked",
-        "reason": "asreview-dory not installed; heavy transformer feature extractors unavailable.",
+        "name": "ASReview Dory extension models (xgboost/adaboost/dynamic-nn/nn-2-layer/warmstart-nn)",
+        "status": "available",
+        "reason": "asreview-dory detected in environment.",
         "required_packages": [
           "asreview-dory"
         ]
@@ -148,85 +378,14 @@
       }
     ]
   },
-  "evaluated_models": [
-    {
-      "model_id": "baseline_lr_word_tfidf",
-      "display_name": "Baseline LR (word TF-IDF)",
-      "cohort": "baseline",
-      "lightweight": true,
-      "notes": "Current baseline from analysis/train_asreview.py",
-      "required_modules": []
-    },
-    {
-      "model_id": "improved_calibrated_svm_word_char",
-      "display_name": "Improved Calibrated SVM (word+char TF-IDF)",
-      "cohort": "improved",
-      "lightweight": true,
-      "notes": "Current improved best from analysis/train_asreview_improved.py",
-      "required_modules": []
-    },
-    {
-      "model_id": "candidate_lr_word_char",
-      "display_name": "Candidate LR (word+char TF-IDF)",
-      "cohort": "candidate",
-      "lightweight": true,
-      "notes": "Adds character n-grams to linear baseline while retaining calibration-friendly LR.",
-      "required_modules": []
-    },
-    {
-      "model_id": "candidate_calibrated_sgd_word_char",
-      "display_name": "Candidate Calibrated SGD (word+char TF-IDF)",
-      "cohort": "candidate",
-      "lightweight": true,
-      "notes": "Calibrated margin-based linear model; good compromise between speed and rank quality.",
-      "required_modules": []
-    },
-    {
-      "model_id": "candidate_lr_elasticnet_word_char",
-      "display_name": "Candidate ElasticNet LR (word+char TF-IDF)",
-      "cohort": "candidate",
-      "lightweight": true,
-      "notes": "Elastic-net regularization can improve robustness on sparse noisy terms.",
-      "required_modules": []
-    },
-    {
-      "model_id": "candidate_linear_svc_isotonic_word_char",
-      "display_name": "Candidate Calibrated LinearSVC isotonic (word+char TF-IDF)",
-      "cohort": "candidate",
-      "lightweight": true,
-      "notes": "Alternative calibration strategy for high-recall ranking stability.",
-      "required_modules": []
-    },
-    {
-      "model_id": "candidate_lsa_lr",
-      "display_name": "Candidate LSA+LR (SVD semantic projection)",
-      "cohort": "candidate",
-      "lightweight": true,
-      "notes": "Low-dimensional semantic projection can improve signal-to-noise on small corpora.",
-      "required_modules": []
-    },
-    {
-      "model_id": "candidate_sgd_word_char",
-      "display_name": "Candidate SGD log-loss (word+char TF-IDF)",
-      "cohort": "candidate",
-      "lightweight": true,
-      "notes": "Fast linear online learner suitable for frequent reruns.",
-      "required_modules": []
-    },
-    {
-      "model_id": "candidate_cnb_word_tfidf",
-      "display_name": "Candidate ComplementNB (word TF-IDF)",
-      "cohort": "candidate",
-      "lightweight": true,
-      "notes": "Strong sparse-text baseline for imbalance, included for comparison.",
-      "required_modules": []
-    }
-  ],
   "declared_models": [
     {
       "model_id": "baseline_lr_word_tfidf",
       "display_name": "Baseline LR (word TF-IDF)",
       "cohort": "baseline",
+      "model_source": "core",
+      "dory_classifier": null,
+      "stage": "lightweight",
       "lightweight": true,
       "notes": "Current baseline from analysis/train_asreview.py",
       "required_modules": []
@@ -235,6 +394,9 @@
       "model_id": "improved_calibrated_svm_word_char",
       "display_name": "Improved Calibrated SVM (word+char TF-IDF)",
       "cohort": "improved",
+      "model_source": "core",
+      "dory_classifier": null,
+      "stage": "lightweight",
       "lightweight": true,
       "notes": "Current improved best from analysis/train_asreview_improved.py",
       "required_modules": []
@@ -243,6 +405,9 @@
       "model_id": "candidate_lr_word_char",
       "display_name": "Candidate LR (word+char TF-IDF)",
       "cohort": "candidate",
+      "model_source": "core",
+      "dory_classifier": null,
+      "stage": "lightweight",
       "lightweight": true,
       "notes": "Adds character n-grams to linear baseline while retaining calibration-friendly LR.",
       "required_modules": []
@@ -251,6 +416,9 @@
       "model_id": "candidate_calibrated_sgd_word_char",
       "display_name": "Candidate Calibrated SGD (word+char TF-IDF)",
       "cohort": "candidate",
+      "model_source": "core",
+      "dory_classifier": null,
+      "stage": "lightweight",
       "lightweight": true,
       "notes": "Calibrated margin-based linear model; good compromise between speed and rank quality.",
       "required_modules": []
@@ -259,6 +427,9 @@
       "model_id": "candidate_lr_elasticnet_word_char",
       "display_name": "Candidate ElasticNet LR (word+char TF-IDF)",
       "cohort": "candidate",
+      "model_source": "core",
+      "dory_classifier": null,
+      "stage": "lightweight",
       "lightweight": true,
       "notes": "Elastic-net regularization can improve robustness on sparse noisy terms.",
       "required_modules": []
@@ -267,6 +438,9 @@
       "model_id": "candidate_linear_svc_isotonic_word_char",
       "display_name": "Candidate Calibrated LinearSVC isotonic (word+char TF-IDF)",
       "cohort": "candidate",
+      "model_source": "core",
+      "dory_classifier": null,
+      "stage": "lightweight",
       "lightweight": true,
       "notes": "Alternative calibration strategy for high-recall ranking stability.",
       "required_modules": []
@@ -275,6 +449,9 @@
       "model_id": "candidate_lsa_lr",
       "display_name": "Candidate LSA+LR (SVD semantic projection)",
       "cohort": "candidate",
+      "model_source": "core",
+      "dory_classifier": null,
+      "stage": "lightweight",
       "lightweight": true,
       "notes": "Low-dimensional semantic projection can improve signal-to-noise on small corpora.",
       "required_modules": []
@@ -283,6 +460,9 @@
       "model_id": "candidate_sgd_word_char",
       "display_name": "Candidate SGD log-loss (word+char TF-IDF)",
       "cohort": "candidate",
+      "model_source": "core",
+      "dory_classifier": null,
+      "stage": "lightweight",
       "lightweight": true,
       "notes": "Fast linear online learner suitable for frequent reruns.",
       "required_modules": []
@@ -291,37 +471,268 @@
       "model_id": "candidate_cnb_word_tfidf",
       "display_name": "Candidate ComplementNB (word TF-IDF)",
       "cohort": "candidate",
+      "model_source": "core",
+      "dory_classifier": null,
+      "stage": "lightweight",
       "lightweight": true,
       "notes": "Strong sparse-text baseline for imbalance, included for comparison.",
+      "required_modules": []
+    },
+    {
+      "model_id": "candidate_mlp_lsa",
+      "display_name": "Candidate MLP (TF-IDF\u2192SVD dense)",
+      "cohort": "candidate",
+      "model_source": "core",
+      "dory_classifier": null,
+      "stage": "heavy",
+      "lightweight": false,
+      "notes": "Practical neural baseline on dense semantic projection.",
       "required_modules": []
     },
     {
       "model_id": "candidate_st_minilm_lr",
       "display_name": "Candidate MiniLM embedding + LR (sentence-transformers)",
       "cohort": "candidate",
+      "model_source": "core",
+      "dory_classifier": null,
+      "stage": "heavy",
       "lightweight": false,
-      "notes": "Optional embedding path for stronger semantic matching when heavier dependencies are available.",
+      "notes": "Embedding path for stronger semantic matching when heavier dependencies are available.",
       "required_modules": [
-        "sentence_transformers"
-      ]
-    }
-  ],
-  "blocked_models": [
-    {
-      "model_id": "candidate_st_minilm_lr",
-      "display_name": "Candidate MiniLM embedding + LR (sentence-transformers)",
-      "cohort": "candidate",
-      "status": "blocked",
-      "reason": "Missing optional dependency module(s): sentence_transformers. Install optional heavy NLP dependencies to enable this model.",
-      "blocker_type": "missing_optional_dependency",
-      "missing_modules": [
         "sentence_transformers"
       ]
     },
     {
+      "model_id": "candidate_st_minilm_mlp",
+      "display_name": "Candidate MiniLM embedding + MLP",
+      "cohort": "candidate",
+      "model_source": "core",
+      "dory_classifier": null,
+      "stage": "heavy",
+      "lightweight": false,
+      "notes": "Neural baseline over MiniLM dense embeddings.",
+      "required_modules": [
+        "sentence_transformers"
+      ]
+    },
+    {
+      "model_id": "dory_xgboost_word_tfidf",
+      "display_name": "Dory XGBoost (word TF-IDF)",
+      "cohort": "dory",
+      "model_source": "dory",
+      "dory_classifier": "xgboost",
+      "stage": "heavy",
+      "lightweight": false,
+      "notes": "ASReview Dory XGBoost benchmarked on sparse TF-IDF for direct comparability.",
+      "required_modules": [
+        "asreviewcontrib.dory"
+      ]
+    },
+    {
+      "model_id": "dory_adaboost_word_tfidf",
+      "display_name": "Dory AdaBoost (word TF-IDF)",
+      "cohort": "dory",
+      "model_source": "dory",
+      "dory_classifier": "adaboost",
+      "stage": "heavy",
+      "lightweight": false,
+      "notes": "ASReview Dory AdaBoost benchmarked on sparse TF-IDF for direct comparability.",
+      "required_modules": [
+        "asreviewcontrib.dory"
+      ]
+    },
+    {
+      "model_id": "dory_dynamic_nn_dense_lsa",
+      "display_name": "Dory Dynamic-NN (TF-IDF\u2192SVD dense)",
+      "cohort": "dory",
+      "model_source": "dory",
+      "dory_classifier": "dynamic-nn",
+      "stage": "heavy",
+      "lightweight": false,
+      "notes": "Dory dynamic neural net on dense semantic projection (feasible CPU baseline).",
+      "required_modules": [
+        "asreviewcontrib.dory"
+      ]
+    },
+    {
+      "model_id": "dory_nn_2_layer_dense_lsa",
+      "display_name": "Dory NN-2-layer (TF-IDF\u2192SVD dense)",
+      "cohort": "dory",
+      "model_source": "dory",
+      "dory_classifier": "nn-2-layer",
+      "stage": "heavy",
+      "lightweight": false,
+      "notes": "Dory two-layer neural net on dense semantic projection.",
+      "required_modules": [
+        "asreviewcontrib.dory"
+      ]
+    },
+    {
+      "model_id": "dory_warmstart_nn_dense_lsa",
+      "display_name": "Dory Warmstart-NN (TF-IDF\u2192SVD dense)",
+      "cohort": "dory",
+      "model_source": "dory",
+      "dory_classifier": "warmstart-nn",
+      "stage": "heavy",
+      "lightweight": false,
+      "notes": "Dory warm-start neural net on dense semantic projection.",
+      "required_modules": [
+        "asreviewcontrib.dory"
+      ]
+    }
+  ],
+  "evaluated_models": [
+    {
+      "model_id": "improved_calibrated_svm_word_char",
+      "display_name": "Improved Calibrated SVM (word+char TF-IDF)",
+      "cohort": "improved",
+      "model_source": "core",
+      "stage": "lightweight",
+      "n_folds": 15
+    },
+    {
+      "model_id": "candidate_lr_word_char",
+      "display_name": "Candidate LR (word+char TF-IDF)",
+      "cohort": "candidate",
+      "model_source": "core",
+      "stage": "lightweight",
+      "n_folds": 15
+    },
+    {
+      "model_id": "candidate_linear_svc_isotonic_word_char",
+      "display_name": "Candidate Calibrated LinearSVC isotonic (word+char TF-IDF)",
+      "cohort": "candidate",
+      "model_source": "core",
+      "stage": "lightweight",
+      "n_folds": 15
+    },
+    {
+      "model_id": "candidate_sgd_word_char",
+      "display_name": "Candidate SGD log-loss (word+char TF-IDF)",
+      "cohort": "candidate",
+      "model_source": "core",
+      "stage": "lightweight",
+      "n_folds": 15
+    },
+    {
+      "model_id": "candidate_calibrated_sgd_word_char",
+      "display_name": "Candidate Calibrated SGD (word+char TF-IDF)",
+      "cohort": "candidate",
+      "model_source": "core",
+      "stage": "lightweight",
+      "n_folds": 15
+    },
+    {
+      "model_id": "candidate_lr_elasticnet_word_char",
+      "display_name": "Candidate ElasticNet LR (word+char TF-IDF)",
+      "cohort": "candidate",
+      "model_source": "core",
+      "stage": "lightweight",
+      "n_folds": 15
+    },
+    {
+      "model_id": "candidate_lsa_lr",
+      "display_name": "Candidate LSA+LR (SVD semantic projection)",
+      "cohort": "candidate",
+      "model_source": "core",
+      "stage": "lightweight",
+      "n_folds": 15
+    },
+    {
+      "model_id": "candidate_st_minilm_lr",
+      "display_name": "Candidate MiniLM embedding + LR (sentence-transformers)",
+      "cohort": "candidate",
+      "model_source": "core",
+      "stage": "heavy",
+      "n_folds": 3
+    },
+    {
+      "model_id": "baseline_lr_word_tfidf",
+      "display_name": "Baseline LR (word TF-IDF)",
+      "cohort": "baseline",
+      "model_source": "core",
+      "stage": "lightweight",
+      "n_folds": 15
+    },
+    {
+      "model_id": "candidate_cnb_word_tfidf",
+      "display_name": "Candidate ComplementNB (word TF-IDF)",
+      "cohort": "candidate",
+      "model_source": "core",
+      "stage": "lightweight",
+      "n_folds": 15
+    },
+    {
+      "model_id": "dory_adaboost_word_tfidf",
+      "display_name": "Dory AdaBoost (word TF-IDF)",
+      "cohort": "dory",
+      "model_source": "dory",
+      "stage": "heavy",
+      "n_folds": 3
+    },
+    {
+      "model_id": "dory_xgboost_word_tfidf",
+      "display_name": "Dory XGBoost (word TF-IDF)",
+      "cohort": "dory",
+      "model_source": "dory",
+      "stage": "heavy",
+      "n_folds": 3
+    },
+    {
+      "model_id": "candidate_mlp_lsa",
+      "display_name": "Candidate MLP (TF-IDF\u2192SVD dense)",
+      "cohort": "candidate",
+      "model_source": "core",
+      "stage": "heavy",
+      "n_folds": 3
+    },
+    {
+      "model_id": "dory_dynamic_nn_dense_lsa",
+      "display_name": "Dory Dynamic-NN (TF-IDF\u2192SVD dense)",
+      "cohort": "dory",
+      "model_source": "dory",
+      "stage": "heavy",
+      "n_folds": 3
+    },
+    {
+      "model_id": "candidate_st_minilm_mlp",
+      "display_name": "Candidate MiniLM embedding + MLP",
+      "cohort": "candidate",
+      "model_source": "core",
+      "stage": "heavy",
+      "n_folds": 3
+    },
+    {
+      "model_id": "dory_nn_2_layer_dense_lsa",
+      "display_name": "Dory NN-2-layer (TF-IDF\u2192SVD dense)",
+      "cohort": "dory",
+      "model_source": "dory",
+      "stage": "heavy",
+      "n_folds": 3
+    },
+    {
+      "model_id": "dory_warmstart_nn_dense_lsa",
+      "display_name": "Dory Warmstart-NN (TF-IDF\u2192SVD dense)",
+      "cohort": "dory",
+      "model_source": "dory",
+      "stage": "heavy",
+      "n_folds": 3
+    }
+  ],
+  "combo_matrix_counts": {
+    "attempted": 17,
+    "succeeded": 17,
+    "failed": 0,
+    "skipped": 0
+  },
+  "combo_matrix_path": "/home/kana/.openclaw/workspace/asys_comp_bench_clean/analysis/outputs/benchmarks/model_combo_attempt_matrix.csv",
+  "blocked_models": [
+    {
       "model_id": "asreview_nemo",
       "display_name": "ASReview Nemo",
       "cohort": "candidate",
+      "model_source": "nemo",
+      "stage": "heavy",
       "status": "blocked",
       "reason": "ASReview Nemo is unavailable: no `nemo` classifier entry point is registered, ASReview 2.2 does not expose a `nemo` extra, and no Nemo extension module is importable.",
       "blocker_type": "missing_extension_distribution"

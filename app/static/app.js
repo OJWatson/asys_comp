@@ -346,6 +346,10 @@ async function renderProjectE5cr7() {
   const bench = methodsResults.benchmarking || {};
   const benchWinner = bench.winner || {};
   const benchRunnerUp = bench.runner_up || {};
+  const benchBestDory = bench.best_dory || {};
+  const benchBestNeural = bench.best_neural || {};
+  const benchBestNonDory = bench.best_non_dory || {};
+  const benchComboCounts = bench.combo_matrix_counts || {};
   const benchInsights = bench.interpretation || [];
 
   const winnerName = benchWinner.display_name || "(not available)";
@@ -353,9 +357,19 @@ async function renderProjectE5cr7() {
   const winnerAp = fmtNum(benchWinner.average_precision_mean, 3);
   const runnerAp = fmtNum(benchRunnerUp.average_precision_mean, 3);
 
+  const dorySummary = benchBestDory.display_name
+    ? ` Best Dory result: ${benchBestDory.display_name} (AP ${fmtNum(benchBestDory.average_precision_mean, 3)}).`
+    : "";
+  const neuralSummary = benchBestNeural.display_name
+    ? ` Best neural result: ${benchBestNeural.display_name} (AP ${fmtNum(benchBestNeural.average_precision_mean, 3)}).`
+    : "";
+
   document.getElementById("e5cr7-benchmark-plain").innerHTML =
     `<strong>Plain-language read:</strong> ${winnerName} currently leads on ranking quality (AP ${winnerAp}). ` +
-    `Runner-up is ${runnerName} (AP ${runnerAp}). Use the winner when recall-first performance matters; use faster alternatives when frequent retraining speed is the main constraint.`;
+    `Runner-up is ${runnerName} (AP ${runnerAp}).` +
+    dorySummary +
+    neuralSummary +
+    ` Use the winner when recall-first performance matters; use faster alternatives when frequent retraining speed is the main constraint.`;
 
   const benchRows = (bench.model_results || []).map((r) => ({
     rank: r.rank,
@@ -388,9 +402,16 @@ async function renderProjectE5cr7() {
     (b) => `<li><strong>${b.display_name || b.model_id}</strong>: ${b.reason || "Unavailable"}</li>`
   );
 
+  const comboSummary = `Combo sweep: attempted ${benchComboCounts.attempted ?? "?"}, succeeded ${benchComboCounts.succeeded ?? "?"}, failed ${benchComboCounts.failed ?? "?"}, skipped ${benchComboCounts.skipped ?? "?"}.`;
+
+  const doryGapText = benchBestDory.display_name && benchBestNonDory.display_name
+    ? `Best Dory vs current best non-Dory AP gap: ${(Number(benchBestDory.average_precision_mean) - Number(benchBestNonDory.average_precision_mean)).toFixed(3)}.`
+    : "";
+
   document.getElementById("e5cr7-benchmark-blockers").innerHTML = `
     <h4>Unavailable/heavy options</h4>
     ${blockers.length ? `<ul>${blockers.join("")}</ul>` : "<p class=\"muted\">No blocked models reported.</p>"}
+    <p class="muted">${comboSummary} ${doryGapText}</p>
     ${benchInsights.length ? `<p class=\"muted\">${benchInsights.join(" ")}</p>` : ""}
   `;
 
