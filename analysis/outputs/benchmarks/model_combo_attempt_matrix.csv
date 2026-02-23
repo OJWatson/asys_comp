@@ -1,0 +1,18 @@
+model_id,display_name,cohort,model_source,dory_classifier,stage,lightweight,status,reason,blocker_type,n_folds_planned,n_folds_completed,runtime_seconds
+candidate_mlp_lsa,Candidate MLP (TF-IDF→SVD dense),candidate,core,,heavy,False,succeeded,,,3,3,11.323717592982575
+candidate_st_minilm_lr,Candidate MiniLM embedding + LR (sentence-transformers),candidate,core,,heavy,False,succeeded,,,3,3,23.510696420096792
+candidate_st_minilm_mlp,Candidate MiniLM embedding + MLP,candidate,core,,heavy,False,succeeded,,,3,3,0.3382059879368171
+dory_adaboost_word_tfidf,Dory AdaBoost (word TF-IDF),dory,dory,adaboost,heavy,False,succeeded,,,3,3,13.934676619013771
+dory_dynamic_nn_dense_lsa,Dory Dynamic-NN (TF-IDF→SVD dense),dory,dory,dynamic-nn,heavy,False,succeeded,,,3,3,15.712770771002397
+dory_nn_2_layer_dense_lsa,Dory NN-2-layer (TF-IDF→SVD dense),dory,dory,nn-2-layer,heavy,False,succeeded,,,3,3,17.879452744033188
+dory_warmstart_nn_dense_lsa,Dory Warmstart-NN (TF-IDF→SVD dense),dory,dory,warmstart-nn,heavy,False,succeeded,,,3,3,16.362610290991142
+dory_xgboost_word_tfidf,Dory XGBoost (word TF-IDF),dory,dory,xgboost,heavy,False,succeeded,,,3,3,5.5277064049150795
+baseline_lr_word_tfidf,Baseline LR (word TF-IDF),baseline,core,,lightweight,True,succeeded,,,15,15,3.032178776920773
+candidate_calibrated_sgd_word_char,Candidate Calibrated SGD (word+char TF-IDF),candidate,core,,lightweight,True,succeeded,,,15,15,19.883725655963644
+candidate_cnb_word_tfidf,Candidate ComplementNB (word TF-IDF),candidate,core,,lightweight,True,succeeded,,,15,15,3.734799322905019
+candidate_linear_svc_isotonic_word_char,Candidate Calibrated LinearSVC isotonic (word+char TF-IDF),candidate,core,,lightweight,True,succeeded,,,15,15,18.225777839077637
+candidate_lr_elasticnet_word_char,Candidate ElasticNet LR (word+char TF-IDF),candidate,core,,lightweight,True,succeeded,,,15,15,130.63931300595868
+candidate_lr_word_char,Candidate LR (word+char TF-IDF),candidate,core,,lightweight,True,succeeded,,,15,15,19.45415324997157
+candidate_lsa_lr,Candidate LSA+LR (SVD semantic projection),candidate,core,,lightweight,True,succeeded,,,15,15,50.784317915909924
+candidate_sgd_word_char,Candidate SGD log-loss (word+char TF-IDF),candidate,core,,lightweight,True,succeeded,,,15,15,17.5785515679745
+improved_calibrated_svm_word_char,Improved Calibrated SVM (word+char TF-IDF),improved,core,,lightweight,True,succeeded,,,15,15,19.132652107044123

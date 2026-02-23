@@ -43,7 +43,7 @@ This repository packages analysis outputs, reviewer-facing narrative, and operat
 - `MIGRATION_PLAN.md` migration rationale, IA, and extension conventions
 - `DEPLOY_CHECKLIST.md` exact deployment steps (Render/Netlify/DNS)
 
-Historical planning/progress material is archived under `analysis/archive/`.
+Historical planning/progress material is archived under `analysis/archive/` (including dated execution/readiness snapshots in `analysis/archive/reports/`).
 
 ---
 
@@ -60,19 +60,25 @@ scripts/run_data_refresh.sh
 scripts/run_smoke_test.sh
 ```
 
-Run expanded NLP benchmark (baseline vs improved vs candidate models):
+Run expanded NLP benchmark (staged lightweight + heavier feasible models, including Dory and neural candidates):
 
 ```bash
 source .venv/bin/activate
-python analysis/benchmark_nlp_models.py
+python analysis/benchmark_nlp_models.py --disable-heavy-stage
 python scripts/smoke_test_benchmarks.py
 ```
 
-Optional heavy NLP path (embedding-based candidate + ASReview dory extension models):
+Optional heavy NLP path (embedding-based + Dory extension model slots):
 
 ```bash
+# heavy extras on top of base env
 source .venv/bin/activate
 pip install -r requirements-optional-heavy-nlp.lock.txt
+
+# recommended Dory env for full staged sweep
+source .venv-dory/bin/activate
+python analysis/benchmark_nlp_models.py
+python scripts/smoke_test_benchmarks.py
 ```
 
 See runbook: `docs/runbooks/MODEL_BENCHMARKING.md`

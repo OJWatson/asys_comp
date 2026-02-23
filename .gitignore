@@ -38,6 +38,13 @@ build/
 dist/
 site/
 
+# Historical/generated analysis archives (keep canonical current outputs tracked)
+analysis/outputs/history/
+analysis/outputs/benchmarks/archive/
+analysis/outputs/benchmarks/cache_features/
+analysis/outputs/next_steps/archive/
+analysis/outputs/planning_simulations/archive/
+
 # Notebook / temp
 .ipynb_checkpoints/
 *.log

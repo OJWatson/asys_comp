@@ -16,4 +16,4 @@ Canonical docs for compendium operations:
 - `runbooks/ASREVIEW_DORY_INTEGRATION.md` — focused Dory setup + workflow runbook for this repository.
 - `ENVIRONMENT_SETUP.md` — reproducible local environment bootstrap.
 
-Historical planning/progress docs were moved to `analysis/archive/` to keep release docs concise.
+Historical planning/progress docs were moved to `analysis/archive/` (see `analysis/archive/README.md`) to keep release docs concise.

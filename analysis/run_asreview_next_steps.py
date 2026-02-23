@@ -781,7 +781,7 @@ def main() -> None:
     parser.add_argument(
         "--report-path",
         type=Path,
-        default=Path(__file__).resolve().parent / "NEXT_STEPS_EXECUTION_REPORT.md",
+        default=Path(__file__).resolve().parent / "archive" / "reports" / "NEXT_STEPS_EXECUTION_REPORT.md",
     )
     parser.add_argument("--random-state", type=int, default=42)
     parser.add_argument(

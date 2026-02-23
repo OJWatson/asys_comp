@@ -1,7 +1,7 @@
 {
-  "input": "/home/kana/git/asys/screening-model/data/screening_input.xlsx",
-  "output_dir": "/home/kana/git/asys/screening-model/analysis/outputs/next_steps",
-  "report_path": "/home/kana/git/asys/screening-model/analysis/NEXT_STEPS_EXECUTION_REPORT.md",
+  "input": "/home/kana/.openclaw/workspace/asys_comp_bench_clean/data/screening_input.xlsx",
+  "output_dir": "/home/kana/.openclaw/workspace/asys_comp_bench_clean/analysis/outputs/next_steps",
+  "report_path": "/home/kana/.openclaw/workspace/asys_comp_bench_clean/analysis/archive/reports/NEXT_STEPS_EXECUTION_REPORT.md",
   "columns_detected": {
     "title": "titles",
     "abstract": "abstract",

@@ -1,168 +1,119 @@
 # Model Benchmarking Runbook (NLP / Abstract Screening)
 
-This runbook describes how to run and extend the NLP benchmark used for the e5cr7 screening workflow.
+This runbook describes the benchmark pipeline used for e5cr7, including **Dory extension comparisons**, **neural variants**, and a staged runtime protocol.
+
+Source-of-truth Dory inventory:
+- https://github.com/asreview/asreview-dory
 
 ## What this benchmark compares
 
-`analysis/benchmark_nlp_models.py` compares:
+`analysis/benchmark_nlp_models.py` now evaluates three groups:
 
-1. **Current baseline**
-   - `baseline_lr_word_tfidf`
-2. **Current improved model**
-   - `improved_calibrated_svm_word_char`
-3. **Additional candidate models**
-   - Lightweight candidates (always benchmarked by default):
-     - `candidate_lr_word_char`
-     - `candidate_calibrated_sgd_word_char`
-     - `candidate_lr_elasticnet_word_char`
-     - `candidate_linear_svc_isotonic_word_char`
-     - `candidate_lsa_lr`
-     - `candidate_sgd_word_char`
-     - `candidate_cnb_word_tfidf`
-   - Optional heavy candidate (auto-enabled only when dependency exists):
-     - `candidate_st_minilm_lr` (requires `sentence-transformers`)
+1. **Lightweight stage (default: 5x3 CV)**
+   - Baseline + improved model
+   - Advanced sparse-text linear candidates
+2. **Heavy stage (default: 3x1 CV, runtime-bounded)**
+   - Practical neural baselines (`candidate_mlp_lsa`, MiniLM+MLP)
+   - MiniLM embedding + LR
+   - Dory classifiers (`xgboost`, `adaboost`, `dynamic-nn`, `nn-2-layer`, `warmstart-nn`) when runnable
+3. **Blocked/skipped model slots**
+   - Explicitly recorded with reasons (dependency missing, probe failure, runtime budget skip, etc.)
 
-It also records blocked models (for example **ASReview Nemo** or optional heavy models) when required extensions/dependencies are not present.
+The run emits a full combo sweep matrix with status per model: `attempted/succeeded/failed/skipped`.
 
 ---
 
-## How to run benchmarks
+## Runtime controls (explicit)
 
-From repo root:
+Key controls:
+
+- `--lightweight-splits`, `--lightweight-repeats`
+- `--heavy-splits`, `--heavy-repeats`
+- `--disable-heavy-stage`
+- `--max-heavy-models`
+- `--max-total-runtime-seconds`
+- `--per-model-runtime-seconds`
+
+Defaults are set for reproducible CPU runs while still allowing heavier model attempts.
+
+---
+
+## Environment setup
+
+### Lightweight-only environment
 
 ```bash
-# Activate environment first
 source .venv/bin/activate
+pip install -r requirements.lock.txt
+```
 
-# Run benchmark
+### Heavy/Dory-enabled environment
+
+```bash
+source .venv-dory/bin/activate
+pip install -r requirements.lock.txt
+pip install -r requirements-optional-heavy-nlp.lock.txt
+pip install -r requirements-dory.lock.txt
+```
+
+---
+
+## How to run benchmark + smoke checks
+
+```bash
+# recommended for full staged sweep
+source .venv-dory/bin/activate
+
 python analysis/benchmark_nlp_models.py
-
-# Optional smoke check for benchmark outputs
 python scripts/smoke_test_benchmarks.py
 ```
 
-Outputs are written to:
+Useful alternatives:
+
+```bash
+# lightweight-only fast run
+python analysis/benchmark_nlp_models.py --disable-heavy-stage
+
+# strict runtime-bounded full run
+python analysis/benchmark_nlp_models.py \
+  --max-heavy-models 6 \
+  --max-total-runtime-seconds 3600 \
+  --per-model-runtime-seconds 600
+```
+
+---
+
+## Output artifacts
 
 - `analysis/outputs/benchmarks/model_benchmark_fold_metrics.csv`
 - `analysis/outputs/benchmarks/model_benchmark_summary.csv`
 - `analysis/outputs/benchmarks/model_benchmark_summary.json`
+- `analysis/outputs/benchmarks/model_combo_attempt_matrix.csv`
+- `analysis/outputs/benchmarks/model_combo_attempt_matrix.json`
 - `analysis/outputs/benchmarks/environment_model_availability.json`
 - `analysis/outputs/benchmarks/MODEL_BENCHMARK_REPORT.md`
 
 ---
 
-## Full refresh pipeline including benchmark + site artifacts
-
-```bash
-scripts/run_analysis_and_report_refresh.sh
-scripts/run_data_refresh.sh
-scripts/build_github_pages_site.sh --skip-refresh
-scripts/run_static_site_checks.sh
-```
-
-This ensures benchmark outputs are propagated into:
-
-- `app/data/artifacts/methods_results.json`
-- `app/data/artifacts/run_manifest.json`
-- `site/data/artifacts/*` (after build)
-
----
-
-## Metrics and protocol
-
-The benchmark uses **RepeatedStratifiedKFold** to keep comparisons fair across models.
-
-Default protocol:
-
-- Splits: 5
-- Repeats: 3
-- Random state: 42
-- Input: `data/screening_input.xlsx`
-
-Reported metrics:
-
-- `average_precision`
-- `roc_auc`
-- `precision@10`, `recall@10`
-- `precision@20`, `recall@20`
-- `precision@50`, `recall@50`
-- `wss@95`
-- runtime notes (`fit_seconds`, `score_seconds`) and approximate feature-space size
-
----
-
-## How to add a new model
-
-1. Open `analysis/benchmark_nlp_models.py`.
-2. Add a `ModelSpec` entry in `build_specs()`.
-3. Implement builder logic in `build_model(...)` for the new `builder_key`.
-4. Re-run benchmark and smoke checks:
+## Full refresh path (benchmark → app/site)
 
 ```bash
 python analysis/benchmark_nlp_models.py
 python scripts/smoke_test_benchmarks.py
-```
-
-5. Refresh app artifacts and rebuild site:
-
-```bash
 scripts/run_data_refresh.sh
 scripts/build_github_pages_site.sh --skip-refresh
 scripts/run_static_site_checks.sh
+scripts/run_smoke_test.sh
 ```
+
+This propagates benchmark and combo-matrix outcomes into:
+- `app/data/artifacts/methods_results.json`
+- `app/data/artifacts/run_manifest.json`
 
 ---
 
-## Reproducibility and limitations
+## Interpreting Dory + neural results
 
-- Lightweight defaults are deliberate (CPU-only, scikit-learn-first).
-- Results are dataset-specific (300 records in current e5cr7 snapshot).
-- If class balance shifts or labels are updated, re-run benchmark before interpreting winners.
-- Runtime is machine-dependent; compare times **within the same environment**.
+Use the benchmark summary table for ranking metrics (`AP`, `WSS@95`, `recall@20`, `precision@20`) and use combo matrix statuses to understand coverage and blockers.
 
----
-
-## Heavy/optional models (including Nemo)
-
-If heavy models or Nemo are unavailable:
-
-1. Keep benchmark running with lightweight default model set.
-2. Record blockers in `analysis/outputs/benchmarks/environment_model_availability.json`.
-3. Surface blocker reason in `methods_results.json` so the website remains transparent.
-
-### Nemo enablement diagnosis (current environment)
-
-Observed state from environment discovery:
-
-- ASReview version: `2.2`
-- ASReview extras exposed: `dev`, `docs`, `lint`, `test` (no `nemo` extra)
-- Registered classifiers: `logistic`, `nb`, `rf`, `svm` (no `nemo` entry point)
-- Nemo modules import check: none available (`asreview_nemo`, `asreviewcontrib.*.nemo`, `asreview_models.nemo`)
-
-Install attempts run during this update:
-
-```bash
-pip install "asreview[nemo]"   # warns: asreview 2.2 does not provide the extra 'nemo'
-pip install asreview-nemo       # no matching distribution found
-pip install asreview-models     # no matching distribution found
-```
-
-Conclusion: Nemo is currently **blocked by missing extension distribution** in this environment.
-
-### Optional heavy stack instructions
-
-To enable heavier benchmark slots (including `candidate_st_minilm_lr` and ASReview dory-powered models), install:
-
-```bash
-source .venv/bin/activate
-pip install -r requirements-optional-heavy-nlp.lock.txt
-```
-
-This optional stack intentionally lives outside `requirements.lock.txt` because it pulls large dependencies (torch/transformers).
-
-When a Nemo extension becomes available:
-
-1. Install the Nemo extension package in the active benchmark environment.
-2. Confirm detection in `environment_model_availability.json` (`environment.nemo.status == "available"`).
-3. Add a Nemo model builder/evaluation path in `analysis/benchmark_nlp_models.py`.
-4. Re-run benchmark + site refresh.
+When Dory is installed, the benchmark validates each Dory classifier with a small probe before evaluation. Neural Dory models are run on dense TF-IDF→SVD features to stay feasible on CPU.
