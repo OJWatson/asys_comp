@@ -347,18 +347,22 @@ async function renderProjectE5cr7() {
   const benchWinner = bench.winner || {};
   const benchRunnerUp = bench.runner_up || {};
   const benchInsights = bench.interpretation || [];
+  const doryContext = bench.dory_context || "ASReview Dory models are compared to test whether plugin classifiers materially improve recall-first ranking quality in this project.";
 
   const winnerName = benchWinner.display_name || "(not available)";
   const runnerName = benchRunnerUp.display_name || "(not available)";
   const winnerAp = fmtNum(benchWinner.average_precision_mean, 3);
   const runnerAp = fmtNum(benchRunnerUp.average_precision_mean, 3);
+  const doryCount = (bench.dory_models_benchmarked || []).length;
 
   document.getElementById("e5cr7-benchmark-plain").innerHTML =
     `<strong>Plain-language read:</strong> ${winnerName} currently leads on ranking quality (AP ${winnerAp}). ` +
-    `Runner-up is ${runnerName} (AP ${runnerAp}). Use the winner when recall-first performance matters; use faster alternatives when frequent retraining speed is the main constraint.`;
+    `Runner-up is ${runnerName} (AP ${runnerAp}). ${doryContext} ` +
+    `${doryCount > 0 ? `This run benchmarked ${doryCount} Dory model${doryCount === 1 ? "" : "s"}.` : "No runnable Dory model was benchmarked in this environment."}`;
 
   const benchRows = (bench.model_results || []).map((r) => ({
     rank: r.rank,
+    source: (r.model_source || "core") === "dory" ? "ASReview Dory" : "Current stack",
     cohort: toTitle(r.cohort),
     model: r.display_name,
     ap: fmtNum(r.average_precision_mean, 3),
@@ -372,6 +376,7 @@ async function renderProjectE5cr7() {
   document.getElementById("e5cr7-benchmark-table").innerHTML = tableHtml(
     [
       { key: "rank", label: "Rank" },
+      { key: "source", label: "Source" },
       { key: "cohort", label: "Cohort" },
       { key: "model", label: "Model" },
       { key: "ap", label: "AP (mean)" },
@@ -389,7 +394,7 @@ async function renderProjectE5cr7() {
   );
 
   document.getElementById("e5cr7-benchmark-blockers").innerHTML = `
-    <h4>Unavailable/heavy options</h4>
+    <h4>Unavailable/heavy options (including non-runnable Dory models)</h4>
     ${blockers.length ? `<ul>${blockers.join("")}</ul>` : "<p class=\"muted\">No blocked models reported.</p>"}
     ${benchInsights.length ? `<p class=\"muted\">${benchInsights.join(" ")}</p>` : ""}
   `;

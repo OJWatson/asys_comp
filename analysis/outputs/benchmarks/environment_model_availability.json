@@ -1,17 +1,160 @@
 {
-  "generated_at": "2026-02-23T07:45:02.757842+00:00",
+  "generated_at": "2026-02-23T09:38:05.862357+00:00",
   "environment": {
     "python": {
-      "version": "3.10.12 (main, Jan 26 2026, 14:55:28) [GCC 11.4.0]",
-      "executable": "/home/kana/.openclaw/workspace/asys_comp/.venv/bin/python",
+      "version": "3.10.19 (main, Feb  3 2026, 22:54:15) [Clang 21.1.4 ]",
+      "executable": "/home/kana/.openclaw/workspace/asys_comp/.venv-dory/bin/python",
       "platform": "Linux-6.8.0-94-generic-x86_64-with-glibc2.35"
     },
     "installed_asreview_related_packages": [
-      "asreview"
+      "asreview",
+      "asreview-dory"
     ],
     "entry_points": {
       "asreview.models": [
-        "_metadata"
+        {
+          "name": "_metadata",
+          "value": "asreview.models._metadata:MODEL_METADATA",
+          "distribution": "asreview"
+        },
+        {
+          "name": "_metadata",
+          "value": "asreviewcontrib.dory._metadata:MODEL_METADATA",
+          "distribution": "asreview-dory"
+        }
+      ],
+      "asreview.models.classifiers": [
+        {
+          "name": "adaboost",
+          "value": "asreviewcontrib.dory.classifiers.adaboost:AdaBoost",
+          "distribution": "asreview-dory"
+        },
+        {
+          "name": "dynamic-nn",
+          "value": "asreviewcontrib.dory.classifiers.neural_networks:DynamicNNClassifier",
+          "distribution": "asreview-dory"
+        },
+        {
+          "name": "logistic",
+          "value": "asreview.models.classifiers:Logistic",
+          "distribution": "asreview"
+        },
+        {
+          "name": "nb",
+          "value": "asreview.models.classifiers:NaiveBayes",
+          "distribution": "asreview"
+        },
+        {
+          "name": "nn-2-layer",
+          "value": "asreviewcontrib.dory.classifiers.neural_networks:NN2LayerClassifier",
+          "distribution": "asreview-dory"
+        },
+        {
+          "name": "rf",
+          "value": "asreview.models.classifiers:RandomForest",
+          "distribution": "asreview"
+        },
+        {
+          "name": "svm",
+          "value": "asreview.models.classifiers:SVM",
+          "distribution": "asreview"
+        },
+        {
+          "name": "warmstart-nn",
+          "value": "asreviewcontrib.dory.classifiers.neural_networks:WarmStartNNClassifier",
+          "distribution": "asreview-dory"
+        },
+        {
+          "name": "xgboost",
+          "value": "asreviewcontrib.dory.classifiers.xgboost:XGBoost",
+          "distribution": "asreview-dory"
+        }
+      ],
+      "asreview.models.feature_extractors": [
+        {
+          "name": "doc2vec",
+          "value": "asreviewcontrib.dory.feature_extractors.doc2vec:Doc2Vec",
+          "distribution": "asreview-dory"
+        },
+        {
+          "name": "gtr-t5-large",
+          "value": "asreviewcontrib.dory.feature_extractors.sentence_transformer_embeddings:GTR",
+          "distribution": "asreview-dory"
+        },
+        {
+          "name": "labse",
+          "value": "asreviewcontrib.dory.feature_extractors.sentence_transformer_embeddings:LaBSE",
+          "distribution": "asreview-dory"
+        },
+        {
+          "name": "multilingual-e5-large",
+          "value": "asreviewcontrib.dory.feature_extractors.sentence_transformer_embeddings:MultilingualE5Large",
+          "distribution": "asreview-dory"
+        },
+        {
+          "name": "mxbai",
+          "value": "asreviewcontrib.dory.feature_extractors.sentence_transformer_embeddings:MXBAI",
+          "distribution": "asreview-dory"
+        },
+        {
+          "name": "onehot",
+          "value": "asreview.models.feature_extractors:OneHot",
+          "distribution": "asreview"
+        },
+        {
+          "name": "sbert",
+          "value": "asreviewcontrib.dory.feature_extractors.sentence_transformer_embeddings:SBERT",
+          "distribution": "asreview-dory"
+        },
+        {
+          "name": "tfidf",
+          "value": "asreview.models.feature_extractors:Tfidf",
+          "distribution": "asreview"
+        },
+        {
+          "name": "xlm-roberta-large",
+          "value": "asreviewcontrib.dory.feature_extractors.huggingface_embeddings:XLMRoBERTaLarge",
+          "distribution": "asreview-dory"
+        }
+      ],
+      "asreview.models.balancers": [
+        {
+          "name": "balanced",
+          "value": "asreview.models.balancers:Balanced",
+          "distribution": "asreview"
+        }
+      ],
+      "asreview.models.queriers": [
+        {
+          "name": "max",
+          "value": "asreview.models.queriers:Max",
+          "distribution": "asreview"
+        },
+        {
+          "name": "max_random",
+          "value": "asreview.models.queriers:HybridMaxRandom",
+          "distribution": "asreview"
+        },
+        {
+          "name": "max_uncertainty",
+          "value": "asreview.models.queriers:HybridMaxUncertainty",
+          "distribution": "asreview"
+        },
+        {
+          "name": "random",
+          "value": "asreview.models.queriers:Random",
+          "distribution": "asreview"
+        },
+        {
+          "name": "top_down",
+          "value": "asreview.models.queriers:TopDown",
+          "distribution": "asreview"
+        },
+        {
+          "name": "uncertainty",
+          "value": "asreview.models.queriers:Uncertainty",
+          "distribution": "asreview"
+        }
       ]
     },
     "asreview_ai_model_configs": [
@@ -44,10 +187,8 @@
         "required_extensions": [
           "asreview-dory"
         ],
-        "missing_extensions": [
-          "asreview-dory"
-        ],
-        "status": "blocked"
+        "missing_extensions": [],
+        "status": "available"
       },
       {
         "name": "elas_h3",
@@ -58,11 +199,122 @@
         "required_extensions": [
           "asreview-dory"
         ],
-        "missing_extensions": [
-          "asreview-dory"
-        ],
-        "status": "blocked"
+        "missing_extensions": [],
+        "status": "available"
       }
+    ],
+    "dory": {
+      "status": "available",
+      "version": "1.2.2",
+      "reason": "ASReview Dory distribution detected.",
+      "docs_source": "https://github.com/asreview/asreview-dory",
+      "docs_classifier_names": [
+        "adaboost",
+        "dynamic-nn",
+        "nn-2-layer",
+        "warmstart-nn",
+        "xgboost"
+      ],
+      "docs_feature_extractor_names": [
+        "doc2vec",
+        "gtr-t5-large",
+        "labse",
+        "multilingual-e5-large",
+        "mxbai",
+        "sbert",
+        "xlm-roberta-large"
+      ],
+      "entry_point_classifiers": [
+        "adaboost",
+        "dynamic-nn",
+        "nn-2-layer",
+        "warmstart-nn",
+        "xgboost"
+      ],
+      "entry_point_feature_extractors": [
+        "doc2vec",
+        "gtr-t5-large",
+        "labse",
+        "multilingual-e5-large",
+        "mxbai",
+        "sbert",
+        "xlm-roberta-large"
+      ],
+      "entry_point_query_strategies": [],
+      "runnable_classifier_probes": [
+        {
+          "classifier": "adaboost",
+          "status": "available",
+          "probe": "sparse_tfidf_fit_predict_proba",
+          "entry_point": "asreviewcontrib.dory.classifiers.adaboost:AdaBoost",
+          "probe_kwargs": {
+            "n_estimators": 40,
+            "learning_rate": 0.8,
+            "random_state": 42
+          },
+          "reason": "Entry point loads and sparse TF-IDF probe fit/predict succeeds."
+        },
+        {
+          "classifier": "dynamic-nn",
+          "status": "blocked",
+          "probe": "sparse_tfidf_fit_predict_proba",
+          "entry_point": "asreviewcontrib.dory.classifiers.neural_networks:DynamicNNClassifier",
+          "probe_kwargs": {
+            "epochs": 1,
+            "batch_size": 4,
+            "verbose": 0,
+            "random_state": 42
+          },
+          "reason": "Sparse TF-IDF probe failed: TypeError: Sparse data was passed for X, but dense data is required. Use '.toarray()' to convert to a dense numpy array.",
+          "blocker_type": "probe_fit_error"
+        },
+        {
+          "classifier": "nn-2-layer",
+          "status": "blocked",
+          "probe": "sparse_tfidf_fit_predict_proba",
+          "entry_point": "asreviewcontrib.dory.classifiers.neural_networks:NN2LayerClassifier",
+          "probe_kwargs": {
+            "epochs": 1,
+            "batch_size": 4,
+            "verbose": 0,
+            "random_state": 42
+          },
+          "reason": "Sparse TF-IDF probe failed: TypeError: Sparse data was passed for X, but dense data is required. Use '.toarray()' to convert to a dense numpy array.",
+          "blocker_type": "probe_fit_error"
+        },
+        {
+          "classifier": "warmstart-nn",
+          "status": "blocked",
+          "probe": "sparse_tfidf_fit_predict_proba",
+          "entry_point": "asreviewcontrib.dory.classifiers.neural_networks:WarmStartNNClassifier",
+          "probe_kwargs": {
+            "epochs": 1,
+            "batch_size": 4,
+            "verbose": 0,
+            "random_state": 42
+          },
+          "reason": "Sparse TF-IDF probe failed: TypeError: Sparse data was passed for X, but dense data is required. Use '.toarray()' to convert to a dense numpy array.",
+          "blocker_type": "probe_fit_error"
+        },
+        {
+          "classifier": "xgboost",
+          "status": "available",
+          "probe": "sparse_tfidf_fit_predict_proba",
+          "entry_point": "asreviewcontrib.dory.classifiers.xgboost:XGBoost",
+          "probe_kwargs": {
+            "n_estimators": 40,
+            "max_depth": 6,
+            "learning_rate": 0.2,
+            "verbosity": 0,
+            "random_state": 42
+          },
+          "reason": "Entry point loads and sparse TF-IDF probe fit/predict succeeds."
+        }
+      ]
+    },
+    "dory_feasible_benchmark_classifiers": [
+      "adaboost",
+      "xgboost"
     ],
     "nemo": {
       "status": "blocked",
@@ -88,6 +340,11 @@
         "name": "transformer cross-encoder rerankers",
         "status": "not_enabled",
         "reason": "GPU/large-model dependency footprint exceeds default repo constraints."
+      },
+      {
+        "name": "dory sentence-transformer feature extractors (labse/mxbai/sbert/gtr/e5/xlm-roberta)",
+        "status": "not_enabled",
+        "reason": "Transformer embeddings require additional model downloads and significantly higher runtime/compute."
       }
     ]
   },
@@ -96,6 +353,8 @@
       "model_id": "baseline_lr_word_tfidf",
       "display_name": "Baseline LR (word TF-IDF)",
       "cohort": "baseline",
+      "model_source": "core",
+      "dory_classifier": null,
       "lightweight": true,
       "notes": "Current baseline from analysis/train_asreview.py"
     },
@@ -103,6 +362,8 @@
       "model_id": "improved_calibrated_svm_word_char",
       "display_name": "Improved Calibrated SVM (word+char TF-IDF)",
       "cohort": "improved",
+      "model_source": "core",
+      "dory_classifier": null,
       "lightweight": true,
       "notes": "Current improved best from analysis/train_asreview_improved.py"
     },
@@ -110,6 +371,8 @@
       "model_id": "candidate_lr_word_char",
       "display_name": "Candidate LR (word+char TF-IDF)",
       "cohort": "candidate",
+      "model_source": "core",
+      "dory_classifier": null,
       "lightweight": true,
       "notes": "Adds character n-grams to linear baseline while retaining calibration-friendly LR."
     },
@@ -117,6 +380,8 @@
       "model_id": "candidate_lsa_lr",
       "display_name": "Candidate LSA+LR (SVD semantic projection)",
       "cohort": "candidate",
+      "model_source": "core",
+      "dory_classifier": null,
       "lightweight": true,
       "notes": "Low-dimensional semantic projection can improve signal-to-noise on small corpora."
     },
@@ -124,6 +389,8 @@
       "model_id": "candidate_sgd_word_char",
       "display_name": "Candidate SGD log-loss (word+char TF-IDF)",
       "cohort": "candidate",
+      "model_source": "core",
+      "dory_classifier": null,
       "lightweight": true,
       "notes": "Fast linear online learner suitable for frequent reruns."
     },
@@ -131,8 +398,28 @@
       "model_id": "candidate_cnb_word_tfidf",
       "display_name": "Candidate ComplementNB (word TF-IDF)",
       "cohort": "candidate",
+      "model_source": "core",
+      "dory_classifier": null,
       "lightweight": true,
       "notes": "Strong sparse-text baseline for imbalance, included for comparison."
+    },
+    {
+      "model_id": "dory_xgboost_word_tfidf",
+      "display_name": "Dory XGBoost (word TF-IDF)",
+      "cohort": "dory",
+      "model_source": "dory",
+      "dory_classifier": "xgboost",
+      "lightweight": false,
+      "notes": "ASReview Dory classifier via entry point `xgboost`, benchmarked with core TF-IDF to keep protocol comparable."
+    },
+    {
+      "model_id": "dory_adaboost_word_tfidf",
+      "display_name": "Dory AdaBoost (word TF-IDF)",
+      "cohort": "dory",
+      "model_source": "dory",
+      "dory_classifier": "adaboost",
+      "lightweight": false,
+      "notes": "ASReview Dory classifier via entry point `adaboost`, benchmarked with core TF-IDF for fair comparison against existing sparse pipelines."
     }
   ],
   "blocked_models": [
@@ -140,9 +427,37 @@
       "model_id": "asreview_nemo",
       "display_name": "ASReview Nemo",
       "cohort": "candidate",
+      "model_source": "nemo",
       "status": "blocked",
       "reason": "No ASReview Nemo extension detected. ASReview core classifiers available are typically logistic/nb/rf/svm unless extra classifier plugins are installed.",
       "blocker_type": "missing_dependency"
+    },
+    {
+      "model_id": "dory_dynamic-nn",
+      "display_name": "Dory dynamic-nn",
+      "cohort": "dory",
+      "model_source": "dory",
+      "status": "blocked",
+      "reason": "Sparse TF-IDF probe failed: TypeError: Sparse data was passed for X, but dense data is required. Use '.toarray()' to convert to a dense numpy array.",
+      "blocker_type": "probe_fit_error"
+    },
+    {
+      "model_id": "dory_nn-2-layer",
+      "display_name": "Dory nn-2-layer",
+      "cohort": "dory",
+      "model_source": "dory",
+      "status": "blocked",
+      "reason": "Sparse TF-IDF probe failed: TypeError: Sparse data was passed for X, but dense data is required. Use '.toarray()' to convert to a dense numpy array.",
+      "blocker_type": "probe_fit_error"
+    },
+    {
+      "model_id": "dory_warmstart-nn",
+      "display_name": "Dory warmstart-nn",
+      "cohort": "dory",
+      "model_source": "dory",
+      "status": "blocked",
+      "reason": "Sparse TF-IDF probe failed: TypeError: Sparse data was passed for X, but dense data is required. Use '.toarray()' to convert to a dense numpy array.",
+      "blocker_type": "probe_fit_error"
     }
   ]
 }

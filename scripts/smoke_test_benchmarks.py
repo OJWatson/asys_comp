@@ -31,6 +31,7 @@ def main() -> None:
     fold_df = pd.read_csv(bench_dir / "model_benchmark_fold_metrics.csv")
     summary_df = pd.read_csv(bench_dir / "model_benchmark_summary.csv")
     summary_json = json.loads((bench_dir / "model_benchmark_summary.json").read_text(encoding="utf-8"))
+    availability = json.loads((bench_dir / "environment_model_availability.json").read_text(encoding="utf-8"))
 
     if fold_df.empty or summary_df.empty:
         raise AssertionError("Benchmark CSV outputs should not be empty")
@@ -45,6 +46,12 @@ def main() -> None:
     if not any(summary_df["cohort"] == "improved"):
         raise AssertionError("Benchmark summary missing improved cohort")
 
+    dory_status = availability.get("environment", {}).get("dory", {}).get("status")
+    if dory_status == "available":
+        has_dory = any(summary_df["cohort"] == "dory")
+        if not has_dory:
+            raise AssertionError("ASReview Dory is available but no Dory cohort model was benchmarked")
+
     winner = summary_json.get("summary_rows", [{}])[0]
     if "model_id" not in winner:
         raise AssertionError("Benchmark summary JSON has no winner model")
@@ -57,6 +64,7 @@ def main() -> None:
                 "n_fold_rows": int(len(fold_df)),
                 "n_models": int(summary_df["model_id"].nunique()),
                 "winner": winner.get("model_id"),
+                "dory_models_benchmarked": summary_json.get("dory_models_benchmarked", []),
             },
             indent=2,
         )

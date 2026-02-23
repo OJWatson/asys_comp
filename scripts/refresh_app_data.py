@@ -231,7 +231,7 @@ def build_artifacts(repo_root: Path, config: Dict[str, Any]) -> Dict[str, Any]:
     comparison = pd.read_csv(outputs / "improved" / "comparison_baseline_vs_improved.csv")
     stopping_policy = pd.read_csv(outputs / "next_steps" / "stopping_policy_summary.csv")
     nested_cv_summary = pd.read_csv(outputs / "next_steps" / "nested_cv_seed_sweep_summary.csv")
-    benchmark_summary = pd.read_csv(outputs / "benchmarks" / "model_benchmark_summary.csv")
+    benchmark_summary = pd.read_csv(outputs / "benchmarks" / "model_benchmark_summary.csv", keep_default_na=False)
     benchmark_summary_json = json.loads(
         (outputs / "benchmarks" / "model_benchmark_summary.json").read_text(encoding="utf-8")
     )
@@ -357,7 +357,7 @@ def build_artifacts(repo_root: Path, config: Dict[str, Any]) -> Dict[str, Any]:
         "methods": [
             "Text preprocessing with title+abstract concatenation and decision normalization.",
             "Model comparison across imbalance-aware baselines including calibrated SVM with word+char TF-IDF.",
-            "Expanded NLP benchmark with repeated stratified CV across baseline, improved, and additional lightweight candidates.",
+            "Expanded NLP benchmark with repeated stratified CV across baseline, improved, lightweight candidates, and feasible ASReview Dory classifiers.",
             "Evaluation emphasizes ranking and high-recall screening behavior, not threshold-0.5 accuracy only.",
             "Active-learning simulations with policy-based stopping diagnostics and seed-strategy sweeps.",
             "Leakage-safe queue export for reviewer operations with sensitive decision fields removed.",
@@ -372,6 +372,13 @@ def build_artifacts(repo_root: Path, config: Dict[str, Any]) -> Dict[str, Any]:
             "winner": benchmark_winner,
             "runner_up": benchmark_runner_up,
             "interpretation": benchmark_insights,
+            "dory_context": (
+                "ASReview Dory adds additional classifier/feature components to ASReview. "
+                "We benchmark feasible Dory classifiers with the same CV protocol to test whether they outperform "
+                "the current project stack on recall-first ranking metrics."
+            ),
+            "dory_models_benchmarked": benchmark_summary_json.get("dory_models_benchmarked", []),
+            "dory_status": benchmark_env.get("environment", {}).get("dory", {}),
             "blocked_models": blocked_models,
             "nemo_status": benchmark_env.get("environment", {}).get("nemo", {}),
             "environment_notes": benchmark_env.get("environment", {}).get("stronger_heavy_model_candidates", []),

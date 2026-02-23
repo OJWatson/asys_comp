@@ -1,9 +1,9 @@
 {
-  "generated_at": "2026-02-23T07:45:06+00:00",
+  "generated_at": "2026-02-23T09:38:10+00:00",
   "methods": [
     "Text preprocessing with title+abstract concatenation and decision normalization.",
     "Model comparison across imbalance-aware baselines including calibrated SVM with word+char TF-IDF.",
-    "Expanded NLP benchmark with repeated stratified CV across baseline, improved, and additional lightweight candidates.",
+    "Expanded NLP benchmark with repeated stratified CV across baseline, improved, lightweight candidates, and feasible ASReview Dory classifiers.",
     "Evaluation emphasizes ranking and high-recall screening behavior, not threshold-0.5 accuracy only.",
     "Active-learning simulations with policy-based stopping diagnostics and seed-strategy sweeps.",
     "Leakage-safe queue export for reviewer operations with sensitive decision fields removed."
@@ -211,6 +211,8 @@
         "model_id": "improved_calibrated_svm_word_char",
         "display_name": "Improved Calibrated SVM (word+char TF-IDF)",
         "cohort": "improved",
+        "model_source": "core",
+        "dory_classifier": "",
         "lightweight": true,
         "average_precision_mean": 0.5688720550676253,
         "average_precision_std": 0.0985617884316225,
@@ -230,10 +232,10 @@
         "precision@50_std": 0.0103279555898864,
         "recall@50_mean": 0.9851851851851852,
         "recall@50_std": 0.039096197252722,
-        "fit_seconds_mean": 1.29244892639108,
-        "fit_seconds_std": 0.1645975648271872,
-        "score_seconds_mean": 0.2489133627541984,
-        "score_seconds_std": 0.0336792412383126,
+        "fit_seconds_mean": 0.9795656424636642,
+        "fit_seconds_std": 0.0318862632510358,
+        "score_seconds_mean": 0.2059564009231204,
+        "score_seconds_std": 0.0141375915912191,
         "n_features_mean": 130219.0,
         "n_folds": 15,
         "rank": 1
@@ -242,6 +244,8 @@
         "model_id": "candidate_lr_word_char",
         "display_name": "Candidate LR (word+char TF-IDF)",
         "cohort": "candidate",
+        "model_source": "core",
+        "dory_classifier": "",
         "lightweight": true,
         "average_precision_mean": 0.5682356521982642,
         "average_precision_std": 0.0981111582614287,
@@ -261,10 +265,10 @@
         "precision@50_std": 0.0103279555898864,
         "recall@50_mean": 0.9851851851851852,
         "recall@50_std": 0.039096197252722,
-        "fit_seconds_mean": 1.3563804214044164,
-        "fit_seconds_std": 0.149335887292368,
-        "score_seconds_mean": 0.2585629729942108,
-        "score_seconds_std": 0.0321300602080663,
+        "fit_seconds_mean": 0.9875123197368036,
+        "fit_seconds_std": 0.0834636933171757,
+        "score_seconds_mean": 0.2151019357920934,
+        "score_seconds_std": 0.0112534554144935,
         "n_features_mean": 130219.0,
         "n_folds": 15,
         "rank": 2
@@ -273,6 +277,8 @@
         "model_id": "candidate_sgd_word_char",
         "display_name": "Candidate SGD log-loss (word+char TF-IDF)",
         "cohort": "candidate",
+        "model_source": "core",
+        "dory_classifier": "",
         "lightweight": true,
         "average_precision_mean": 0.5322197697694571,
         "average_precision_std": 0.1139226186907051,
@@ -292,10 +298,10 @@
         "precision@50_std": 0.0140746310109799,
         "recall@50_mean": 0.9388888888888888,
         "recall@50_std": 0.0727014018239022,
-        "fit_seconds_mean": 1.2207061610805492,
-        "fit_seconds_std": 0.1245257288820095,
-        "score_seconds_mean": 0.2421356642153114,
-        "score_seconds_std": 0.0318184059113778,
+        "fit_seconds_mean": 0.934978430190434,
+        "fit_seconds_std": 0.0227032280741876,
+        "score_seconds_mean": 0.1945341114886105,
+        "score_seconds_std": 0.0133784145796089,
         "n_features_mean": 130219.0,
         "n_folds": 15,
         "rank": 3
@@ -304,6 +310,8 @@
         "model_id": "candidate_lsa_lr",
         "display_name": "Candidate LSA+LR (SVD semantic projection)",
         "cohort": "candidate",
+        "model_source": "core",
+        "dory_classifier": "",
         "lightweight": true,
         "average_precision_mean": 0.5014584457332613,
         "average_precision_std": 0.0744650013993488,
@@ -323,10 +331,10 @@
         "precision@50_std": 0.0101418510567421,
         "recall@50_mean": 0.9777777777777776,
         "recall@50_std": 0.0460043706228236,
-        "fit_seconds_mean": 3.246093624193842,
-        "fit_seconds_std": 0.3288262248688093,
-        "score_seconds_mean": 0.0553982252875963,
-        "score_seconds_std": 0.005862350175347,
+        "fit_seconds_mean": 2.693549925539022,
+        "fit_seconds_std": 0.1146934121958057,
+        "score_seconds_mean": 0.0468077594026302,
+        "score_seconds_std": 0.0018291648994177,
         "n_features_mean": 54451.2,
         "n_folds": 15,
         "rank": 4
@@ -335,6 +343,8 @@
         "model_id": "baseline_lr_word_tfidf",
         "display_name": "Baseline LR (word TF-IDF)",
         "cohort": "baseline",
+        "model_source": "core",
+        "dory_classifier": "",
         "lightweight": true,
         "average_precision_mean": 0.4717635534634609,
         "average_precision_std": 0.1293785447393835,
@@ -354,18 +364,53 @@
         "precision@50_std": 0.0101418510567421,
         "recall@50_mean": 0.9777777777777776,
         "recall@50_std": 0.0460043706228236,
-        "fit_seconds_mean": 0.1975241910666227,
-        "fit_seconds_std": 0.0236993460049378,
-        "score_seconds_mean": 0.0441305234795436,
-        "score_seconds_std": 0.0088378101986833,
+        "fit_seconds_mean": 0.1563328482753907,
+        "fit_seconds_std": 0.015838073348405,
+        "score_seconds_mean": 0.0359640824298063,
+        "score_seconds_std": 0.0065518410808428,
         "n_features_mean": 10078.333333333334,
         "n_folds": 15,
         "rank": 5
       },
       {
+        "model_id": "dory_adaboost_word_tfidf",
+        "display_name": "Dory AdaBoost (word TF-IDF)",
+        "cohort": "dory",
+        "model_source": "dory",
+        "dory_classifier": "adaboost",
+        "lightweight": false,
+        "average_precision_mean": 0.2933734916956048,
+        "average_precision_std": 0.1105781998285595,
+        "roc_auc_mean": 0.643491110831797,
+        "roc_auc_std": 0.0739331747577738,
+        "wss@95_mean": 0.0777777777777777,
+        "wss@95_std": 0.124827923887288,
+        "precision@10_mean": 0.2533333333333333,
+        "precision@10_std": 0.1060098827378619,
+        "recall@10_mean": 0.2962962962962963,
+        "recall@10_std": 0.1244107215267454,
+        "precision@20_mean": 0.23,
+        "precision@20_std": 0.0492805380304581,
+        "recall@20_mean": 0.5333333333333333,
+        "recall@20_std": 0.1027080415495388,
+        "precision@50_mean": 0.1573333333333333,
+        "precision@50_std": 0.0148644670591441,
+        "recall@50_mean": 0.9148148148148147,
+        "recall@50_std": 0.0680143758362874,
+        "fit_seconds_mean": 3.9728831841377534,
+        "fit_seconds_std": 0.0749591437590396,
+        "score_seconds_mean": 0.0580879908598338,
+        "score_seconds_std": 0.0035298891225547,
+        "n_features_mean": 54451.2,
+        "n_folds": 15,
+        "rank": 6
+      },
+      {
         "model_id": "candidate_cnb_word_tfidf",
         "display_name": "Candidate ComplementNB (word TF-IDF)",
         "cohort": "candidate",
+        "model_source": "core",
+        "dory_classifier": "",
         "lightweight": true,
         "average_precision_mean": 0.2895961515066431,
         "average_precision_std": 0.1064151205185355,
@@ -385,19 +430,54 @@
         "precision@50_std": 0.0183095083286825,
         "recall@50_mean": 0.8768518518518519,
         "recall@50_std": 0.1027169847374655,
-        "fit_seconds_mean": 0.2970700515356536,
-        "fit_seconds_std": 0.0192863687249695,
-        "score_seconds_mean": 0.042258567456156,
-        "score_seconds_std": 0.0033209087565171,
+        "fit_seconds_mean": 0.2087877863474811,
+        "fit_seconds_std": 0.0048364063298081,
+        "score_seconds_mean": 0.0333892014731342,
+        "score_seconds_std": 0.0023315183273174,
         "n_features_mean": 54451.2,
         "n_folds": 15,
-        "rank": 6
+        "rank": 7
+      },
+      {
+        "model_id": "dory_xgboost_word_tfidf",
+        "display_name": "Dory XGBoost (word TF-IDF)",
+        "cohort": "dory",
+        "model_source": "dory",
+        "dory_classifier": "xgboost",
+        "lightweight": false,
+        "average_precision_mean": 0.2624822604956451,
+        "average_precision_std": 0.0634770642685353,
+        "roc_auc_mean": 0.5921821755767833,
+        "roc_auc_std": 0.0441549455695898,
+        "wss@95_mean": 0.0533333333333332,
+        "wss@95_std": 0.094112394811432,
+        "precision@10_mean": 0.2,
+        "precision@10_std": 0.0999999999999999,
+        "recall@10_mean": 0.2324074074074074,
+        "recall@10_std": 0.1190685607682954,
+        "precision@20_mean": 0.1933333333333333,
+        "precision@20_std": 0.0622972903178973,
+        "recall@20_mean": 0.4472222222222222,
+        "recall@20_std": 0.13880950112082,
+        "precision@50_mean": 0.1506666666666666,
+        "precision@50_std": 0.0127988094684436,
+        "recall@50_mean": 0.8777777777777778,
+        "recall@50_std": 0.078074829569751,
+        "fit_seconds_mean": 1.5914273629430682,
+        "fit_seconds_std": 0.1559962660214996,
+        "score_seconds_mean": 0.0403268630849197,
+        "score_seconds_std": 0.0042439820780126,
+        "n_features_mean": 54451.2,
+        "n_folds": 15,
+        "rank": 8
       }
     ],
     "winner": {
       "model_id": "improved_calibrated_svm_word_char",
       "display_name": "Improved Calibrated SVM (word+char TF-IDF)",
       "cohort": "improved",
+      "model_source": "core",
+      "dory_classifier": "",
       "lightweight": true,
       "average_precision_mean": 0.5688720550676253,
       "average_precision_std": 0.0985617884316225,
@@ -417,10 +497,10 @@
       "precision@50_std": 0.0103279555898864,
       "recall@50_mean": 0.9851851851851852,
       "recall@50_std": 0.039096197252722,
-      "fit_seconds_mean": 1.29244892639108,
-      "fit_seconds_std": 0.1645975648271872,
-      "score_seconds_mean": 0.2489133627541984,
-      "score_seconds_std": 0.0336792412383126,
+      "fit_seconds_mean": 0.9795656424636642,
+      "fit_seconds_std": 0.0318862632510358,
+      "score_seconds_mean": 0.2059564009231204,
+      "score_seconds_std": 0.0141375915912191,
       "n_features_mean": 130219.0,
       "n_folds": 15,
       "rank": 1
@@ -429,6 +509,8 @@
       "model_id": "candidate_lr_word_char",
       "display_name": "Candidate LR (word+char TF-IDF)",
       "cohort": "candidate",
+      "model_source": "core",
+      "dory_classifier": "",
       "lightweight": true,
       "average_precision_mean": 0.5682356521982642,
       "average_precision_std": 0.0981111582614287,
@@ -448,10 +530,10 @@
       "precision@50_std": 0.0103279555898864,
       "recall@50_mean": 0.9851851851851852,
       "recall@50_std": 0.039096197252722,
-      "fit_seconds_mean": 1.3563804214044164,
-      "fit_seconds_std": 0.149335887292368,
-      "score_seconds_mean": 0.2585629729942108,
-      "score_seconds_std": 0.0321300602080663,
+      "fit_seconds_mean": 0.9875123197368036,
+      "fit_seconds_std": 0.0834636933171757,
+      "score_seconds_mean": 0.2151019357920934,
+      "score_seconds_std": 0.0112534554144935,
       "n_features_mean": 130219.0,
       "n_folds": 15,
       "rank": 2
@@ -459,18 +541,162 @@
     "interpretation": [
       "Top model by AP: Improved Calibrated SVM (word+char TF-IDF) (AP 0.569 \u00b1 0.099, WSS@95 0.316).",
       "Runner-up: Candidate LR (word+char TF-IDF) (AP 0.568 \u00b1 0.098).",
-      "Fastest training model: Baseline LR (word TF-IDF) (0.198s mean fit time/fold).",
+      "Best Dory model: Dory AdaBoost (word TF-IDF) (AP 0.293, WSS@95 0.078).",
+      "Best Dory vs best current non-Dory AP gap: -0.275 (Dory AdaBoost (word TF-IDF) vs Improved Calibrated SVM (word+char TF-IDF)).",
+      "Fastest training model: Baseline LR (word TF-IDF) (0.156s mean fit time/fold).",
       "Winner vs runner-up AP gap is 0.0006; treat as near-tie and prioritize operational stability if both perform similarly in future refreshes.",
-      "Runtime trade-off: Baseline LR (word TF-IDF) trains fastest (0.198s/fold mean)."
+      "Runtime trade-off: Baseline LR (word TF-IDF) trains fastest (0.156s/fold mean)."
     ],
+    "dory_context": "ASReview Dory adds additional classifier/feature components to ASReview. We benchmark feasible Dory classifiers with the same CV protocol to test whether they outperform the current project stack on recall-first ranking metrics.",
+    "dory_models_benchmarked": [
+      "dory_adaboost_word_tfidf",
+      "dory_xgboost_word_tfidf"
+    ],
+    "dory_status": {
+      "status": "available",
+      "version": "1.2.2",
+      "reason": "ASReview Dory distribution detected.",
+      "docs_source": "https://github.com/asreview/asreview-dory",
+      "docs_classifier_names": [
+        "adaboost",
+        "dynamic-nn",
+        "nn-2-layer",
+        "warmstart-nn",
+        "xgboost"
+      ],
+      "docs_feature_extractor_names": [
+        "doc2vec",
+        "gtr-t5-large",
+        "labse",
+        "multilingual-e5-large",
+        "mxbai",
+        "sbert",
+        "xlm-roberta-large"
+      ],
+      "entry_point_classifiers": [
+        "adaboost",
+        "dynamic-nn",
+        "nn-2-layer",
+        "warmstart-nn",
+        "xgboost"
+      ],
+      "entry_point_feature_extractors": [
+        "doc2vec",
+        "gtr-t5-large",
+        "labse",
+        "multilingual-e5-large",
+        "mxbai",
+        "sbert",
+        "xlm-roberta-large"
+      ],
+      "entry_point_query_strategies": [],
+      "runnable_classifier_probes": [
+        {
+          "classifier": "adaboost",
+          "status": "available",
+          "probe": "sparse_tfidf_fit_predict_proba",
+          "entry_point": "asreviewcontrib.dory.classifiers.adaboost:AdaBoost",
+          "probe_kwargs": {
+            "n_estimators": 40,
+            "learning_rate": 0.8,
+            "random_state": 42
+          },
+          "reason": "Entry point loads and sparse TF-IDF probe fit/predict succeeds."
+        },
+        {
+          "classifier": "dynamic-nn",
+          "status": "blocked",
+          "probe": "sparse_tfidf_fit_predict_proba",
+          "entry_point": "asreviewcontrib.dory.classifiers.neural_networks:DynamicNNClassifier",
+          "probe_kwargs": {
+            "epochs": 1,
+            "batch_size": 4,
+            "verbose": 0,
+            "random_state": 42
+          },
+          "reason": "Sparse TF-IDF probe failed: TypeError: Sparse data was passed for X, but dense data is required. Use '.toarray()' to convert to a dense numpy array.",
+          "blocker_type": "probe_fit_error"
+        },
+        {
+          "classifier": "nn-2-layer",
+          "status": "blocked",
+          "probe": "sparse_tfidf_fit_predict_proba",
+          "entry_point": "asreviewcontrib.dory.classifiers.neural_networks:NN2LayerClassifier",
+          "probe_kwargs": {
+            "epochs": 1,
+            "batch_size": 4,
+            "verbose": 0,
+            "random_state": 42
+          },
+          "reason": "Sparse TF-IDF probe failed: TypeError: Sparse data was passed for X, but dense data is required. Use '.toarray()' to convert to a dense numpy array.",
+          "blocker_type": "probe_fit_error"
+        },
+        {
+          "classifier": "warmstart-nn",
+          "status": "blocked",
+          "probe": "sparse_tfidf_fit_predict_proba",
+          "entry_point": "asreviewcontrib.dory.classifiers.neural_networks:WarmStartNNClassifier",
+          "probe_kwargs": {
+            "epochs": 1,
+            "batch_size": 4,
+            "verbose": 0,
+            "random_state": 42
+          },
+          "reason": "Sparse TF-IDF probe failed: TypeError: Sparse data was passed for X, but dense data is required. Use '.toarray()' to convert to a dense numpy array.",
+          "blocker_type": "probe_fit_error"
+        },
+        {
+          "classifier": "xgboost",
+          "status": "available",
+          "probe": "sparse_tfidf_fit_predict_proba",
+          "entry_point": "asreviewcontrib.dory.classifiers.xgboost:XGBoost",
+          "probe_kwargs": {
+            "n_estimators": 40,
+            "max_depth": 6,
+            "learning_rate": 0.2,
+            "verbosity": 0,
+            "random_state": 42
+          },
+          "reason": "Entry point loads and sparse TF-IDF probe fit/predict succeeds."
+        }
+      ]
+    },
     "blocked_models": [
       {
         "model_id": "asreview_nemo",
         "display_name": "ASReview Nemo",
         "cohort": "candidate",
+        "model_source": "nemo",
         "status": "blocked",
         "reason": "No ASReview Nemo extension detected. ASReview core classifiers available are typically logistic/nb/rf/svm unless extra classifier plugins are installed.",
         "blocker_type": "missing_dependency"
+      },
+      {
+        "model_id": "dory_dynamic-nn",
+        "display_name": "Dory dynamic-nn",
+        "cohort": "dory",
+        "model_source": "dory",
+        "status": "blocked",
+        "reason": "Sparse TF-IDF probe failed: TypeError: Sparse data was passed for X, but dense data is required. Use '.toarray()' to convert to a dense numpy array.",
+        "blocker_type": "probe_fit_error"
+      },
+      {
+        "model_id": "dory_nn-2-layer",
+        "display_name": "Dory nn-2-layer",
+        "cohort": "dory",
+        "model_source": "dory",
+        "status": "blocked",
+        "reason": "Sparse TF-IDF probe failed: TypeError: Sparse data was passed for X, but dense data is required. Use '.toarray()' to convert to a dense numpy array.",
+        "blocker_type": "probe_fit_error"
+      },
+      {
+        "model_id": "dory_warmstart-nn",
+        "display_name": "Dory warmstart-nn",
+        "cohort": "dory",
+        "model_source": "dory",
+        "status": "blocked",
+        "reason": "Sparse TF-IDF probe failed: TypeError: Sparse data was passed for X, but dense data is required. Use '.toarray()' to convert to a dense numpy array.",
+        "blocker_type": "probe_fit_error"
       }
     ],
     "nemo_status": {
@@ -497,6 +723,11 @@
         "name": "transformer cross-encoder rerankers",
         "status": "not_enabled",
         "reason": "GPU/large-model dependency footprint exceeds default repo constraints."
+      },
+      {
+        "name": "dory sentence-transformer feature extractors (labse/mxbai/sbert/gtr/e5/xlm-roberta)",
+        "status": "not_enabled",
+        "reason": "Transformer embeddings require additional model downloads and significantly higher runtime/compute."
       }
     ]
   }

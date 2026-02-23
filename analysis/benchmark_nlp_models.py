@@ -23,6 +23,7 @@ from typing import Any, Dict, List, Optional, Sequence, Tuple
 
 import numpy as np
 import pandas as pd
+from scipy.sparse import csr_matrix
 from sklearn.calibration import CalibratedClassifierCV
 from sklearn.decomposition import TruncatedSVD
 from sklearn.exceptions import NotFittedError
@@ -38,6 +39,18 @@ from sklearn.svm import LinearSVC
 INCLUDE_TOKENS = {"1", "i", "include", "included"}
 EXCLUDE_TOKENS = {"0", "e", "exclude", "excluded"}
 
+DORY_DOCS_CLASSIFIERS = ["adaboost", "dynamic-nn", "nn-2-layer", "warmstart-nn", "xgboost"]
+DORY_DOCS_FEATURE_EXTRACTORS = [
+    "doc2vec",
+    "gtr-t5-large",
+    "labse",
+    "multilingual-e5-large",
+    "mxbai",
+    "sbert",
+    "xlm-roberta-large",
+]
+DORY_BENCHMARK_CLASSIFIERS = ["xgboost", "adaboost"]
+
 
 @dataclass(frozen=True)
 class ModelSpec:
@@ -47,6 +60,8 @@ class ModelSpec:
     lightweight: bool
     builder_key: str
     notes: str
+    model_source: str
+    dory_classifier: Optional[str] = None
 
 
 def normalize_col_name(name: object) -> str:
@@ -184,6 +199,308 @@ def _word_char_features() -> FeatureUnion:
     )
 
 
+def _norm_dist_name(name: str) -> str:
+    return name.strip().lower().replace("_", "-")
+
+
+def _collect_asreview_entry_points() -> Tuple[Dict[str, List[Dict[str, str]]], Dict[str, metadata.EntryPoint], Dict[str, metadata.EntryPoint]]:
+    tracked_groups = {
+        "asreview.models",
+        "asreview.models.classifiers",
+        "asreview.models.feature_extractors",
+        "asreview.models.queriers",
+        "asreview.models.balancers",
+        # backward-compat groups used by old installs
+        "asreview.classifiers",
+        "asreview.feature_extractors",
+        "asreview.query_strategies",
+        "asreview.models.classifiers",
+    }
+
+    grouped: Dict[str, List[Dict[str, str]]] = {}
+    dory_classifier_eps: Dict[str, metadata.EntryPoint] = {}
+    dory_feature_eps: Dict[str, metadata.EntryPoint] = {}
+
+    for dist in metadata.distributions():
+        dist_name = dist.metadata.get("Name", "")
+        dist_name_norm = _norm_dist_name(dist_name)
+
+        for ep in dist.entry_points:
+            if ep.group not in tracked_groups:
+                continue
+
+            rec = {
+                "name": ep.name,
+                "value": ep.value,
+                "distribution": dist_name,
+            }
+            grouped.setdefault(ep.group, []).append(rec)
+
+            is_dory = dist_name_norm == "asreview-dory" or ep.value.startswith("asreviewcontrib.dory")
+            if is_dory and ep.group == "asreview.models.classifiers":
+                dory_classifier_eps[ep.name] = ep
+            if is_dory and ep.group == "asreview.models.feature_extractors":
+                dory_feature_eps[ep.name] = ep
+
+    for group, rows in grouped.items():
+        rows.sort(key=lambda r: (r["name"], r["distribution"], r["value"]))
+
+    return grouped, dory_classifier_eps, dory_feature_eps
+
+
+def _dory_probe_kwargs(classifier_name: str) -> Dict[str, Any]:
+    if classifier_name == "xgboost":
+        return {
+            "n_estimators": 40,
+            "max_depth": 6,
+            "learning_rate": 0.2,
+            "verbosity": 0,
+            "random_state": 42,
+        }
+    if classifier_name == "adaboost":
+        return {
+            "n_estimators": 40,
+            "learning_rate": 0.8,
+            "random_state": 42,
+        }
+    if classifier_name in {"dynamic-nn", "nn-2-layer", "warmstart-nn"}:
+        return {
+            "epochs": 1,
+            "batch_size": 4,
+            "verbose": 0,
+            "random_state": 42,
+        }
+    return {"random_state": 42}
+
+
+def _probe_dory_classifier(classifier_name: str, dory_classifier_eps: Dict[str, metadata.EntryPoint]) -> Dict[str, Any]:
+    probe: Dict[str, Any] = {
+        "classifier": classifier_name,
+        "status": "blocked",
+        "probe": "sparse_tfidf_fit_predict_proba",
+    }
+
+    ep = dory_classifier_eps.get(classifier_name)
+    if ep is None:
+        probe.update(
+            {
+                "reason": "No ASReview Dory classifier entry point detected in this environment.",
+                "blocker_type": "missing_entry_point",
+            }
+        )
+        return probe
+
+    probe["entry_point"] = ep.value
+
+    try:
+        classifier_cls = ep.load()
+    except Exception as exc:
+        probe.update(
+            {
+                "reason": f"Failed to load classifier entry point: {type(exc).__name__}: {exc}",
+                "blocker_type": "entry_point_load_error",
+            }
+        )
+        return probe
+
+    kwargs = _dory_probe_kwargs(classifier_name)
+    probe["probe_kwargs"] = kwargs
+
+    try:
+        estimator = classifier_cls(**kwargs)
+    except Exception as exc:
+        probe.update(
+            {
+                "reason": f"Failed to instantiate classifier: {type(exc).__name__}: {exc}",
+                "blocker_type": "instantiation_error",
+            }
+        )
+        return probe
+
+    X_probe = csr_matrix(
+        np.asarray(
+            [
+                [1.0, 0.0, 0.0, 0.1],
+                [0.8, 0.2, 0.0, 0.2],
+                [0.0, 1.0, 0.2, 0.0],
+                [0.0, 0.9, 0.1, 0.0],
+                [0.0, 0.0, 1.0, 0.4],
+                [0.1, 0.0, 0.8, 0.5],
+            ],
+            dtype=float,
+        )
+    )
+    y_probe = np.asarray([0, 0, 1, 1, 1, 0], dtype=int)
+
+    try:
+        estimator.fit(X_probe, y_probe)
+        y_hat = estimator.predict_proba(X_probe)
+        y_hat = np.asarray(y_hat)
+        if y_hat.ndim != 2 or y_hat.shape[1] < 2:
+            raise RuntimeError(f"Unexpected predict_proba shape: {y_hat.shape}")
+
+        probe.update(
+            {
+                "status": "available",
+                "reason": "Entry point loads and sparse TF-IDF probe fit/predict succeeds.",
+            }
+        )
+        return probe
+    except Exception as exc:
+        probe.update(
+            {
+                "reason": f"Sparse TF-IDF probe failed: {type(exc).__name__}: {exc}",
+                "blocker_type": "probe_fit_error",
+            }
+        )
+        return probe
+
+
+def detect_environment_model_options() -> Dict[str, Any]:
+    installed = sorted(dist.metadata["Name"] for dist in metadata.distributions() if dist.metadata.get("Name"))
+    installed_norm = {_norm_dist_name(name) for name in installed}
+
+    asreview_dists = [name for name in installed if "asreview" in name.lower()]
+
+    entry_point_groups, dory_classifier_eps, dory_feature_eps = _collect_asreview_entry_points()
+
+    dory_classifiers_detected = sorted(dory_classifier_eps.keys())
+    dory_feature_extractors_detected = sorted(dory_feature_eps.keys())
+
+    dory_query_strategies_detected: List[str] = []
+    for row in entry_point_groups.get("asreview.models.queriers", []):
+        if row["value"].startswith("asreviewcontrib.dory"):
+            dory_query_strategies_detected.append(row["name"])
+
+    asreview_ai_model_configs: List[Dict[str, Any]] = []
+    try:
+        from asreview.models.models import AI_MODEL_CONFIGURATIONS
+
+        for cfg in AI_MODEL_CONFIGURATIONS:
+            cfg_val = cfg.get("value")
+            required_ext = list(cfg.get("extensions", []))
+            missing_ext = [ext for ext in required_ext if _norm_dist_name(ext) not in installed_norm]
+            status = "available" if not missing_ext else "blocked"
+
+            asreview_ai_model_configs.append(
+                {
+                    "name": cfg.get("name"),
+                    "label": cfg.get("label"),
+                    "type": cfg.get("type"),
+                    "classifier": getattr(cfg_val, "classifier", None),
+                    "feature_extractor": getattr(cfg_val, "feature_extractor", None),
+                    "required_extensions": required_ext,
+                    "missing_extensions": missing_ext,
+                    "status": status,
+                }
+            )
+    except Exception:
+        asreview_ai_model_configs = []
+
+    dory_probe_results = [_probe_dory_classifier(name, dory_classifier_eps) for name in DORY_DOCS_CLASSIFIERS]
+    dory_probe_by_name = {row["classifier"]: row for row in dory_probe_results}
+
+    dory_version = None
+    try:
+        dory_version = metadata.version("asreview-dory")
+    except Exception:
+        dory_version = None
+
+    dory_status = {
+        "status": "available" if dory_version else "blocked",
+        "version": dory_version,
+        "reason": "ASReview Dory distribution detected." if dory_version else "ASReview Dory distribution not installed.",
+        "docs_source": "https://github.com/asreview/asreview-dory",
+        "docs_classifier_names": DORY_DOCS_CLASSIFIERS,
+        "docs_feature_extractor_names": DORY_DOCS_FEATURE_EXTRACTORS,
+        "entry_point_classifiers": dory_classifiers_detected,
+        "entry_point_feature_extractors": dory_feature_extractors_detected,
+        "entry_point_query_strategies": dory_query_strategies_detected,
+        "runnable_classifier_probes": dory_probe_results,
+    }
+
+    possible_nemo_ep = []
+    for rows in entry_point_groups.values():
+        for row in rows:
+            name = str(row.get("name", ""))
+            if "nemo" in name.lower():
+                possible_nemo_ep.append(name)
+
+    nemo_candidate_modules = [
+        "asreview_nemo",
+        "asreviewcontrib.classifiers.nemo",
+        "asreviewcontrib.models.nemo",
+        "asreview_models.nemo",
+        "nemo_toolkit",
+    ]
+
+    available_modules = []
+    for module_name in nemo_candidate_modules:
+        try:
+            __import__(module_name)
+            available_modules.append(module_name)
+        except Exception:
+            pass
+
+    if possible_nemo_ep or available_modules:
+        nemo_status: Dict[str, Any] = {
+            "status": "available",
+            "reason": "Detected Nemo-like extension/module in current environment.",
+            "entry_points": sorted(possible_nemo_ep),
+            "modules": sorted(available_modules),
+        }
+    else:
+        nemo_status = {
+            "status": "blocked",
+            "reason": (
+                "No ASReview Nemo extension detected. ASReview core classifiers available are typically "
+                "logistic/nb/rf/svm unless extra classifier plugins are installed."
+            ),
+            "entry_points": [],
+            "modules_checked": nemo_candidate_modules,
+            "modules_available": [],
+            "blocker_type": "missing_dependency",
+        }
+
+    feasible_dory_for_benchmark = [
+        p["classifier"]
+        for p in dory_probe_results
+        if p.get("status") == "available" and p.get("classifier") in DORY_BENCHMARK_CLASSIFIERS
+    ]
+
+    return {
+        "python": {
+            "version": sys.version,
+            "executable": sys.executable,
+            "platform": platform.platform(),
+        },
+        "installed_asreview_related_packages": asreview_dists,
+        "entry_points": entry_point_groups,
+        "asreview_ai_model_configs": asreview_ai_model_configs,
+        "dory": dory_status,
+        "dory_feasible_benchmark_classifiers": feasible_dory_for_benchmark,
+        "nemo": nemo_status,
+        "stronger_heavy_model_candidates": [
+            {
+                "name": "sentence-transformers/all-MiniLM-L6-v2 + linear classifier",
+                "status": "not_enabled",
+                "reason": "Not included in default benchmark to keep install/runtime lightweight and reproducible.",
+            },
+            {
+                "name": "transformer cross-encoder rerankers",
+                "status": "not_enabled",
+                "reason": "GPU/large-model dependency footprint exceeds default repo constraints.",
+            },
+            {
+                "name": "dory sentence-transformer feature extractors (labse/mxbai/sbert/gtr/e5/xlm-roberta)",
+                "status": "not_enabled",
+                "reason": "Transformer embeddings require additional model downloads and significantly higher runtime/compute.",
+            },
+        ],
+        "dory_probe_index": dory_probe_by_name,
+    }
+
+
 def build_model(spec: ModelSpec, random_state: int, y_train: np.ndarray) -> Pipeline:
     min_class = int(np.min(np.bincount(y_train, minlength=2)))
     calibration_cv = max(2, min(3, min_class))
@@ -289,6 +606,42 @@ def build_model(spec: ModelSpec, random_state: int, y_train: np.ndarray) -> Pipe
             ]
         )
 
+    if spec.builder_key == "dory_xgboost_word_tfidf":
+        from asreviewcontrib.dory.classifiers.xgboost import XGBoost
+
+        return Pipeline(
+            steps=[
+                ("tfidf", _word_tfidf_vectorizer()),
+                (
+                    "clf",
+                    XGBoost(
+                        n_estimators=120,
+                        max_depth=6,
+                        learning_rate=0.2,
+                        verbosity=0,
+                        random_state=random_state,
+                    ),
+                ),
+            ]
+        )
+
+    if spec.builder_key == "dory_adaboost_word_tfidf":
+        from asreviewcontrib.dory.classifiers.adaboost import AdaBoost
+
+        return Pipeline(
+            steps=[
+                ("tfidf", _word_tfidf_vectorizer()),
+                (
+                    "clf",
+                    AdaBoost(
+                        n_estimators=120,
+                        learning_rate=0.8,
+                        random_state=random_state,
+                    ),
+                ),
+            ]
+        )
+
     raise ValueError(f"Unknown builder key: {spec.builder_key}")
 
 
@@ -332,127 +685,6 @@ def estimate_feature_count(model: Pipeline) -> Optional[int]:
     return None
 
 
-def detect_environment_model_options() -> Dict[str, Any]:
-    installed = sorted(dist.metadata["Name"] for dist in metadata.distributions() if dist.metadata.get("Name"))
-    installed_norm = {name.lower() for name in installed}
-
-    def _has_dist(prefix: str) -> List[str]:
-        p = prefix.lower()
-        return [name for name in installed if p in name.lower()]
-
-    asreview_dists = _has_dist("asreview")
-
-    entry_point_groups = {}
-    try:
-        eps = metadata.entry_points()
-        for group in [
-            "asreview.models",
-            "asreview.classifiers",
-            "asreview.feature_extractors",
-            "asreview.query_strategies",
-        ]:
-            try:
-                selected = list(eps.select(group=group))
-            except Exception:
-                selected = [ep for ep in eps if getattr(ep, "group", "") == group]
-            if selected:
-                entry_point_groups[group] = sorted(ep.name for ep in selected)
-    except Exception:
-        entry_point_groups = {}
-
-    asreview_ai_model_configs: List[Dict[str, Any]] = []
-    try:
-        from asreview.models.models import AI_MODEL_CONFIGURATIONS
-
-        for cfg in AI_MODEL_CONFIGURATIONS:
-            cfg_val = cfg.get("value")
-            required_ext = list(cfg.get("extensions", []))
-            missing_ext = [ext for ext in required_ext if ext.lower() not in installed_norm]
-            status = "available" if not missing_ext else "blocked"
-
-            asreview_ai_model_configs.append(
-                {
-                    "name": cfg.get("name"),
-                    "label": cfg.get("label"),
-                    "type": cfg.get("type"),
-                    "classifier": getattr(cfg_val, "classifier", None),
-                    "feature_extractor": getattr(cfg_val, "feature_extractor", None),
-                    "required_extensions": required_ext,
-                    "missing_extensions": missing_ext,
-                    "status": status,
-                }
-            )
-    except Exception:
-        asreview_ai_model_configs = []
-
-    possible_nemo_ep = []
-    for names in entry_point_groups.values():
-        for n in names:
-            if "nemo" in n.lower():
-                possible_nemo_ep.append(n)
-
-    nemo_candidate_modules = [
-        "asreview_nemo",
-        "asreviewcontrib.classifiers.nemo",
-        "asreviewcontrib.models.nemo",
-        "asreview_models.nemo",
-        "nemo_toolkit",
-    ]
-
-    available_modules = []
-    for module_name in nemo_candidate_modules:
-        try:
-            __import__(module_name)
-            available_modules.append(module_name)
-        except Exception:
-            pass
-
-    nemo_status: Dict[str, Any]
-    if possible_nemo_ep or available_modules:
-        nemo_status = {
-            "status": "available",
-            "reason": "Detected Nemo-like extension/module in current environment.",
-            "entry_points": sorted(possible_nemo_ep),
-            "modules": sorted(available_modules),
-        }
-    else:
-        nemo_status = {
-            "status": "blocked",
-            "reason": (
-                "No ASReview Nemo extension detected. ASReview core classifiers available are typically "
-                "logistic/nb/rf/svm unless extra classifier plugins are installed."
-            ),
-            "entry_points": [],
-            "modules_checked": nemo_candidate_modules,
-            "modules_available": [],
-            "blocker_type": "missing_dependency",
-        }
-
-    return {
-        "python": {
-            "version": sys.version,
-            "executable": sys.executable,
-            "platform": platform.platform(),
-        },
-        "installed_asreview_related_packages": asreview_dists,
-        "entry_points": entry_point_groups,
-        "asreview_ai_model_configs": asreview_ai_model_configs,
-        "nemo": nemo_status,
-        "stronger_heavy_model_candidates": [
-            {
-                "name": "sentence-transformers/all-MiniLM-L6-v2 + linear classifier",
-                "status": "not_enabled",
-                "reason": "Not included in default benchmark to keep install/runtime lightweight and reproducible.",
-            },
-            {
-                "name": "transformer cross-encoder rerankers",
-                "status": "not_enabled",
-                "reason": "GPU/large-model dependency footprint exceeds default repo constraints.",
-            },
-        ],
-    }
-
-
 def evaluate_fold_metrics(y_true: np.ndarray, scores: np.ndarray) -> Dict[str, float]:
     out = {
         "average_precision": float(average_precision_score(y_true, scores)),
@@ -468,8 +700,8 @@ def evaluate_fold_metrics(y_true: np.ndarray, scores: np.ndarray) -> Dict[str, f
     return out
 
 
-def build_specs() -> List[ModelSpec]:
-    return [
+def build_specs(env_info: Dict[str, Any]) -> List[ModelSpec]:
+    specs = [
         ModelSpec(
             model_id="baseline_lr_word_tfidf",
             display_name="Baseline LR (word TF-IDF)",
@@ -477,6 +709,7 @@ def build_specs() -> List[ModelSpec]:
             lightweight=True,
             builder_key="baseline_lr_word_tfidf",
             notes="Current baseline from analysis/train_asreview.py",
+            model_source="core",
         ),
         ModelSpec(
             model_id="improved_calibrated_svm_word_char",
@@ -485,6 +718,7 @@ def build_specs() -> List[ModelSpec]:
             lightweight=True,
             builder_key="improved_calibrated_svm_word_char",
             notes="Current improved best from analysis/train_asreview_improved.py",
+            model_source="core",
         ),
         ModelSpec(
             model_id="candidate_lr_word_char",
@@ -493,6 +727,7 @@ def build_specs() -> List[ModelSpec]:
             lightweight=True,
             builder_key="candidate_lr_word_char",
             notes="Adds character n-grams to linear baseline while retaining calibration-friendly LR.",
+            model_source="core",
         ),
         ModelSpec(
             model_id="candidate_lsa_lr",
@@ -501,6 +736,7 @@ def build_specs() -> List[ModelSpec]:
             lightweight=True,
             builder_key="candidate_lsa_lr",
             notes="Low-dimensional semantic projection can improve signal-to-noise on small corpora.",
+            model_source="core",
         ),
         ModelSpec(
             model_id="candidate_sgd_word_char",
@@ -509,6 +745,7 @@ def build_specs() -> List[ModelSpec]:
             lightweight=True,
             builder_key="candidate_sgd_word_char",
             notes="Fast linear online learner suitable for frequent reruns.",
+            model_source="core",
         ),
         ModelSpec(
             model_id="candidate_cnb_word_tfidf",
@@ -517,8 +754,47 @@ def build_specs() -> List[ModelSpec]:
             lightweight=True,
             builder_key="candidate_cnb_word_tfidf",
             notes="Strong sparse-text baseline for imbalance, included for comparison.",
+            model_source="core",
         ),
     ]
+
+    dory_probe = env_info.get("dory_probe_index", {})
+
+    if dory_probe.get("xgboost", {}).get("status") == "available":
+        specs.append(
+            ModelSpec(
+                model_id="dory_xgboost_word_tfidf",
+                display_name="Dory XGBoost (word TF-IDF)",
+                cohort="dory",
+                lightweight=False,
+                builder_key="dory_xgboost_word_tfidf",
+                notes=(
+                    "ASReview Dory classifier via entry point `xgboost`, benchmarked with core TF-IDF "
+                    "to keep protocol comparable."
+                ),
+                model_source="dory",
+                dory_classifier="xgboost",
+            )
+        )
+
+    if dory_probe.get("adaboost", {}).get("status") == "available":
+        specs.append(
+            ModelSpec(
+                model_id="dory_adaboost_word_tfidf",
+                display_name="Dory AdaBoost (word TF-IDF)",
+                cohort="dory",
+                lightweight=False,
+                builder_key="dory_adaboost_word_tfidf",
+                notes=(
+                    "ASReview Dory classifier via entry point `adaboost`, benchmarked with core TF-IDF "
+                    "for fair comparison against existing sparse pipelines."
+                ),
+                model_source="dory",
+                dory_classifier="adaboost",
+            )
+        )
+
+    return specs
 
 
 def dataframe_to_markdown(df: pd.DataFrame) -> str:
@@ -585,7 +861,8 @@ def run_benchmark(
     if len(class_counts) < 2:
         raise ValueError(f"Need both classes after mapping; got class_counts={class_counts}")
 
-    specs = build_specs()
+    env_info = detect_environment_model_options()
+    specs = build_specs(env_info)
 
     cv = RepeatedStratifiedKFold(
         n_splits=n_splits,
@@ -620,6 +897,8 @@ def run_benchmark(
                     "model_id": spec.model_id,
                     "display_name": spec.display_name,
                     "cohort": spec.cohort,
+                    "model_source": spec.model_source,
+                    "dory_classifier": spec.dory_classifier or "",
                     "lightweight": spec.lightweight,
                     "fold": fold_idx,
                     "n_train": int(len(train_idx)),
@@ -651,7 +930,11 @@ def run_benchmark(
         "fold": ["count"],
     }
 
-    grouped = fold_df.groupby(["model_id", "display_name", "cohort", "lightweight"], as_index=False).agg(agg_map)
+    grouped = fold_df.groupby(
+        ["model_id", "display_name", "cohort", "model_source", "dory_classifier", "lightweight"],
+        as_index=False,
+        dropna=False,
+    ).agg(agg_map)
     grouped.columns = [
         c[0] if c[1] == "" else f"{c[0]}_{c[1]}" for c in grouped.columns.to_flat_index()
     ]
@@ -666,8 +949,6 @@ def run_benchmark(
     summary_path = output_dir / "model_benchmark_summary.csv"
     grouped.to_csv(summary_path, index=False)
 
-    env_info = detect_environment_model_options()
-
     nemo_status = env_info.get("nemo", {})
     blocked_models: List[Dict[str, Any]] = []
     if nemo_status.get("status") != "available":
@@ -676,20 +957,59 @@ def run_benchmark(
                 "model_id": "asreview_nemo",
                 "display_name": "ASReview Nemo",
                 "cohort": "candidate",
+                "model_source": "nemo",
                 "status": "blocked",
                 "reason": nemo_status.get("reason", "Unavailable in environment."),
                 "blocker_type": nemo_status.get("blocker_type", "unavailable"),
             }
         )
 
+    dory_probe = env_info.get("dory_probe_index", {})
+    benchmarked_dory = {s.dory_classifier for s in specs if s.dory_classifier}
+    for classifier_name in DORY_DOCS_CLASSIFIERS:
+        probe = dory_probe.get(classifier_name)
+        if classifier_name in benchmarked_dory:
+            continue
+
+        if probe is None:
+            blocked_models.append(
+                {
+                    "model_id": f"dory_{classifier_name}",
+                    "display_name": f"Dory {classifier_name}",
+                    "cohort": "dory",
+                    "model_source": "dory",
+                    "status": "blocked",
+                    "reason": "No probe result available for this Dory classifier.",
+                    "blocker_type": "probe_missing",
+                }
+            )
+            continue
+
+        if probe.get("status") != "available":
+            blocked_models.append(
+                {
+                    "model_id": f"dory_{classifier_name}",
+                    "display_name": f"Dory {classifier_name}",
+                    "cohort": "dory",
+                    "model_source": "dory",
+                    "status": "blocked",
+                    "reason": probe.get("reason", "Unavailable in environment."),
+                    "blocker_type": probe.get("blocker_type", "unavailable"),
+                }
+            )
+
     availability = {
         "generated_at": pd.Timestamp.utcnow().isoformat(),
-        "environment": env_info,
+        "environment": {
+            k: v for k, v in env_info.items() if k != "dory_probe_index"
+        },
         "evaluated_models": [
             {
                 "model_id": s.model_id,
                 "display_name": s.display_name,
                 "cohort": s.cohort,
+                "model_source": s.model_source,
+                "dory_classifier": s.dory_classifier,
                 "lightweight": s.lightweight,
                 "notes": s.notes,
             }
@@ -718,6 +1038,27 @@ def run_benchmark(
                 f"(AP {second['average_precision_mean']:.3f} ± {second['average_precision_std']:.3f})."
             )
         )
+
+    dory_rows = grouped[grouped["cohort"] == "dory"].copy()
+    non_dory_rows = grouped[grouped["cohort"] != "dory"].copy()
+    if not dory_rows.empty:
+        best_dory = dory_rows.sort_values("average_precision_mean", ascending=False).iloc[0].to_dict()
+        key_findings.append(
+            (
+                f"Best Dory model: {best_dory['display_name']} "
+                f"(AP {best_dory['average_precision_mean']:.3f}, WSS@95 {best_dory['wss@95_mean']:.3f})."
+            )
+        )
+
+        if not non_dory_rows.empty:
+            best_non_dory = non_dory_rows.sort_values("average_precision_mean", ascending=False).iloc[0].to_dict()
+            ap_gap = float(best_dory["average_precision_mean"] - best_non_dory["average_precision_mean"])
+            key_findings.append(
+                (
+                    f"Best Dory vs best current non-Dory AP gap: {ap_gap:+.3f} "
+                    f"({best_dory['display_name']} vs {best_non_dory['display_name']})."
+                )
+            )
 
     fastest = grouped.sort_values("fit_seconds_mean", ascending=True).iloc[0].to_dict()
     key_findings.append(
@@ -755,6 +1096,9 @@ def run_benchmark(
             "n_features",
         ],
         "summary_rows": grouped.to_dict(orient="records"),
+        "dory_models_benchmarked": sorted(
+            [s.model_id for s in specs if s.model_source == "dory"]
+        ),
         "key_findings": key_findings,
         "blocked_models": blocked_models,
     }
@@ -776,6 +1120,10 @@ def run_benchmark(
         "",
         "## Ranked results (higher AP first)",
         dataframe_to_markdown(grouped),
+        "",
+        "## Dory benchmark context",
+        "- ASReview Dory docs reference: https://github.com/asreview/asreview-dory",
+        "- Dory classifiers are verified by installed entry points and sparse TF-IDF probe runs before inclusion.",
         "",
     ]
 
@@ -804,6 +1152,7 @@ def run_benchmark(
         "availability_json": str(availability_path),
         "report_md": str(report_path),
         "winner": top.get("model_id"),
+        "dory_models_benchmarked": summary_json["dory_models_benchmarked"],
         "blocked_models": blocked_models,
     }
 
