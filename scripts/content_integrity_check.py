@@ -52,6 +52,7 @@ def main() -> None:
             raise AssertionError(f"Checksum mismatch for {name}: expected {expected}, got {observed}")
 
     overview = load_json(artifacts_dir / "overview.json")
+    methods_results = load_json(artifacts_dir / "methods_results.json")
     planner = load_json(artifacts_dir / "simulation_planner.json")
     fn_fp = load_json(artifacts_dir / "fn_fp_risk.json")
 
@@ -76,6 +77,20 @@ def main() -> None:
             raise AssertionError(
                 f"Policy {policy.get('threshold_policy')} does not contain baseline (+0) row"
             )
+
+    benchmarking = methods_results.get("benchmarking", {})
+    benchmark_rows = benchmarking.get("model_results", [])
+    if not benchmark_rows:
+        raise AssertionError("methods_results.benchmarking.model_results is empty")
+
+    has_baseline_model = any(str(r.get("cohort")) == "baseline" for r in benchmark_rows)
+    has_improved_model = any(str(r.get("cohort")) == "improved" for r in benchmark_rows)
+    if not has_baseline_model or not has_improved_model:
+        raise AssertionError("Benchmark rows must include at least one baseline and one improved model")
+
+    nemo_status = benchmarking.get("nemo_status", {})
+    if "status" not in nemo_status:
+        raise AssertionError("Benchmark Nemo status missing")
 
     print(
         json.dumps(

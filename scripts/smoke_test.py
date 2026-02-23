@@ -55,7 +55,13 @@ def main() -> None:
 
     required_files = {
         "overview.json": ["generated_at", "project", "model_snapshot", "risk_baselines", "recommendation"],
-        "methods_results.json": ["generated_at", "methods", "model_leaderboard", "baseline_vs_improved"],
+        "methods_results.json": [
+            "generated_at",
+            "methods",
+            "model_leaderboard",
+            "baseline_vs_improved",
+            "benchmarking",
+        ],
         "fn_fp_risk.json": ["generated_at", "framing", "story"],
         "simulation_planner.json": ["generated_at", "rows", "recommended_targets"],
         "run_manifest.json": ["run_id", "generated_at", "sources", "artifacts"],

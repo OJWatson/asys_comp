@@ -12,6 +12,7 @@ Canonical docs for compendium operations:
 - `runbooks/RENDER_LAB_DEPLOYMENT.md` — Render-specific ASReview LAB deployment steps.
 - `runbooks/ASREVIEW_LAB_LOCAL.md` — local/staging LAB workflow.
 - `runbooks/ASREVIEW_LAB_LIVE_SERVER.md` — hardened live-server path and manual cutover.
+- `runbooks/MODEL_BENCHMARKING.md` — reproducible NLP benchmark workflow, model-extension guide, and heavy-model fallback notes.
 - `ENVIRONMENT_SETUP.md` — reproducible local environment bootstrap.
 
 Historical planning/progress docs were moved to `analysis/archive/` to keep release docs concise.

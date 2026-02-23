@@ -26,10 +26,11 @@ cp config/app_refresh_config.example.json config/app_refresh_config.json
 scripts/run_data_refresh.sh
 ```
 
-(Full end-to-end analysis rerun)
+(Full end-to-end analysis rerun, including NLP benchmark refresh)
 
 ```bash
 scripts/run_analysis_and_report_refresh.sh
+python scripts/smoke_test_benchmarks.py
 ```
 
 ## 5) Run smoke tests
