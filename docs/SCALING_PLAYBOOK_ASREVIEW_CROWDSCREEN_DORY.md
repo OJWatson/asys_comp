@@ -331,6 +331,11 @@ Install note (environment-dependent):
 pip install asreview-dory
 ```
 
+For this repository, use the pinned dedicated environment + workflow in:
+
+- `scripts/setup_asreview_dory_env.sh`
+- `docs/runbooks/ASREVIEW_DORY_INTEGRATION.md`
+
 Expect heavier compute and slower retraining than lightweight baselines.
 
 ---

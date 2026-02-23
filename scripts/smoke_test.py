@@ -78,6 +78,19 @@ def main() -> None:
         raise FileNotFoundError(f"Missing catalog: {catalog_path}")
     assert_json(catalog_path, ["generated_at", "shared_lab", "projects"])
 
+    dory_required_paths = [
+        repo_root / "integration" / "asreview_dory_hooks.py",
+        repo_root / "scripts" / "setup_asreview_dory_env.sh",
+        repo_root / "scripts" / "run_asreview_dory_workflow.sh",
+        repo_root / "scripts" / "run_dory_smoke_test.sh",
+        repo_root / "scripts" / "smoke_test_dory_integration.py",
+        repo_root / "docs" / "runbooks" / "ASREVIEW_DORY_INTEGRATION.md",
+        repo_root / "requirements-dory.lock.txt",
+    ]
+    for path in dory_required_paths:
+        if not path.exists():
+            raise FileNotFoundError(f"Missing Dory integration file: {path}")
+
     server_cmd = [sys.executable, str(repo_root / "app" / "server.py"), "--host", "127.0.0.1", "--port", str(args.port)]
     proc = subprocess.Popen(server_cmd, cwd=repo_root)
 

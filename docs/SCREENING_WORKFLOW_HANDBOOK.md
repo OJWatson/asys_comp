@@ -101,6 +101,19 @@ So conceptually:
 4. Sync + reconcile.
 5. Re-run analyses to update recommendations.
 
+### Dory integration path in this repo (optional)
+
+When you need a Dory-backed simulation pass with the same ASYS data contracts:
+
+```bash
+scripts/setup_asreview_dory_env.sh
+scripts/run_asreview_dory_workflow.sh
+```
+
+This workflow prepares `record_id/title/abstract/included`, runs `asreview simulate` with Dory components, and exports sequence+summary artifacts in `integration/outputs/dory/`.
+
+Focused runbook: `docs/runbooks/ASREVIEW_DORY_INTEGRATION.md`
+
 ---
 
 ## 2) Active-learning lifecycle: why outputs update as screening progresses
