@@ -1,7 +1,7 @@
 {
-  "run_id": "20260223T074506Z-9d3a7a6c",
-  "generated_at": "2026-02-23T07:45:06+00:00",
-  "code_sha": "a0fa461e462a199dea7905d5525abf8bb7c77bd9",
+  "run_id": "20260223T080836Z-c342670e",
+  "generated_at": "2026-02-23T08:08:36+00:00",
+  "code_sha": "ec55b0ec2bf93a7c9d9e743832189d520eaaf006",
   "config": {
     "analysis_outputs_dir": "analysis/outputs",
     "app_artifacts_dir": "app/data/artifacts",
@@ -52,26 +52,26 @@
     {
       "name": "benchmark_summary",
       "path": "analysis/outputs/benchmarks/model_benchmark_summary.csv",
-      "sha256": "a9f9915e93e7cf3f9ad653b2a449a9d604f48477c6f660d943ae30dbc00f550d",
-      "modified_at": "2026-02-23T07:45:02+00:00"
+      "sha256": "07930d1cd6da23c5ce6547bda099a2cf9c18e1a6db4d7c13f2804b01ab6bddff",
+      "modified_at": "2026-02-23T08:08:35+00:00"
     },
     {
       "name": "benchmark_summary_json",
       "path": "analysis/outputs/benchmarks/model_benchmark_summary.json",
-      "sha256": "e024155688612d7827f6d770a9dc520d30369641cfda1a38227204fa36612cf8",
-      "modified_at": "2026-02-23T07:45:02+00:00"
+      "sha256": "ea70508c83a6594a354310909f97a6d84af5f9dbb8280fd0c3eeeece24ab70b2",
+      "modified_at": "2026-02-23T08:08:35+00:00"
     },
     {
       "name": "benchmark_env",
       "path": "analysis/outputs/benchmarks/environment_model_availability.json",
-      "sha256": "b18782a3b228316f19d05b390a9628e24232d105afa9705318868fb1b16e2b51",
-      "modified_at": "2026-02-23T07:45:02+00:00"
+      "sha256": "53f5e772ac675796cbc45cc61cba808373ce35c1f9b94c6c1003d65f491acf59",
+      "modified_at": "2026-02-23T08:08:35+00:00"
     },
     {
       "name": "benchmark_report",
       "path": "analysis/outputs/benchmarks/MODEL_BENCHMARK_REPORT.md",
-      "sha256": "2aaec46747082f0230c4886f9d23236030ed489bc17bb2a870aad41a37f2aa46",
-      "modified_at": "2026-02-23T07:45:02+00:00"
+      "sha256": "a23f367935c24184f0c1ae6a6a20533db3e3f1ba069ae038dceec870a3bc0db4",
+      "modified_at": "2026-02-23T08:08:35+00:00"
     },
     {
       "name": "lab_manifest",
@@ -101,22 +101,22 @@
   "artifacts": {
     "overview.json": {
       "path": "app/data/artifacts/overview.json",
-      "sha256": "0884074539245d295131ce824baa648c719a0b4c1f8cb3721d1e7a3f139a71c5",
+      "sha256": "5eeea7476784ddd23b44635b3f5657e2a0919e149be5a0170fc2847865736893",
       "size_bytes": 1834
     },
     "methods_results.json": {
       "path": "app/data/artifacts/methods_results.json",
-      "sha256": "6e0f762904f3634aed840bab1aac6046ed649941c281e6750cfc203ce18abcc3",
-      "size_bytes": 17576
+      "sha256": "02278a711140e2de75a111e375080dadd286393a6ed1fe9bbb6239b914a70d06",
+      "size_bytes": 22806
     },
     "fn_fp_risk.json": {
       "path": "app/data/artifacts/fn_fp_risk.json",
-      "sha256": "34b435e4a8915ea1973d27bc6ab09cef422b3b7cb4803a68a5025c0334d8a122",
+      "sha256": "cff565388521a4f075d64ae5cb931513f465978ea50748b36d7fd112c7b810bd",
       "size_bytes": 9510
     },
     "simulation_planner.json": {
       "path": "app/data/artifacts/simulation_planner.json",
-      "sha256": "bd5d9fa8a886e9246f76ac92381f2010ae48f5fb934e3b3caf43e99c98b83c66",
+      "sha256": "54aac052b531ee47c878e0b61acf4caedbdb3812502b17f715cd78a8a67765ab",
       "size_bytes": 24308
     }
   }

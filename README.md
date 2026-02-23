@@ -67,6 +67,13 @@ python analysis/benchmark_nlp_models.py
 python scripts/smoke_test_benchmarks.py
 ```
 
+Optional heavy NLP path (embedding-based candidate + ASReview dory extension models):
+
+```bash
+source .venv/bin/activate
+pip install -r requirements-optional-heavy-nlp.lock.txt
+```
+
 See runbook: `docs/runbooks/MODEL_BENCHMARKING.md`
 
 Run local app:

@@ -357,7 +357,7 @@ def build_artifacts(repo_root: Path, config: Dict[str, Any]) -> Dict[str, Any]:
         "methods": [
             "Text preprocessing with title+abstract concatenation and decision normalization.",
             "Model comparison across imbalance-aware baselines including calibrated SVM with word+char TF-IDF.",
-            "Expanded NLP benchmark with repeated stratified CV across baseline, improved, and additional lightweight candidates.",
+            "Expanded NLP benchmark with additional calibrated/regularized linear candidates plus optional heavy embedding paths with clean dependency fallbacks.",
             "Evaluation emphasizes ranking and high-recall screening behavior, not threshold-0.5 accuracy only.",
             "Active-learning simulations with policy-based stopping diagnostics and seed-strategy sweeps.",
             "Leakage-safe queue export for reviewer operations with sensitive decision fields removed.",
