@@ -1,7 +1,7 @@
-# Netlify Deployment Runbook (GitHub + Custom Domain)
+# Netlify Deployment Runbook (Compendium + Custom Domain)
 
 ## Purpose
-Deploy the static explainer site from `OJWatson/asys_e5cr7` to Netlify, attach a custom subdomain on `ojwatson.co.uk`, and keep a safe rollback path.
+Deploy the static compendium site from `OJWatson/asys_e5cr7` to Netlify, attach a custom subdomain, and preserve backward-compatible routes.
 
 ## What this uses
 - Repo: `OJWatson/asys_e5cr7` (branch: `main`)
@@ -14,10 +14,8 @@ Deploy the static explainer site from `OJWatson/asys_e5cr7` to Netlify, attach a
 
 ## 1) Pre-flight checks (local)
 
-Run before connecting Netlify:
-
 ```bash
-cd /home/kana/git/asys/screening-model
+cd /path/to/asys_e5cr7
 scripts/build_github_pages_site.sh --skip-refresh
 scripts/run_static_site_checks.sh
 ```
@@ -25,11 +23,11 @@ scripts/run_static_site_checks.sh
 Expected:
 - all checks pass,
 - `site/` is generated,
-- pages + `data/artifacts/*.json` are present.
+- compendium pages + JSON endpoints are present.
 
 ---
 
-## 2) Import from GitHub in Netlify (click-by-click)
+## 2) Import from GitHub in Netlify
 
 1. Log in to Netlify.
 2. Click **Add new site** → **Import an existing project**.
@@ -53,18 +51,25 @@ After deploy succeeds:
 1. Open **Deploys** and confirm latest deploy is **Published**.
 2. Open the generated Netlify URL.
 3. Verify pages load:
+   - `/`
+   - `/projects-e5cr7.html`
    - `/asreview-explainer.html`
    - `/methods-results.html`
    - `/why-more-review.html`
    - `/how-many-more.html`
-4. Verify redirect behavior:
-   - `/` → `/asreview-explainer.html`
-   - `/methods-results` → `/methods-results.html`
+   - `/lab.html`
+   - `/lab-e5cr7.html`
+4. Verify route aliases:
+   - `/projects/e5cr7` → `/projects-e5cr7.html`
+   - `/e5cr7` → `/projects/e5cr7`
+   - `/lab` → `/lab.html`
+   - `/lab/e5cr7` → `/lab-e5cr7.html`
 5. Verify JSON endpoints return 200:
    - `/data/artifacts/overview.json`
    - `/data/artifacts/methods_results.json`
    - `/data/artifacts/fn_fp_risk.json`
    - `/data/artifacts/simulation_planner.json`
+   - `/data/compendium_catalog.json`
 
 ---
 
@@ -72,7 +77,7 @@ After deploy succeeds:
 
 1. In Netlify site, go to **Domain management**.
 2. Click **Add a domain**.
-3. Enter desired host, e.g. `screening.ojwatson.co.uk`.
+3. Enter desired host, e.g. `asys.ojwatson.co.uk`.
 4. Continue and keep Netlify’s DNS target value visible (usually `<site-name>.netlify.app`).
 5. Add DNS records at the `ojwatson.co.uk` DNS provider (see `docs/runbooks/DOMAIN_DNS_SETUP.md`).
 6. Back in Netlify, click **Verify DNS configuration**.
@@ -80,51 +85,32 @@ After deploy succeeds:
 
 ---
 
-## 5) Access protection options (explainer site)
+## 5) Shared-lab link strategy (content-level)
 
-### Option A (preferred if plan supports): Netlify Visitor Access / password protection
-- Path: **Site configuration** → **Access control** → **Visitor access**.
-- Enable site-wide protection and set a shared password.
-- Best for a lightweight “invite-only explainer” without code changes.
+Netlify hosts the static compendium only. LAB runtime URL destinations are configured in:
+- `app/data/compendium_catalog.json`
 
-### Option B: Team/member-only preview workflow
-- Keep production public/private as needed, but share only deploy preview links with approved reviewers.
-- Use this for short review windows.
+Required go-live edit:
+1. Set `shared_lab.entrypoint_url` to the shared production LAB hostname.
+2. Set each project `legacy_lab_url` to current/legacy project endpoint (if retained).
+3. Redeploy Netlify.
 
-### Option C (advanced): HTTP Basic Auth via Netlify Edge Function
-- Implement auth middleware in the repo (not enabled by default here).
-- Use only if strict per-request basic auth is required.
+This preserves a stable UX path (`/lab`, `/lab/e5cr7`) while allowing backend endpoint migration.
 
 ---
 
-## 6) LAB-side authentication expectations (separate from Netlify)
-
-The Netlify explainer is not the ASReview LAB runtime.
-
-For LAB operations (`infra/asreview-lab/`), enforce separately:
-- authentication at reverse proxy (basic auth/OIDC/SSO),
-- network restrictions (VPN/IP allow-list),
-- least-privilege user accounts,
-- no unauthenticated public LAB endpoint.
-
-Use:
-- `docs/runbooks/ASREVIEW_LAB_LOCAL.md`
-- `docs/runbooks/ASREVIEW_LAB_LIVE_SERVER.md`
-
----
-
-## 7) Post-deploy validation checklist
+## 6) Post-deploy validation checklist
 
 - [ ] Netlify deploy from `main` is green.
-- [ ] All four explainer pages render without console errors.
-- [ ] Artifact JSON endpoints return HTTP 200.
+- [ ] Compendium home + e5cr7 deep-dive render without console errors.
+- [ ] Legacy explainer pages still render.
+- [ ] Artifact JSON + compendium catalog JSON endpoints return HTTP 200.
 - [ ] Custom subdomain resolves and serves the Netlify deploy.
 - [ ] TLS certificate is active.
-- [ ] Access controls (if enabled) work as expected.
 
 ---
 
-## 8) Rollback procedure
+## 7) Rollback procedure
 
 ### Fast rollback (no Git revert)
 1. Netlify → **Deploys**.

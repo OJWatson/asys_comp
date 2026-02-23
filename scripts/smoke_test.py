@@ -67,18 +67,26 @@ def main() -> None:
             raise FileNotFoundError(f"Missing artifact: {path}")
         assert_json(path, keys)
 
+    catalog_path = repo_root / "app" / "data" / "compendium_catalog.json"
+    if not catalog_path.exists():
+        raise FileNotFoundError(f"Missing catalog: {catalog_path}")
+    assert_json(catalog_path, ["generated_at", "shared_lab", "projects"])
+
     server_cmd = [sys.executable, str(repo_root / "app" / "server.py"), "--host", "127.0.0.1", "--port", str(args.port)]
     proc = subprocess.Popen(server_cmd, cwd=repo_root)
 
     try:
-        wait_http(f"http://127.0.0.1:{args.port}/asreview-explainer")
+        wait_http(f"http://127.0.0.1:{args.port}/")
 
         checks = {
-            "/": "Redirecting to",
-            "/asreview-explainer.html": "ASReview Reviewer Portal",
-            "/methods-results.html": "Methods & Results Summary",
-            "/why-more-review.html": "Why More Review Is Needed",
-            "/how-many-more.html": "Simulation-Informed Screening Planner",
+            "/": "ASYS Compendium",
+            "/projects/e5cr7": "Project Deep Dive · e5cr7",
+            "/asreview-explainer": "ASReview Reviewer Portal · e5cr7",
+            "/methods-results": "Methods & Results Summary · e5cr7",
+            "/why-more-review": "Why More Review Is Needed · e5cr7",
+            "/how-many-more": "Simulation-Informed Screening Planner · e5cr7",
+            "/lab": "Shared ASReview LAB Access",
+            "/lab/e5cr7": "LAB Endpoint · e5cr7",
         }
         for path, marker in checks.items():
             content = fetch_text(f"http://127.0.0.1:{args.port}{path}")
@@ -90,6 +98,7 @@ def main() -> None:
             "/data/artifacts/methods_results.json",
             "/data/artifacts/fn_fp_risk.json",
             "/data/artifacts/simulation_planner.json",
+            "/data/compendium_catalog.json",
         ]
         for path in api_checks:
             payload = fetch_json(f"http://127.0.0.1:{args.port}{path}")
@@ -103,7 +112,7 @@ def main() -> None:
         except subprocess.TimeoutExpired:
             proc.kill()
 
-    print("Smoke test passed: artifacts + all reviewer pages are reachable.")
+    print("Smoke test passed: compendium routes, legacy routes, and data endpoints are reachable.")
 
 
 if __name__ == "__main__":

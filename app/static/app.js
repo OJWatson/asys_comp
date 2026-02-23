@@ -47,16 +47,25 @@ async function loadJson(path) {
 }
 
 function activateNav() {
-  const currentFile = window.location.pathname.split("/").pop() || "index.html";
+  const path = window.location.pathname.replace(/\/+$/, "") || "/";
+  let currentFile = path.split("/").pop() || "index.html";
+
+  if (path === "/projects/e5cr7") {
+    currentFile = "projects-e5cr7";
+  } else if (path === "/lab/e5cr7") {
+    currentFile = "lab";
+  } else if (path === "/lab") {
+    currentFile = "lab";
+  } else if (path === "/projects") {
+    currentFile = "index";
+  }
+
   const normalize = (s) => String(s || "").replace(/\.html$/i, "");
 
   document.querySelectorAll("nav a").forEach((a) => {
     const href = a.getAttribute("href") || "";
     const hrefFile = href.replace(/^\.\//, "").split("/").pop();
-    if (
-      normalize(hrefFile) === normalize(currentFile) ||
-      (currentFile === "index.html" && hrefFile === "asreview-explainer.html")
-    ) {
+    if (normalize(hrefFile) === normalize(currentFile)) {
       a.classList.add("active");
     }
   });
@@ -67,6 +76,147 @@ function kvHtml(rows) {
     .map(([k, v]) => `<dt>${k}</dt><dd>${v}</dd>`)
     .join("");
   return `<dl class="kv">${body}</dl>`;
+}
+
+function buttonLink(url, label, options = {}) {
+  const cls = options.primary ? "button-link primary" : "button-link";
+  const target = options.newTab ? ' target="_blank" rel="noreferrer"' : "";
+  return `<a class="${cls}" href="${url}"${target}>${label}</a>`;
+}
+
+function projectStatusBadge(status) {
+  const kind = status === "active" ? "good" : "warn";
+  return `<span class="badge ${kind}">${toTitle(status)}</span>`;
+}
+
+async function renderCompendiumHome() {
+  const [catalog, overview] = await Promise.all([
+    loadJson("./data/compendium_catalog.json"),
+    loadJson("./data/artifacts/overview.json"),
+  ]);
+
+  document.getElementById("shared-lab-summary").innerHTML = kvHtml([
+    ["Gateway", catalog.shared_lab.display_name],
+    ["Configured URL", `<a href="${catalog.shared_lab.entrypoint_url}">${catalog.shared_lab.entrypoint_url}</a>`],
+    ["Note", catalog.shared_lab.entrypoint_note],
+  ]);
+
+  document.getElementById("compendium-e5cr7-snapshot").innerHTML = kvHtml([
+    ["Records", overview.project.dataset_records],
+    ["Known relevant", overview.project.known_relevant],
+    ["Estimated prevalence", fmtPct(overview.project.estimated_prevalence)],
+    ["Best model", overview.model_snapshot.best_model],
+    ["Immediate additional screening", `+${overview.recommendation.immediate_additional_docs}`],
+  ]);
+
+  const projectGrid = document.getElementById("project-grid");
+  projectGrid.innerHTML = "";
+
+  (catalog.projects || []).forEach((p) => {
+    const article = document.createElement("article");
+    article.className = "card";
+    article.innerHTML = `
+      <h3>${p.name}</h3>
+      <p>${projectStatusBadge(p.status)} <span class="muted">Stage: ${p.stage || "-"}</span></p>
+      <p>${p.summary || ""}</p>
+      <p class="muted"><strong>Focus:</strong> ${p.focus || "-"}</p>
+      <div class="cta-row">
+        ${buttonLink(p.deep_dive_path || "./index.html", "Deep Dive", { newTab: false, primary: true })}
+        ${buttonLink(p.lab_path || "./lab.html", "LAB Endpoint", { newTab: false })}
+      </div>
+    `;
+    projectGrid.appendChild(article);
+  });
+}
+
+function findProject(catalog, slug) {
+  return (catalog.projects || []).find((p) => p.slug === slug) || null;
+}
+
+async function renderProjectE5cr7() {
+  const [catalog, overview] = await Promise.all([
+    loadJson("./data/compendium_catalog.json"),
+    loadJson("./data/artifacts/overview.json"),
+  ]);
+
+  const project = findProject(catalog, "e5cr7") || {};
+
+  document.getElementById("e5cr7-cta-row").innerHTML = [
+    buttonLink("./lab.html", "Shared LAB Gateway", { newTab: false, primary: true }),
+    buttonLink(project.lab_path || "./lab-e5cr7.html", "Project LAB Endpoint", { newTab: false }),
+    buttonLink(project.legacy_explainer_path || "./asreview-explainer.html", "Legacy Explainer", { newTab: false }),
+  ].join("");
+
+  document.getElementById("e5cr7-dataset").innerHTML = kvHtml([
+    ["Project", project.name || "e5cr7"],
+    ["Stage", project.stage || "Active"],
+    ["Dataset records", overview.project.dataset_records],
+    ["Known relevant", overview.project.known_relevant],
+    ["Estimated prevalence", fmtPct(overview.project.estimated_prevalence)],
+    ["Preferred strategy", overview.project.preferred_strategy],
+  ]);
+
+  document.getElementById("e5cr7-model").innerHTML = kvHtml([
+    ["Best model", overview.model_snapshot.best_model],
+    ["Average precision", fmtNum(overview.model_snapshot.average_precision, 3)],
+    ["ROC AUC", fmtNum(overview.model_snapshot.roc_auc, 3)],
+    ["Recall@20", fmtNum(overview.model_snapshot.recall_at_20, 3)],
+    ["Recall@50", fmtNum(overview.model_snapshot.recall_at_50, 3)],
+  ]);
+
+  const rec = overview.recommendation;
+  document.getElementById("e5cr7-recommendation").innerHTML = `
+    <p><strong>Immediate target:</strong> screen +${rec.immediate_additional_docs} additional records.</p>
+    <p><strong>Contingent target:</strong> extend to +${rec.contingent_additional_docs} if stricter residual-risk tolerance is required.</p>
+    <p>Projected false negatives after immediate stage: <strong>${fmtNum(rec.expected_fn_after_immediate, 2)}</strong>.
+    FN reduction versus baseline: <strong>${fmtNum(rec.expected_fn_reduction_after_immediate, 2)}</strong>.</p>
+  `;
+}
+
+async function renderLabShared() {
+  const catalog = await loadJson("./data/compendium_catalog.json");
+
+  document.getElementById("shared-lab-gateway").innerHTML = `
+    <p><strong>${catalog.shared_lab.display_name}</strong></p>
+    <p class="muted">${catalog.shared_lab.entrypoint_note}</p>
+    <div class="cta-row">
+      ${buttonLink(catalog.shared_lab.entrypoint_url, "Open Shared LAB URL", { primary: true })}
+      ${buttonLink("./projects-e5cr7.html", "Back to e5cr7 Deep Dive", { newTab: false })}
+    </div>
+  `;
+
+  const list = document.getElementById("lab-project-list");
+  list.innerHTML = "";
+
+  (catalog.projects || [])
+    .filter((p) => p.slug && p.slug !== "next-slot")
+    .forEach((p) => {
+      const item = document.createElement("article");
+      item.className = "card";
+      item.innerHTML = `
+        <h3>${p.name}</h3>
+        <p>${p.summary || ""}</p>
+        <div class="cta-row">
+          ${buttonLink(p.lab_path || "./lab.html", "Project LAB landing", { newTab: false, primary: true })}
+          ${buttonLink(p.legacy_lab_url || catalog.shared_lab.entrypoint_url, "Legacy/current URL")}
+        </div>
+      `;
+      list.appendChild(item);
+    });
+}
+
+async function renderLabE5cr7() {
+  const catalog = await loadJson("./data/compendium_catalog.json");
+  const project = findProject(catalog, "e5cr7") || {};
+
+  document.getElementById("e5cr7-lab-links").innerHTML = `
+    <p>Preferred route: shared gateway first, then project fallback if needed.</p>
+    <div class="cta-row">
+      ${buttonLink(catalog.shared_lab.entrypoint_url, "Open Shared Gateway", { primary: true })}
+      ${buttonLink(project.legacy_lab_url || catalog.shared_lab.entrypoint_url, "Open Current/Legacy e5cr7 URL")}
+      ${buttonLink("./lab.html", "All LAB Endpoints", { newTab: false })}
+    </div>
+  `;
 }
 
 async function renderExplainer() {
@@ -311,7 +461,15 @@ async function main() {
   activateNav();
   const page = document.body.dataset.page;
 
-  if (page === "asreview-explainer") {
+  if (page === "compendium-home") {
+    await renderCompendiumHome();
+  } else if (page === "project-e5cr7") {
+    await renderProjectE5cr7();
+  } else if (page === "lab-shared") {
+    await renderLabShared();
+  } else if (page === "lab-e5cr7") {
+    await renderLabE5cr7();
+  } else if (page === "asreview-explainer") {
     await renderExplainer();
   } else if (page === "methods-results") {
     await renderMethodsResults();

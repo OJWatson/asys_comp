@@ -6,14 +6,23 @@
   PYTHON_VERSION = "3.10"
 
 [[redirects]]
-  from = "/"
-  to = "/asreview-explainer.html"
+  from = "/index"
+  to = "/index.html"
   status = 301
-  force = true
 
 [[redirects]]
-  from = "/index.html"
-  to = "/asreview-explainer.html"
+  from = "/projects"
+  to = "/"
+  status = 301
+
+[[redirects]]
+  from = "/projects/e5cr7"
+  to = "/projects-e5cr7.html"
+  status = 301
+
+[[redirects]]
+  from = "/e5cr7"
+  to = "/projects/e5cr7"
   status = 301
 
 [[redirects]]
@@ -34,4 +43,14 @@
 [[redirects]]
   from = "/how-many-more"
   to = "/how-many-more.html"
+  status = 301
+
+[[redirects]]
+  from = "/lab"
+  to = "/lab.html"
+  status = 301
+
+[[redirects]]
+  from = "/lab/e5cr7"
+  to = "/lab-e5cr7.html"
   status = 301

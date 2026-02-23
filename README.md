@@ -1,20 +1,21 @@
-# ASReview Screening Model Platform
+# ASYS Compendium (e5cr7-first)
 
 Release-ready repository for a two-path delivery model:
 
-1. **GitHub Pages static explainer site** for transparent reviewer communication.
+1. **Compendium static site** (GitHub Pages / Netlify) with a front-facing multi-project landing page and project deep-dives.
 2. **ASReview LAB runtime path** for active screening operations and label roundtrips.
 
 ---
 
 ## Project purpose
 
-This repository packages the analysis outputs, reviewer-facing narrative, and operational hooks needed to:
+This repository packages analysis outputs, reviewer-facing narrative, and operational hooks needed to:
 
-- explain model performance and residual-risk tradeoffs,
+- explain project performance and residual-risk tradeoffs,
 - support staged screening decisions,
 - move screened labels through a repeatable ASReview LAB loop,
-- publish an auditable static site from reproducible artifacts.
+- publish an auditable static site from reproducible artifacts,
+- scale from a single project (`e5cr7`) to a compendium of projects.
 
 ---
 
@@ -22,8 +23,8 @@ This repository packages the analysis outputs, reviewer-facing narrative, and op
 
 | Path | What it serves | Location | Runtime |
 |---|---|---|---|
-| GitHub Pages (static) | Explainer + methods + FN/FP framing + planner pages | `app/` → built to `site/` | GitHub Actions + Pages |
-| ASReview LAB (live) | Reviewer labeling runtime | `infra/asreview-lab/` | Docker Compose / live server |
+| Compendium static site | Home + project deep-dives + explainer/method pages | `app/` → built to `site/` | GitHub Actions + Pages / Netlify |
+| ASReview LAB (live) | Reviewer labeling runtime | `infra/asreview-lab/` | Docker Compose / Render / live server |
 | Integration bridge | Queue export, label sync, reconciliation | `integration/asreview_lab_hooks.py` | Local/server Python |
 
 ---
@@ -31,11 +32,13 @@ This repository packages the analysis outputs, reviewer-facing narrative, and op
 ## Repository layout
 
 - `analysis/` reproducible model outputs and reports
-- `app/` static web app source and generated JSON artifacts (`app/data/artifacts/`)
-- `docs/runbooks/` deployment runbooks (Pages + LAB local/live)
+- `app/` static app source and generated JSON artifacts (`app/data/artifacts/`)
+- `docs/runbooks/` deployment runbooks (Pages + Netlify + LAB local/live)
 - `infra/asreview-lab/` LAB container scaffolding and config templates
 - `integration/` queue/label integration hooks
 - `scripts/` build, refresh, smoke, and integrity checks
+- `MIGRATION_PLAN.md` migration rationale, IA, and extension conventions
+- `DEPLOY_CHECKLIST.md` exact deployment steps (Render/Netlify/DNS)
 
 Historical planning/progress material is archived under `analysis/archive/`.
 
@@ -64,19 +67,19 @@ scripts/run_web_app.sh
 
 ## Deployment paths
 
-### A) GitHub Pages (static explainer)
+### A) Compendium static site (GitHub Pages)
 
 ```bash
-scripts/build_github_pages_site.sh
+scripts/build_github_pages_site.sh --skip-refresh
 scripts/run_static_site_checks.sh
 ```
 
 CI deploy workflow: `.github/workflows/deploy-github-pages.yml`.
 
-Full runbook and go-live checklist:
+Runbook:
 - `docs/runbooks/GITHUB_PAGES_DEPLOYMENT.md`
 
-### A2) Netlify (static explainer + custom domain)
+### A2) Netlify (static compendium + custom domain)
 
 - Netlify build/publish settings are codified in `netlify.toml`.
 - Deterministic build command:
@@ -84,14 +87,13 @@ Full runbook and go-live checklist:
 - Runbooks:
   - `docs/runbooks/NETLIFY_DEPLOYMENT.md`
   - `docs/runbooks/DOMAIN_DNS_SETUP.md`
-  - `analysis/NETLIFY_GO_LIVE_CHECKLIST.md`
 
 ### B) ASReview LAB runtime
 
 Local/staging:
 - `docs/runbooks/ASREVIEW_LAB_LOCAL.md`
 
-Live server hardening + manual cutover steps:
+Live server hardening + cutover:
 - `docs/runbooks/ASREVIEW_LAB_LIVE_SERVER.md`
 
 ---
@@ -99,13 +101,14 @@ Live server hardening + manual cutover steps:
 ## Status and roadmap
 
 ### Current status
-- ✅ Repository hygiene hardened (tracked local env/build artifacts removed).
-- ✅ Static Pages pipeline is build- and deploy-ready.
+- ✅ Compendium home and e5cr7 deep-dive structure implemented.
+- ✅ Legacy explainer pages retained for backward compatibility.
+- ✅ Static Pages/Netlify build + smoke checks in place.
 - ✅ LAB integration hooks support export/sync/reconcile loop.
-- ⚠️ Final production go-live still requires environment-specific manual steps (domain/TLS/secrets/ops ownership).
+- ⚠️ Production domain and LAB endpoint ownership still requires environment-specific manual setup.
 
 ### Near-term roadmap
-1. Turn on GitHub Pages source = **GitHub Actions** and validate live URL.
-2. Provision live LAB host and apply `ASREVIEW_LAB_LIVE_SERVER.md` runbook.
-3. Add branch protection requiring CI checks before merges.
+1. Add second project deep-dive using conventions in `MIGRATION_PLAN.md`.
+2. Point shared LAB gateway to final production hostname.
+3. Enable branch protection requiring CI checks before merges.
 4. Add periodic backup + restore drill for LAB runtime data.

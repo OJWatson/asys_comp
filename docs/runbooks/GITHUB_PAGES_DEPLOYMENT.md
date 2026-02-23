@@ -1,10 +1,10 @@
 # GitHub Pages Deployment Runbook
 
 ## Purpose
-Deploy the reviewer-facing static explainer site from this repository using GitHub Actions.
+Deploy the compendium static site from this repository using GitHub Actions.
 
 ## Deployment model
-- Source pages: `app/*.html`, `app/static/*`, `app/data/artifacts/*.json`
+- Source pages: `app/*.html`, `app/static/*`, `app/data/**/*.json`
 - Build output (ephemeral): `site/`
 - Publisher: `.github/workflows/deploy-github-pages.yml`
 
@@ -15,7 +15,7 @@ Deploy the reviewer-facing static explainer site from this repository using GitH
 ## Pre-flight (local)
 
 ```bash
-cd /home/kana/git/asys/screening-model
+cd /path/to/asys_e5cr7
 scripts/run_data_refresh.sh
 scripts/build_github_pages_site.sh --skip-refresh
 scripts/run_static_site_checks.sh
@@ -24,7 +24,7 @@ scripts/run_static_site_checks.sh
 Expected result:
 - static smoke test passes,
 - artifact integrity check passes,
-- `site/` contains all 5 pages + `data/artifacts/*.json`.
+- `site/` contains compendium pages + project deep-dive pages + `data/` JSON.
 
 ---
 
@@ -59,7 +59,7 @@ Manual trigger fallback:
 - [ ] `deploy-github-pages` workflow completed successfully on `main`.
 - [ ] GitHub Pages source set to **GitHub Actions**.
 - [ ] Live URL opens and serves latest commit content.
-- [ ] Navigation links and artifact-backed sections render on all pages.
+- [ ] Navigation and route aliases render correctly.
 
 ---
 
@@ -67,17 +67,25 @@ Manual trigger fallback:
 
 Use the live URL (typically `https://ojwatson.github.io/asys_e5cr7/`):
 
-1. `index.html` redirects to `asreview-explainer.html`.
-2. Verify each page loads:
+1. Verify compendium and project pages load:
+   - `/index.html`
+   - `/projects-e5cr7.html`
    - `/asreview-explainer.html`
    - `/methods-results.html`
    - `/why-more-review.html`
    - `/how-many-more.html`
-3. Open browser devtools and confirm these JSON endpoints return `200`:
+   - `/lab.html`
+   - `/lab-e5cr7.html`
+2. Confirm route aliases:
+   - `/projects/e5cr7` → project deep-dive page
+   - `/lab` → shared LAB landing
+   - `/lab/e5cr7` → e5cr7 LAB landing
+3. Confirm JSON endpoints return `200`:
    - `/data/artifacts/overview.json`
    - `/data/artifacts/methods_results.json`
    - `/data/artifacts/fn_fp_risk.json`
    - `/data/artifacts/simulation_planner.json`
+   - `/data/compendium_catalog.json`
 4. Confirm no console errors related to missing assets or fetch failures.
 
 ---

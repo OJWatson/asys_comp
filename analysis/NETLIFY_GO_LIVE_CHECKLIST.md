@@ -5,7 +5,7 @@
 - [ ] `netlify.toml` exists at repo root.
 - [ ] Build command is deterministic and uses committed artifacts.
 - [ ] Publish directory is `site`.
-- [ ] Redirects exist for `/` and extensionless page routes.
+- [ ] Redirects/aliases exist for project and lab routes.
 - [ ] Run locally:
   - `scripts/build_github_pages_site.sh --skip-refresh`
   - `scripts/run_static_site_checks.sh`
@@ -23,39 +23,34 @@
 
 ---
 
-## C) DNS + custom subdomain (`ojwatson.co.uk`)
+## C) DNS + custom compendium subdomain (`ojwatson.co.uk`)
 
 - [ ] Domain added in Netlify Domain management.
-- [ ] DNS record created at provider:
-  - preferred: `CNAME <subdomain> -> <site-name>.netlify.app`
-  - fallback: ALIAS/ANAME or Netlify apex A records where required.
+- [ ] DNS record created:
+  - preferred: `CNAME asys -> <site-name>.netlify.app`
 - [ ] Netlify DNS verification passes.
 - [ ] TLS certificate issued and HTTPS active.
 
 ---
 
-## D) Access control
+## D) Shared LAB linkage (separate runtime path)
 
-### Explainer site (Netlify)
-- [ ] Choose one:
-  - [ ] Visitor/password protection (if plan supports), or
-  - [ ] controlled preview sharing, or
-  - [ ] advanced Basic Auth middleware approach.
-
-### LAB runtime (separate path)
-- [ ] LAB not exposed unauthenticated to public internet.
-- [ ] Reverse proxy auth/VPN/IP restrictions in place.
-- [ ] Operational ownership defined for LAB credentials and access review.
+- [ ] Shared LAB endpoint (e.g. `lab.ojwatson.co.uk`) deployed and reachable.
+- [ ] `app/data/compendium_catalog.json` updated with:
+  - [ ] `shared_lab.entrypoint_url`
+  - [ ] `projects[].legacy_lab_url` as needed.
+- [ ] Netlify redeployed after catalog update.
 
 ---
 
 ## E) Post-deploy validation
 
-- [ ] `/` redirects to `/asreview-explainer.html`.
-- [ ] All explainer pages load successfully.
-- [ ] Artifact JSON endpoints return HTTP 200.
+- [ ] `/` serves compendium home.
+- [ ] `/projects/e5cr7` route works.
+- [ ] Legacy explainer pages still load.
+- [ ] `/lab` and `/lab/e5cr7` pages load.
+- [ ] Artifact + catalog JSON endpoints return HTTP 200.
 - [ ] No critical browser-console errors.
-- [ ] Stakeholder smoke test sign-off captured.
 
 ---
 
@@ -70,6 +65,8 @@
 
 ## References
 - `netlify.toml`
+- `MIGRATION_PLAN.md`
+- `DEPLOY_CHECKLIST.md`
 - `docs/runbooks/NETLIFY_DEPLOYMENT.md`
 - `docs/runbooks/DOMAIN_DNS_SETUP.md`
 - `docs/runbooks/ASREVIEW_LAB_LIVE_SERVER.md`

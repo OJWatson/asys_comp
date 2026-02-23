@@ -33,4 +33,10 @@ scripts/run_lab_roundtrip_checks.sh
 ## Runbooks
 
 - Local/staging: `docs/runbooks/ASREVIEW_LAB_LOCAL.md`
-- Live server hardening: `docs/runbooks/ASREVIEW_LAB_LIVE_SERVER.md`
+- Live server hardening (Docker/Render): `docs/runbooks/ASREVIEW_LAB_LIVE_SERVER.md`
+
+## Shared-lab link strategy
+
+Static-site LAB links are configured in `app/data/compendium_catalog.json`:
+- `shared_lab.entrypoint_url` (preferred stable hostname)
+- `projects[].legacy_lab_url` (temporary compatibility endpoint)
