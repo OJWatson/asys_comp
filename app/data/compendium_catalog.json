@@ -2,8 +2,8 @@
   "generated_at": "2026-02-23T04:40:00Z",
   "shared_lab": {
     "display_name": "ASYS Shared LAB Gateway",
-    "entrypoint_url": "https://asys-e5cr7-lab.ojwatson.co.uk/projects",
-    "entrypoint_note": "Set this to the shared production LAB URL during deployment; local default keeps current workflow functional."
+    "entrypoint_url": "https://asys-lab.ojwatson.co.uk/projects",
+    "entrypoint_note": "Primary shared ASReview LAB endpoint."
   },
   "projects": [
     {
@@ -16,7 +16,7 @@
       "deep_dive_path": "./projects-e5cr7.html",
       "legacy_explainer_path": "./asreview-explainer.html",
       "lab_path": "./lab-e5cr7.html",
-      "legacy_lab_url": "https://asys-e5cr7-lab.ojwatson.co.uk/projects"
+      "legacy_lab_url": "https://asys-lab.ojwatson.co.uk/projects"
     },
     {
       "slug": "next-slot",
@@ -28,7 +28,7 @@
       "deep_dive_path": "./index.html",
       "legacy_explainer_path": "./index.html",
       "lab_path": "./lab.html",
-      "legacy_lab_url": "https://asys-e5cr7-lab.ojwatson.co.uk/projects"
+      "legacy_lab_url": "https://asys-lab.ojwatson.co.uk/projects"
     }
   ]
 }
