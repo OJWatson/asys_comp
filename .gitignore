@@ -17,6 +17,7 @@ htmlcov/
 
 # Virtual environments
 .venv/
+.venv-dory/
 venv/
 env/
 
@@ -49,5 +50,8 @@ infra/asreview-lab/data/*.csv
 !infra/asreview-lab/data/*.example.csv
 !infra/asreview-lab/data/.gitkeep
 
-integration/outputs/*.json
+integration/outputs/*
 !integration/outputs/.gitkeep
+!integration/outputs/dory/
+integration/outputs/dory/*
+!integration/outputs/dory/.gitkeep

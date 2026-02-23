@@ -13,6 +13,7 @@ Canonical docs for compendium operations:
 - `runbooks/ASREVIEW_LAB_LOCAL.md` — local/staging LAB workflow.
 - `runbooks/ASREVIEW_LAB_LIVE_SERVER.md` — hardened live-server path and manual cutover.
 - `runbooks/MODEL_BENCHMARKING.md` — reproducible NLP benchmark workflow, model-extension guide, and heavy-model fallback notes.
+- `runbooks/ASREVIEW_DORY_INTEGRATION.md` — focused Dory setup + workflow runbook for this repository.
 - `ENVIRONMENT_SETUP.md` — reproducible local environment bootstrap.
 
 Historical planning/progress docs were moved to `analysis/archive/` to keep release docs concise.

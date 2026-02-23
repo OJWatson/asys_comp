@@ -35,6 +35,7 @@ This repository packages analysis outputs, reviewer-facing narrative, and operat
 - `app/` static app source and generated JSON artifacts (`app/data/artifacts/`)
 - `docs/SCREENING_WORKFLOW_HANDBOOK.md` comprehensive screening workflow handbook for model workflow, metrics, and decision-making
 - `docs/SCALING_PLAYBOOK_ASREVIEW_CROWDSCREEN_DORY.md` practical scaling playbook for very large screening corpora (run versioning, overlap/kappa, CrowdScreen, Dory, and automation guardrails)
+- `docs/runbooks/ASREVIEW_DORY_INTEGRATION.md` focused Dory integration runbook (install, prepare, simulate, export, and validation)
 - `docs/runbooks/` deployment runbooks (Pages + Netlify + LAB local/live)
 - `infra/asreview-lab/` LAB container scaffolding and config templates
 - `integration/` queue/label integration hooks
@@ -68,6 +69,16 @@ python scripts/smoke_test_benchmarks.py
 ```
 
 See runbook: `docs/runbooks/MODEL_BENCHMARKING.md`
+
+Optional: install and run ASReview Dory integration workflow in dedicated env:
+
+```bash
+scripts/setup_asreview_dory_env.sh
+scripts/run_asreview_dory_workflow.sh
+scripts/run_dory_smoke_test.sh
+```
+
+See runbook: `docs/runbooks/ASREVIEW_DORY_INTEGRATION.md`
 
 Run local app:
 
