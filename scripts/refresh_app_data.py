@@ -20,6 +20,19 @@ from typing import Any, Dict, List
 
 import pandas as pd
 
+
+
+def _sanitize_json_values(obj: Any) -> Any:
+    """Recursively convert NaN/Infinity floats to None for strict JSON compatibility."""
+    if isinstance(obj, dict):
+        return {k: _sanitize_json_values(v) for k, v in obj.items()}
+    if isinstance(obj, list):
+        return [_sanitize_json_values(v) for v in obj]
+    if isinstance(obj, float):
+        if obj != obj or obj in (float("inf"), float("-inf")):
+            return None
+    return obj
+
 DEFAULT_CONFIG = {
     "analysis_outputs_dir": "analysis/outputs",
     "app_artifacts_dir": "app/data/artifacts",
@@ -459,7 +472,7 @@ def build_artifacts(repo_root: Path, config: Dict[str, Any]) -> Dict[str, Any]:
     artifact_checksums: Dict[str, Dict[str, Any]] = {}
     for filename, payload in artifacts.items():
         out_path = app_artifacts_dir / filename
-        out_path.write_text(json.dumps(payload, indent=2), encoding="utf-8")
+        out_path.write_text(json.dumps(_sanitize_json_values(payload), indent=2, allow_nan=False), encoding="utf-8")
         artifact_checksums[filename] = {
             "path": str(out_path.relative_to(repo_root)),
             "sha256": file_sha256(out_path),
@@ -487,7 +500,7 @@ def build_artifacts(repo_root: Path, config: Dict[str, Any]) -> Dict[str, Any]:
     }
 
     manifest_path = app_artifacts_dir / "run_manifest.json"
-    manifest_path.write_text(json.dumps(manifest, indent=2), encoding="utf-8")
+    manifest_path.write_text(json.dumps(_sanitize_json_values(manifest), indent=2, allow_nan=False), encoding="utf-8")
 
     return {
         "run_id": run_id,
