@@ -33,7 +33,7 @@ This repository packages analysis outputs, reviewer-facing narrative, and operat
 
 - `analysis/` reproducible model outputs and reports
 - `app/` static app source and generated JSON artifacts (`app/data/artifacts/`)
-- `docs/PHD_ONBOARDING_SUPER_GUIDE.md` comprehensive PhD onboarding explainer for model workflow, metrics, and decision-making
+- `docs/SCREENING_WORKFLOW_HANDBOOK.md` comprehensive screening workflow handbook for model workflow, metrics, and decision-making
 - `docs/runbooks/` deployment runbooks (Pages + Netlify + LAB local/live)
 - `infra/asreview-lab/` LAB container scaffolding and config templates
 - `integration/` queue/label integration hooks

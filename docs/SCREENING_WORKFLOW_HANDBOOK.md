@@ -1,6 +1,6 @@
-# PhD Onboarding Super Guide: ASYS Compendium Screening Workflow
+# ASYS Screening Workflow Handbook
 
-> Audience: new PhD students joining this project who need a practical, plain-English, technically correct map of how the ASReview workflow works in this repository.
+> Audience: anyone (students, collaborators, reviewers, or new team members) who needs a practical, plain-English, technically accurate map of how the ASReview workflow works in this repository.
 >
 > Scope: this guide explains the end-to-end workflow from dataset import to screening decisions and reporting outputs, including model behavior, metrics, simulation logic, and day-to-day decision rules.
 
