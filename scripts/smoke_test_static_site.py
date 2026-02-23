@@ -16,12 +16,12 @@ from pathlib import Path
 REQUIRED_HTML = {
     "index.html": "ASYS Compendium",
     "projects-e5cr7.html": "Project Deep Dive · e5cr7",
-    "asreview-explainer.html": "ASReview Reviewer Portal · e5cr7",
-    "methods-results.html": "Methods & Results Summary · e5cr7",
-    "why-more-review.html": "Why More Review Is Needed · e5cr7",
-    "how-many-more.html": "Simulation-Informed Screening Planner · e5cr7",
+    "asreview-explainer.html": "ASReview Reviewer Portal · e5cr7 (Moved)",
+    "methods-results.html": "Methods & Results · e5cr7 (Moved)",
+    "why-more-review.html": "Why More Review Is Needed · e5cr7 (Moved)",
+    "how-many-more.html": "How Many More To Screen · e5cr7 (Moved)",
     "lab.html": "Shared ASReview LAB Access",
-    "lab-e5cr7.html": "LAB Endpoint · e5cr7",
+    "lab-e5cr7.html": "LAB Endpoint · e5cr7 (Moved)",
 }
 
 REQUIRED_JSON = [

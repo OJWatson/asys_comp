@@ -39,13 +39,19 @@ body {
   color: #e5f6ee;
 }
 
-nav {
+.global-nav,
+.project-nav {
   display: flex;
   flex-wrap: wrap;
   gap: 0.5rem;
 }
 
-nav a {
+.project-nav {
+  margin-top: 0.75rem;
+}
+
+.global-nav a,
+.project-nav a {
   text-decoration: none;
   color: #ffffff;
   border: 1px solid rgba(255, 255, 255, 0.4);
@@ -54,7 +60,13 @@ nav a {
   font-size: 0.92rem;
 }
 
-nav a.active {
+.project-nav a {
+  font-size: 0.86rem;
+  color: #d7efe4;
+  border-color: rgba(215, 239, 228, 0.45);
+}
+
+.global-nav a.active {
   background: #ffffff;
   color: #164433;
   border-color: #ffffff;
@@ -120,6 +132,24 @@ main {
   background: var(--accent-soft);
 }
 
+.callout {
+  border: 1px solid #f0bfaa;
+  background: #fff5ef;
+  border-radius: 8px;
+  padding: 0.75rem 0.85rem;
+  margin: 0.75rem 0;
+}
+
+.callout h3 {
+  margin: 0 0 0.35rem;
+  font-size: 1.05rem;
+}
+
+.callout ol {
+  margin: 0.35rem 0 0;
+  padding-left: 1.2rem;
+}
+
 .grid.two {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -140,6 +170,21 @@ main {
 .kv dd {
   margin: 0;
   font-weight: 600;
+}
+
+.glossary {
+  display: grid;
+  grid-template-columns: minmax(180px, 220px) 1fr;
+  gap: 0.45rem 1rem;
+  margin: 0;
+}
+
+.glossary dt {
+  font-weight: 700;
+}
+
+.glossary dd {
+  margin: 0;
 }
 
 .muted {
@@ -217,7 +262,8 @@ select {
 }
 
 @media (max-width: 860px) {
-  .grid.two {
+  .grid.two,
+  .glossary {
     grid-template-columns: 1fr;
   }
 

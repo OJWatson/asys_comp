@@ -10,26 +10,23 @@
 <body data-page="lab-shared">
   <header class="site-header">
     <h1>Shared ASReview LAB Access</h1>
-    <p>Use this page as the stable launch point while underlying project-specific endpoints evolve.</p>
-    <nav>
-      <a href="./index.html">Compendium Home</a>
-      <a href="./projects-e5cr7.html">e5cr7 Deep Dive</a>
-      <a href="./asreview-explainer.html">e5cr7 Explainer</a>
-      <a href="./methods-results.html">Methods & Results</a>
-      <a href="./why-more-review.html">Why More Review</a>
-      <a href="./how-many-more.html">How Many More</a>
+    <p>Operational entry point for review work. Use this shared route unless a project explicitly needs a fallback URL.</p>
+    <nav class="global-nav" aria-label="Global navigation">
+      <a href="./index.html">Home</a>
+      <a href="./index.html#projects">Projects</a>
       <a href="./lab.html">Shared LAB</a>
     </nav>
   </header>
 
   <main>
     <section class="panel accent">
-      <h2>Primary Gateway</h2>
+      <h2>Primary gateway</h2>
       <div id="shared-lab-gateway"></div>
     </section>
 
-    <section class="panel">
-      <h2>Project Endpoints</h2>
+    <section class="panel" id="lab-project-list-section">
+      <h2>Project endpoints (fallback links)</h2>
+      <p class="muted">These links are retained for backward compatibility. Project interpretation content now lives in each project deep-dive page.</p>
       <div id="lab-project-list"></div>
     </section>
   </main>

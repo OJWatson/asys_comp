@@ -3,56 +3,145 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Project Deep Dive: e5cr7</title>
-  <meta name="description" content="Deep dive for project e5cr7 with model status, risk baselines, and ASReview LAB actions." />
+  <title>Project Deep Dive · e5cr7</title>
+  <meta name="description" content="Consolidated e5cr7 deep dive: plain-English overview, methods, results, risk framing, planner, and glossary." />
   <link rel="stylesheet" href="./static/styles.css" />
 </head>
 <body data-page="project-e5cr7">
   <header class="site-header">
     <h1>Project Deep Dive · e5cr7</h1>
-    <p>Project-specific context plus direct pathways into the shared and legacy LAB runtime.</p>
-    <nav>
-      <a href="./index.html">Compendium Home</a>
-      <a href="./projects-e5cr7.html">e5cr7 Deep Dive</a>
-      <a href="./asreview-explainer.html">e5cr7 Explainer</a>
-      <a href="./methods-results.html">Methods & Results</a>
-      <a href="./why-more-review.html">Why More Review</a>
-      <a href="./how-many-more.html">How Many More</a>
+    <p>One-page project brief for new reviewers: what this project is, how the model was built, what the results mean, and what to do next.</p>
+    <nav class="global-nav" aria-label="Global navigation">
+      <a href="./index.html">Home</a>
+      <a href="./index.html#projects">Projects</a>
       <a href="./lab.html">Shared LAB</a>
+    </nav>
+    <nav class="project-nav" aria-label="e5cr7 sections">
+      <a href="#overview">Overview</a>
+      <a href="#data-snapshot">Data snapshot</a>
+      <a href="#methods-results">Methods & results</a>
+      <a href="#why-more-review">Why more review</a>
+      <a href="#how-many-more">How many more</a>
+      <a href="#lab-access">LAB access</a>
+      <a href="#glossary">Glossary</a>
     </nav>
   </header>
 
   <main>
-    <section class="panel accent">
-      <h2>Action Panel</h2>
-      <p>Use the shared LAB gateway as the long-term stable entry point. Keep the current project LAB URL as a compatibility fallback.</p>
+    <section class="panel accent" id="overview">
+      <h2>Project overview (plain English)</h2>
+      <p>
+        e5cr7 uses ASReview to help humans prioritise which papers to read first.
+        The goal is <strong>high recall</strong>: miss as few relevant studies as possible,
+        while still saving reviewer time.
+      </p>
+      <div class="callout">
+        <h3>How to read this page</h3>
+        <ol>
+          <li>Read <strong>Current recommendation</strong> first (what to do now).</li>
+          <li>Check <strong>Data snapshot</strong> for scale and prevalence.</li>
+          <li>Use <strong>Methods & results</strong> and <strong>planner</strong> only if you need technical detail.</li>
+        </ol>
+      </div>
+      <div id="e5cr7-recommendation"></div>
       <div class="cta-row" id="e5cr7-cta-row"></div>
     </section>
 
-    <section class="grid two">
+    <section class="grid two" id="data-snapshot">
       <article class="card">
-        <h3>Dataset & Strategy Snapshot</h3>
+        <h3>Dataset snapshot</h3>
         <div id="e5cr7-dataset"></div>
       </article>
       <article class="card">
-        <h3>Model Snapshot</h3>
+        <h3>Model snapshot</h3>
         <div id="e5cr7-model"></div>
       </article>
     </section>
 
-    <section class="panel">
-      <h2>Recommended Path (Current Cycle)</h2>
-      <div id="e5cr7-recommendation"></div>
+    <section class="panel" id="methods-results">
+      <h2>Method overview</h2>
+      <ul id="e5cr7-methods-list"></ul>
     </section>
 
     <section class="panel">
-      <h2>Drill Down</h2>
-      <ul>
-        <li><a href="./asreview-explainer.html">e5cr7 explainer narrative</a></li>
-        <li><a href="./methods-results.html">methods and model diagnostics</a></li>
-        <li><a href="./why-more-review.html">FN/FP tradeoff framing</a></li>
-        <li><a href="./how-many-more.html">simulation-based additional screening planner</a></li>
-      </ul>
+      <h2>Key results</h2>
+      <h3>Model leaderboard</h3>
+      <div id="e5cr7-leaderboard-table"></div>
+
+      <h3>Baseline vs improved</h3>
+      <p id="e5cr7-baseline-definition" class="muted"></p>
+      <div id="e5cr7-comparison-table"></div>
+
+      <h3>Nested CV stability</h3>
+      <div id="e5cr7-nested-cv"></div>
+    </section>
+
+    <section class="panel" id="why-more-review">
+      <h2>Why more review may still be needed</h2>
+      <ul id="e5cr7-why-list"></ul>
+      <p class="muted" id="e5cr7-risk-source-note"></p>
+      <div id="e5cr7-fnfp-policies"></div>
+    </section>
+
+    <section class="panel" id="how-many-more">
+      <h2>How many more records should we review?</h2>
+      <p>
+        Use the planner to inspect expected trade-offs. The default recommendation is staged:
+        <strong>screen +50, then reassess</strong>.
+      </p>
+      <div class="controls">
+        <label>Policy
+          <select id="planner-policy"></select>
+        </label>
+        <label>Prevalence band
+          <select id="planner-band"></select>
+        </label>
+        <label>Additional records requested
+          <select id="planner-additional"></select>
+        </label>
+      </div>
+      <div id="planner-result" class="grid two"></div>
+      <h3>Scenario table</h3>
+      <div id="planner-table"></div>
+      <div class="panel accent" id="planner-recommendation"></div>
+    </section>
+
+    <section class="panel" id="lab-access">
+      <h2>LAB access</h2>
+      <p>Use the shared gateway by default. Project-specific links are kept only as fallback compatibility routes.</p>
+      <div id="e5cr7-lab-links"></div>
+    </section>
+
+    <section class="panel" id="glossary">
+      <h2>Glossary (quick definitions)</h2>
+      <dl class="glossary">
+        <dt>Baseline</dt>
+        <dd>The pre-improvement model configuration rerun for reproducible comparison. In this project, it is the prior reference run used in <code>baseline_vs_improved</code> tables.</dd>
+
+        <dt>Precision</dt>
+        <dd>Of the records flagged as relevant, how many are truly relevant.</dd>
+
+        <dt>Recall</dt>
+        <dd>Of all truly relevant records, how many were found.</dd>
+
+        <dt>Prevalence</dt>
+        <dd>The proportion of relevant studies in the full candidate dataset.</dd>
+
+        <dt>False negative (FN)</dt>
+        <dd>A relevant study the process failed to retrieve at the current stopping point.</dd>
+
+        <dt>False positive (FP)</dt>
+        <dd>A non-relevant study that was surfaced as if it might be relevant.</dd>
+
+        <dt>TF-IDF</dt>
+        <dd>Text weighting method that emphasises terms informative within this corpus, used as model input features.</dd>
+
+        <dt>SVM (Support Vector Machine)</dt>
+        <dd>A supervised learning model used here to rank records by predicted relevance.</dd>
+
+        <dt>WSS@95</dt>
+        <dd>Work Saved over random sampling when targeting 95% recall. Higher is better.</dd>
+      </dl>
     </section>
   </main>
 

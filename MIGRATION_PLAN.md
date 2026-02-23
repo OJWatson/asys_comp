@@ -22,28 +22,27 @@ Future rename target (optional): `asys_comp`.
 
 ### Core pages
 - `/` → compendium home (`index.html`)
-- `/projects/e5cr7` → e5cr7 deep dive (`projects-e5cr7.html`)
+- `/projects/e5cr7` → consolidated e5cr7 deep dive (`projects-e5cr7.html`)
 - `/lab` → shared LAB landing (`lab.html`)
-- `/lab/e5cr7` → e5cr7 LAB landing (`lab-e5cr7.html`)
 
-### Legacy pages retained
-- `/asreview-explainer(.html)`
-- `/methods-results(.html)`
-- `/why-more-review(.html)`
-- `/how-many-more(.html)`
+### Legacy routes retained (redirect/canonical compatibility)
+- `/asreview-explainer(.html)` → `/projects/e5cr7#overview`
+- `/methods-results(.html)` → `/projects/e5cr7#methods-results`
+- `/why-more-review(.html)` → `/projects/e5cr7#why-more-review`
+- `/how-many-more(.html)` → `/projects/e5cr7#how-many-more`
+- `/lab/e5cr7(.html)` → `/projects/e5cr7#lab-access`
 
 ---
 
 ## Backward compatibility + redirect strategy
 
-Netlify redirects in `netlify.toml` preserve readable routes and aliases:
+Netlify redirects in `netlify.toml` preserve readable routes and aliases while consolidating content:
 - `/projects/e5cr7` → `/projects-e5cr7.html`
 - `/e5cr7` → `/projects/e5cr7`
 - `/lab` → `/lab.html`
-- `/lab/e5cr7` → `/lab-e5cr7.html`
-- existing explainer aliases retained (e.g., `/asreview-explainer`)
+- legacy explainer/planner/lab routes redirect to section anchors in `/projects/e5cr7`
 
-Local server route compatibility is mirrored in `app/server.py`.
+Local server route compatibility is mirrored in `app/server.py` (legacy routes issue HTTP redirects).
 
 ---
 
@@ -109,7 +108,7 @@ Optional Pages/Netlify follow-up:
 ## Migration complete criteria
 
 - Compendium home is default landing page.
-- e5cr7 deep-dive page is populated.
-- Legacy explainer/method pages remain accessible.
+- e5cr7 deep-dive page is populated as the single primary project narrative.
+- Legacy explainer/method/planner routes remain accessible via redirects/canonical stubs.
 - Shared LAB + fallback links are visible from UI.
 - Smoke tests pass for legacy and new routes.
