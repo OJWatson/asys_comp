@@ -2,6 +2,7 @@
 
 Canonical docs for compendium operations:
 
+- `SCREENING_WORKFLOW_HANDBOOK.md` — comprehensive screening workflow handbook for the ASReview workflow, metrics, simulation, and screening decisions.
 - `../MIGRATION_PLAN.md` — migration rationale, information architecture, and conventions for adding projects.
 - `../DEPLOY_CHECKLIST.md` — exact Render/Netlify/DNS go-live checklist.
 - `runbooks/GITHUB_PAGES_DEPLOYMENT.md` — GitHub Pages deployment and validation.
