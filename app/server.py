@@ -15,6 +15,8 @@ REWRITES = {
     "/index": "/index.html",
     "/projects": "/index.html",
     "/projects/e5cr7": "/projects-e5cr7.html",
+    "/handbook": "/handbook.html",
+    "/handbook/": "/handbook.html",
     "/lab": "/lab.html",
 }
 

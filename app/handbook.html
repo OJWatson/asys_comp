@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ASYS Screening Workflow Handbook</title>
+  <meta name="description" content="A cleaner, scan-first handbook for the ASYS screening workflow: quick start, key concepts, output interpretation, pitfalls, and deeper technical detail." />
+  <link rel="stylesheet" href="./static/styles.css" />
+</head>
+<body data-page="handbook">
+  <header class="site-header">
+    <h1>ASYS Screening Workflow Handbook</h1>
+    <p>Start here if you are new: this page explains what to do, what the model outputs mean, and how to make safe screening decisions.</p>
+    <nav class="global-nav" aria-label="Global navigation">
+      <a href="./index.html">Home</a>
+      <a href="./index.html#projects">Projects</a>
+      <a href="./handbook.html">Handbook</a>
+      <a href="./lab.html">Shared LAB</a>
+    </nav>
+    <nav class="project-nav" aria-label="Handbook sections">
+      <a href="#summary">Summary</a>
+      <a href="#quick-start">Quick start</a>
+      <a href="#key-concepts">Key concepts</a>
+      <a href="#interpret-outputs">Interpret outputs</a>
+      <a href="#pitfalls">Common pitfalls</a>
+      <a href="#deep-detail">Deep detail</a>
+      <a href="#glossary">Glossary</a>
+      <a href="#sync">Sync policy</a>
+    </nav>
+  </header>
+
+  <main class="reading-layout">
+    <section class="panel accent" id="summary">
+      <h2>60-second summary</h2>
+      <ul class="summary-list">
+        <li><strong>Optimise for recall:</strong> in this workflow, missing relevant studies is usually worse than reading extra irrelevant ones.</li>
+        <li><strong>Treat scores as ranking first:</strong> the model helps decide what to screen next, not what to auto-include.</li>
+        <li><strong>Outputs evolve as labels arrive:</strong> ranking and residual-risk estimates are expected to change during active learning.</li>
+        <li><strong>Simulation outputs are planning aids:</strong> they are scenario-based estimates, not guaranteed truth.</li>
+        <li><strong>Use staged decisions:</strong> default policy is +50 screens, then reassess before escalating.</li>
+      </ul>
+      <div class="callout" id="sync">
+        <h3>Source of truth + sync policy</h3>
+        <p>
+          Canonical content lives in <code>docs/SCREENING_WORKFLOW_HANDBOOK.md</code>.
+          This web page is a simplified reader layer for onboarding.
+        </p>
+        <ol>
+          <li>Update the markdown handbook first.</li>
+          <li>Mirror any changed decision guidance in this page.</li>
+          <li>Run static build + checks before publishing.</li>
+        </ol>
+      </div>
+    </section>
+
+    <section class="panel" id="quick-start">
+      <h2>Quick start (what to do this week)</h2>
+      <ol>
+        <li>Check current recommendation in <code>analysis/outputs/planning_simulations/recommended_next_screening_targets.md</code>.</li>
+        <li>Export queue and screen <strong>+50</strong> records in ASReview LAB.</li>
+        <li>Sync labels and reconcile roundtrip consistency.</li>
+        <li>Re-run the refresh pipeline and compare updated FN/FP estimates.</li>
+        <li>Only continue to +100 if residual FN risk is still above your tolerance.</li>
+      </ol>
+      <details class="expander">
+        <summary>Command sequence</summary>
+<pre><code>scripts/run_analysis_and_report_refresh.sh
+
+# LAB loop helpers
+python integration/asreview_lab_hooks.py export-queue
+python integration/asreview_lab_hooks.py sync-labels
+python integration/asreview_lab_hooks.py reconcile-roundtrip</code></pre>
+      </details>
+    </section>
+
+    <section class="panel" id="key-concepts">
+      <h2>Key concepts (plain language)</h2>
+      <div class="concept-grid">
+        <article class="card">
+          <h3>Active learning loop</h3>
+          <p>Seed labels -> rank queue -> screen -> retrain -> repeat. Metrics are moving snapshots during this loop.</p>
+        </article>
+        <article class="card">
+          <h3>Ranking vs classification</h3>
+          <p>Primary objective is useful ordering of records. A fixed threshold (like 0.5) can look weak even when ranking is useful.</p>
+        </article>
+        <article class="card">
+          <h3>Precision vs recall trade-off</h3>
+          <p>Lower thresholds usually raise recall and lower precision. In evidence screening, this can be the right trade.</p>
+        </article>
+        <article class="card">
+          <h3>WSS@95 and workload</h3>
+          <p>WSS@95 estimates work saved at high recall. It can be negative when high-recall retrieval is very expensive.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="panel" id="interpret-outputs">
+      <h2>How to interpret outputs</h2>
+      <p>Use this decision lens when reading project outputs and planner scenarios:</p>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Output</th>
+              <th>What it means</th>
+              <th>How to use it</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Average Precision (AP)</td>
+              <td>How well relevant studies are ranked near the top.</td>
+              <td>Prioritise AP when deciding if the queue is useful for reviewer time.</td>
+            </tr>
+            <tr>
+              <td>Recall / Recall@k</td>
+              <td>How many relevant studies are found overall or within top-k.</td>
+              <td>Use recall as the primary safety metric for stopping decisions.</td>
+            </tr>
+            <tr>
+              <td>Precision / Precision@k</td>
+              <td>How many surfaced records are truly relevant.</td>
+              <td>Treat as workload signal, not sole quality verdict.</td>
+            </tr>
+            <tr>
+              <td>FN/FP scenario estimates</td>
+              <td>Estimated misses/over-inclusions under explicit assumptions.</td>
+              <td>Compare scenarios to choose +50 vs +100 stages.</td>
+            </tr>
+            <tr>
+              <td>Cap reached</td>
+              <td>Requested additional screens exceed remaining records.</td>
+              <td>Do not overinterpret large increments when cap truncates effective additions.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="callout">
+        <h3>Interpretation rule of thumb</h3>
+        <p>Ask: <strong>"Does this extra screening step reduce expected false negatives enough to justify reviewer effort?"</strong></p>
+      </div>
+    </section>
+
+    <section class="panel" id="pitfalls">
+      <h2>Common pitfalls</h2>
+      <ul>
+        <li>Over-trusting a single threshold metric at 0.5.</li>
+        <li>Assuming planner outputs are certainty rather than assumption-based scenarios.</li>
+        <li>Ignoring prevalence sensitivity when comparing FN/FP estimates.</li>
+        <li>Skipping reconciliation checks before re-running analyses.</li>
+        <li>Escalating directly to large screening jumps instead of staged reassessment.</li>
+      </ul>
+    </section>
+
+    <section class="panel" id="deep-detail">
+      <h2>Deep detail (expand when needed)</h2>
+
+      <details class="expander">
+        <summary>End-to-end workflow map</summary>
+<pre><code>Input data (Excel)
+  data/screening_input.xlsx
+        |
+        v
+Baseline + improved training + next-step simulation + planner
+  analysis/train_asreview.py
+  analysis/train_asreview_improved.py
+  analysis/run_asreview_next_steps.py
+  analysis/planning_simulations.py
+        |
+        v
+Refresh app artifacts
+  scripts/refresh_app_data.py
+        |
+        v
+Reviewer-facing outputs
+  app/projects-e5cr7.html
+  app/handbook.html
+  app/lab.html</code></pre>
+      </details>
+
+      <details class="expander">
+        <summary>Model behavior and thresholds</summary>
+        <ul>
+          <li>Baseline: TF-IDF + logistic regression (class balanced).</li>
+          <li>Current improved winner: calibrated linear SVM with word + character TF-IDF features.</li>
+          <li>Thresholds are tuned for recall targets (~90% and ~95%) and can shift between runs.</li>
+          <li>Ranking metrics and threshold metrics can move differently; this is normal.</li>
+        </ul>
+      </details>
+
+      <details class="expander">
+        <summary>Simulation assumptions and uncertainty</summary>
+        <ul>
+          <li>Historical labels are treated as ground truth for simulation.</li>
+          <li>Prevalence bands (low/medium/high) change expected FN/FP burdens.</li>
+          <li>Scenario outputs are deterministic arithmetic conditional on those assumptions.</li>
+          <li>As the screened pool changes, previous recommendations can become stale.</li>
+        </ul>
+      </details>
+
+      <details class="expander">
+        <summary>Decision playbook checkpoints</summary>
+        <ol>
+          <li>Before +50: validate queue integrity, unique IDs, and prior reconciliation status.</li>
+          <li>After +50: refresh artifacts and compare residual FN estimate against tolerance.</li>
+          <li>Escalate to +100 only when assurance requirements or residual risk justify it.</li>
+        </ol>
+      </details>
+    </section>
+
+    <section class="panel" id="glossary">
+      <h2>Glossary</h2>
+      <dl class="glossary">
+        <dt>Active learning</dt>
+        <dd>Iterative process where reviewed labels update the model and reprioritise what to screen next.</dd>
+
+        <dt>Average Precision (AP)</dt>
+        <dd>Ranking-focused summary that rewards placing relevant studies near the top.</dd>
+
+        <dt>False negative (FN)</dt>
+        <dd>A relevant study not retrieved at the current stopping decision.</dd>
+
+        <dt>False positive (FP)</dt>
+        <dd>A non-relevant study surfaced as potentially relevant.</dd>
+
+        <dt>Prevalence</dt>
+        <dd>Estimated share of truly relevant studies in the full candidate pool.</dd>
+
+        <dt>WSS@95</dt>
+        <dd>Work saved over random sampling when targeting 95% recall.</dd>
+      </dl>
+    </section>
+  </main>
+
+  <script src="./static/app.js"></script>
+</body>
+</html>

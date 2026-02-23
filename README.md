@@ -114,6 +114,7 @@ Live server hardening + cutover:
 
 ### Current status
 - ✅ Compendium home and e5cr7 deep-dive structure implemented with novice-friendly orientation copy.
+- ✅ Screening Workflow Handbook now published as a scan-first web page (`app/handbook.html`) linked from home/project/LAB nav.
 - ✅ Legacy explainer routes retained via redirects/stub pages for backward compatibility.
 - ✅ Static Pages/Netlify build + smoke checks in place.
 - ✅ LAB integration hooks support export/sync/reconcile loop.
