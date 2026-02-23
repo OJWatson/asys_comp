@@ -206,6 +206,10 @@ def build_artifacts(repo_root: Path, config: Dict[str, Any]) -> Dict[str, Any]:
         SourceFile("next_meta", outputs / "next_steps" / "run_meta_next_steps.json"),
         SourceFile("stopping_policy", outputs / "next_steps" / "stopping_policy_summary.csv"),
         SourceFile("nested_cv_summary", outputs / "next_steps" / "nested_cv_seed_sweep_summary.csv"),
+        SourceFile("benchmark_summary", outputs / "benchmarks" / "model_benchmark_summary.csv"),
+        SourceFile("benchmark_summary_json", outputs / "benchmarks" / "model_benchmark_summary.json"),
+        SourceFile("benchmark_env", outputs / "benchmarks" / "environment_model_availability.json"),
+        SourceFile("benchmark_report", outputs / "benchmarks" / "MODEL_BENCHMARK_REPORT.md"),
         SourceFile("lab_manifest", outputs / "next_steps" / "production_ranking_manifest.json"),
         SourceFile("sim_results", outputs / "planning_simulations" / "simulation_results.csv"),
         SourceFile(
@@ -227,6 +231,11 @@ def build_artifacts(repo_root: Path, config: Dict[str, Any]) -> Dict[str, Any]:
     comparison = pd.read_csv(outputs / "improved" / "comparison_baseline_vs_improved.csv")
     stopping_policy = pd.read_csv(outputs / "next_steps" / "stopping_policy_summary.csv")
     nested_cv_summary = pd.read_csv(outputs / "next_steps" / "nested_cv_seed_sweep_summary.csv")
+    benchmark_summary = pd.read_csv(outputs / "benchmarks" / "model_benchmark_summary.csv")
+    benchmark_summary_json = json.loads(
+        (outputs / "benchmarks" / "model_benchmark_summary.json").read_text(encoding="utf-8")
+    )
+    benchmark_env = json.loads((outputs / "benchmarks" / "environment_model_availability.json").read_text(encoding="utf-8"))
     sim_results = pd.read_csv(outputs / "planning_simulations" / "simulation_results.csv")
     recommended_md = (outputs / "planning_simulations" / "recommended_next_screening_targets.md").read_text(
         encoding="utf-8"
@@ -234,6 +243,38 @@ def build_artifacts(repo_root: Path, config: Dict[str, Any]) -> Dict[str, Any]:
     sim_summary_md = (outputs / "planning_simulations" / "SIMULATION_SUMMARY.md").read_text(encoding="utf-8")
 
     target_cfg = parse_targets_from_markdown(recommended_md)
+
+    benchmark_rows_df = benchmark_summary.sort_values("rank").copy()
+    benchmark_rows = benchmark_rows_df.to_dict(orient="records")
+
+    benchmark_winner = benchmark_rows[0] if benchmark_rows else None
+    benchmark_runner_up = benchmark_rows[1] if len(benchmark_rows) > 1 else None
+
+    benchmark_insights: List[str] = list(benchmark_summary_json.get("key_findings", []))
+    if benchmark_winner and benchmark_runner_up:
+        ap_gap = float(benchmark_winner["average_precision_mean"] - benchmark_runner_up["average_precision_mean"])
+        benchmark_insights.append(
+            (
+                f"Winner vs runner-up AP gap is {ap_gap:.4f}; treat as near-tie and prioritize operational stability "
+                f"if both perform similarly in future refreshes."
+            )
+        )
+
+    fastest_row = benchmark_rows_df.sort_values("fit_seconds_mean", ascending=True).iloc[0].to_dict()
+    benchmark_insights.append(
+        (
+            f"Runtime trade-off: {fastest_row['display_name']} trains fastest "
+            f"({float(fastest_row['fit_seconds_mean']):.3f}s/fold mean)."
+        )
+    )
+
+    blocked_models = benchmark_summary_json.get("blocked_models", [])
+    env_blocked = benchmark_env.get("blocked_models", [])
+    if env_blocked:
+        existing_ids = {str(x.get("model_id")) for x in blocked_models}
+        for row in env_blocked:
+            if str(row.get("model_id")) not in existing_ids:
+                blocked_models.append(row)
 
     n_docs = int(meta["n_records"])
     n_positives = int(meta["n_positives"])
@@ -291,6 +332,9 @@ def build_artifacts(repo_root: Path, config: Dict[str, Any]) -> Dict[str, Any]:
             "recall_at_50": metrics_best.get("recall@50"),
             "screen_fraction_recall_90": metrics_best.get("screening_fraction_at_recall_0.90"),
             "screen_fraction_recall_95": metrics_best.get("screening_fraction_at_recall_0.95"),
+            "benchmark_winner_model": benchmark_winner.get("model_id") if benchmark_winner else None,
+            "benchmark_winner_ap": benchmark_winner.get("average_precision_mean") if benchmark_winner else None,
+            "benchmark_winner_wss95": benchmark_winner.get("wss@95_mean") if benchmark_winner else None,
         },
         "lab_queue_snapshot": {
             "n_records": lab_manifest.get("n_records"),
@@ -313,6 +357,7 @@ def build_artifacts(repo_root: Path, config: Dict[str, Any]) -> Dict[str, Any]:
         "methods": [
             "Text preprocessing with title+abstract concatenation and decision normalization.",
             "Model comparison across imbalance-aware baselines including calibrated SVM with word+char TF-IDF.",
+            "Expanded NLP benchmark with repeated stratified CV across baseline, improved, and additional lightweight candidates.",
             "Evaluation emphasizes ranking and high-recall screening behavior, not threshold-0.5 accuracy only.",
             "Active-learning simulations with policy-based stopping diagnostics and seed-strategy sweeps.",
             "Leakage-safe queue export for reviewer operations with sensitive decision fields removed.",
@@ -320,6 +365,17 @@ def build_artifacts(repo_root: Path, config: Dict[str, Any]) -> Dict[str, Any]:
         "model_leaderboard": model_summary.to_dict(orient="records"),
         "baseline_vs_improved": comparison.to_dict(orient="records"),
         "nested_cv_summary": nested_cv_summary.to_dict(orient="records"),
+        "benchmarking": {
+            "protocol": benchmark_summary_json.get("split_protocol", {}),
+            "metrics_reported": benchmark_summary_json.get("metrics_reported", []),
+            "model_results": benchmark_rows,
+            "winner": benchmark_winner,
+            "runner_up": benchmark_runner_up,
+            "interpretation": benchmark_insights,
+            "blocked_models": blocked_models,
+            "nemo_status": benchmark_env.get("environment", {}).get("nemo", {}),
+            "environment_notes": benchmark_env.get("environment", {}).get("stronger_heavy_model_candidates", []),
+        },
     }
 
     fn_fp_risk = {

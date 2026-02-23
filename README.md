@@ -58,6 +58,16 @@ scripts/run_data_refresh.sh
 scripts/run_smoke_test.sh
 ```
 
+Run expanded NLP benchmark (baseline vs improved vs candidate models):
+
+```bash
+source .venv/bin/activate
+python analysis/benchmark_nlp_models.py
+python scripts/smoke_test_benchmarks.py
+```
+
+See runbook: `docs/runbooks/MODEL_BENCHMARKING.md`
+
 Run local app:
 
 ```bash

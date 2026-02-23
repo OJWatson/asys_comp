@@ -343,6 +343,57 @@ async function renderProjectE5cr7() {
     leaderboardRows
   );
 
+  const bench = methodsResults.benchmarking || {};
+  const benchWinner = bench.winner || {};
+  const benchRunnerUp = bench.runner_up || {};
+  const benchInsights = bench.interpretation || [];
+
+  const winnerName = benchWinner.display_name || "(not available)";
+  const runnerName = benchRunnerUp.display_name || "(not available)";
+  const winnerAp = fmtNum(benchWinner.average_precision_mean, 3);
+  const runnerAp = fmtNum(benchRunnerUp.average_precision_mean, 3);
+
+  document.getElementById("e5cr7-benchmark-plain").innerHTML =
+    `<strong>Plain-language read:</strong> ${winnerName} currently leads on ranking quality (AP ${winnerAp}). ` +
+    `Runner-up is ${runnerName} (AP ${runnerAp}). Use the winner when recall-first performance matters; use faster alternatives when frequent retraining speed is the main constraint.`;
+
+  const benchRows = (bench.model_results || []).map((r) => ({
+    rank: r.rank,
+    cohort: toTitle(r.cohort),
+    model: r.display_name,
+    ap: fmtNum(r.average_precision_mean, 3),
+    roc: fmtNum(r.roc_auc_mean, 3),
+    wss95: fmtNum(r["wss@95_mean"], 3),
+    recall20: fmtNum(r["recall@20_mean"], 3),
+    precision20: fmtNum(r["precision@20_mean"], 3),
+    fit: fmtNum(r.fit_seconds_mean, 3),
+  }));
+
+  document.getElementById("e5cr7-benchmark-table").innerHTML = tableHtml(
+    [
+      { key: "rank", label: "Rank" },
+      { key: "cohort", label: "Cohort" },
+      { key: "model", label: "Model" },
+      { key: "ap", label: "AP (mean)" },
+      { key: "roc", label: "ROC-AUC (mean)" },
+      { key: "wss95", label: "WSS@95 (mean)" },
+      { key: "recall20", label: "Recall@20 (mean)" },
+      { key: "precision20", label: "Precision@20 (mean)" },
+      { key: "fit", label: "Fit time sec/fold" },
+    ],
+    benchRows
+  );
+
+  const blockers = (bench.blocked_models || []).map(
+    (b) => `<li><strong>${b.display_name || b.model_id}</strong>: ${b.reason || "Unavailable"}</li>`
+  );
+
+  document.getElementById("e5cr7-benchmark-blockers").innerHTML = `
+    <h4>Unavailable/heavy options</h4>
+    ${blockers.length ? `<ul>${blockers.join("")}</ul>` : "<p class=\"muted\">No blocked models reported.</p>"}
+    ${benchInsights.length ? `<p class=\"muted\">${benchInsights.join(" ")}</p>` : ""}
+  `;
+
   document.getElementById("e5cr7-baseline-definition").innerHTML =
     "<strong>Baseline definition:</strong> in this table, <em>Baseline</em> is the pre-improvement reference run (reproduced from the baseline pipeline), and <em>Improved</em> is the best current model configuration (<code>calibrated_svm_word_char</code>).";
 

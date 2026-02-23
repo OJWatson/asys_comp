@@ -1,0 +1,148 @@
+{
+  "generated_at": "2026-02-23T07:45:02.757842+00:00",
+  "environment": {
+    "python": {
+      "version": "3.10.12 (main, Jan 26 2026, 14:55:28) [GCC 11.4.0]",
+      "executable": "/home/kana/.openclaw/workspace/asys_comp/.venv/bin/python",
+      "platform": "Linux-6.8.0-94-generic-x86_64-with-glibc2.35"
+    },
+    "installed_asreview_related_packages": [
+      "asreview"
+    ],
+    "entry_points": {
+      "asreview.models": [
+        "_metadata"
+      ]
+    },
+    "asreview_ai_model_configs": [
+      {
+        "name": "elas_u4",
+        "label": "ELAS u4",
+        "type": "ultra",
+        "classifier": "svm",
+        "feature_extractor": "tfidf",
+        "required_extensions": [],
+        "missing_extensions": [],
+        "status": "available"
+      },
+      {
+        "name": "elas_u3",
+        "label": "ELAS u3",
+        "type": "ultra",
+        "classifier": "nb",
+        "feature_extractor": "tfidf",
+        "required_extensions": [],
+        "missing_extensions": [],
+        "status": "available"
+      },
+      {
+        "name": "elas_l2",
+        "label": "ELAS l2",
+        "type": "lang",
+        "classifier": "svm",
+        "feature_extractor": "multilingual-e5-large",
+        "required_extensions": [
+          "asreview-dory"
+        ],
+        "missing_extensions": [
+          "asreview-dory"
+        ],
+        "status": "blocked"
+      },
+      {
+        "name": "elas_h3",
+        "label": "ELAS h3",
+        "type": "heavy",
+        "classifier": "svm",
+        "feature_extractor": "mxbai",
+        "required_extensions": [
+          "asreview-dory"
+        ],
+        "missing_extensions": [
+          "asreview-dory"
+        ],
+        "status": "blocked"
+      }
+    ],
+    "nemo": {
+      "status": "blocked",
+      "reason": "No ASReview Nemo extension detected. ASReview core classifiers available are typically logistic/nb/rf/svm unless extra classifier plugins are installed.",
+      "entry_points": [],
+      "modules_checked": [
+        "asreview_nemo",
+        "asreviewcontrib.classifiers.nemo",
+        "asreviewcontrib.models.nemo",
+        "asreview_models.nemo",
+        "nemo_toolkit"
+      ],
+      "modules_available": [],
+      "blocker_type": "missing_dependency"
+    },
+    "stronger_heavy_model_candidates": [
+      {
+        "name": "sentence-transformers/all-MiniLM-L6-v2 + linear classifier",
+        "status": "not_enabled",
+        "reason": "Not included in default benchmark to keep install/runtime lightweight and reproducible."
+      },
+      {
+        "name": "transformer cross-encoder rerankers",
+        "status": "not_enabled",
+        "reason": "GPU/large-model dependency footprint exceeds default repo constraints."
+      }
+    ]
+  },
+  "evaluated_models": [
+    {
+      "model_id": "baseline_lr_word_tfidf",
+      "display_name": "Baseline LR (word TF-IDF)",
+      "cohort": "baseline",
+      "lightweight": true,
+      "notes": "Current baseline from analysis/train_asreview.py"
+    },
+    {
+      "model_id": "improved_calibrated_svm_word_char",
+      "display_name": "Improved Calibrated SVM (word+char TF-IDF)",
+      "cohort": "improved",
+      "lightweight": true,
+      "notes": "Current improved best from analysis/train_asreview_improved.py"
+    },
+    {
+      "model_id": "candidate_lr_word_char",
+      "display_name": "Candidate LR (word+char TF-IDF)",
+      "cohort": "candidate",
+      "lightweight": true,
+      "notes": "Adds character n-grams to linear baseline while retaining calibration-friendly LR."
+    },
+    {
+      "model_id": "candidate_lsa_lr",
+      "display_name": "Candidate LSA+LR (SVD semantic projection)",
+      "cohort": "candidate",
+      "lightweight": true,
+      "notes": "Low-dimensional semantic projection can improve signal-to-noise on small corpora."
+    },
+    {
+      "model_id": "candidate_sgd_word_char",
+      "display_name": "Candidate SGD log-loss (word+char TF-IDF)",
+      "cohort": "candidate",
+      "lightweight": true,
+      "notes": "Fast linear online learner suitable for frequent reruns."
+    },
+    {
+      "model_id": "candidate_cnb_word_tfidf",
+      "display_name": "Candidate ComplementNB (word TF-IDF)",
+      "cohort": "candidate",
+      "lightweight": true,
+      "notes": "Strong sparse-text baseline for imbalance, included for comparison."
+    }
+  ],
+  "blocked_models": [
+    {
+      "model_id": "asreview_nemo",
+      "display_name": "ASReview Nemo",
+      "cohort": "candidate",
+      "status": "blocked",
+      "reason": "No ASReview Nemo extension detected. ASReview core classifiers available are typically logistic/nb/rf/svm unless extra classifier plugins are installed.",
+      "blocker_type": "missing_dependency"
+    }
+  ]
+}

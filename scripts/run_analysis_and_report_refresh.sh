@@ -15,6 +15,7 @@ fi
 
 "$PYTHON_BIN" analysis/train_asreview.py
 "$PYTHON_BIN" analysis/train_asreview_improved.py
+"$PYTHON_BIN" analysis/benchmark_nlp_models.py
 "$PYTHON_BIN" analysis/run_asreview_next_steps.py
 "$PYTHON_BIN" analysis/planning_simulations.py
 "$PYTHON_BIN" scripts/refresh_app_data.py --config config/app_refresh_config.json

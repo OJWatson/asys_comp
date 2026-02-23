@@ -1,7 +1,7 @@
 {
-  "run_id": "20260221T132502Z-97890ff5",
-  "generated_at": "2026-02-21T13:25:02+00:00",
-  "code_sha": "2e61e9b98f971b0c9de579bbf400e4dc6b7d8c33",
+  "run_id": "20260223T074506Z-9d3a7a6c",
+  "generated_at": "2026-02-23T07:45:06+00:00",
+  "code_sha": "a0fa461e462a199dea7905d5525abf8bb7c77bd9",
   "config": {
     "analysis_outputs_dir": "analysis/outputs",
     "app_artifacts_dir": "app/data/artifacts",
@@ -17,82 +17,106 @@
       "name": "metrics_best",
       "path": "analysis/outputs/improved/metrics_best.json",
       "sha256": "954e259bb84ac20b850ba0ddada8cf310d184397e57aa8289b1539238a3fcd9f",
-      "modified_at": "2026-02-21T09:20:29+00:00"
+      "modified_at": "2026-02-23T07:32:52+00:00"
     },
     {
       "name": "model_summary",
       "path": "analysis/outputs/improved/model_summary.csv",
       "sha256": "3b52bb1b3e9af35134df0d8c0d4fc298f7d1fc7e5e3e00eabb19cd447b0f5576",
-      "modified_at": "2026-02-21T09:20:29+00:00"
+      "modified_at": "2026-02-23T07:32:52+00:00"
     },
     {
       "name": "comparison",
       "path": "analysis/outputs/improved/comparison_baseline_vs_improved.csv",
       "sha256": "ba779a0e0c06f8737150a2d852d1efdef9531d6bbe851509879a0128a9c1a58b",
-      "modified_at": "2026-02-21T09:20:29+00:00"
+      "modified_at": "2026-02-23T07:32:52+00:00"
     },
     {
       "name": "next_meta",
       "path": "analysis/outputs/next_steps/run_meta_next_steps.json",
       "sha256": "9349aa9ce5d0b1c518a8961c977addbf8d1603f0506ab250a0f1bef77ecc5d1a",
-      "modified_at": "2026-02-21T09:28:51+00:00"
+      "modified_at": "2026-02-23T07:41:37+00:00"
     },
     {
       "name": "stopping_policy",
       "path": "analysis/outputs/next_steps/stopping_policy_summary.csv",
       "sha256": "3eee2929495a7963b5cea3769d825d539ab4f45d5c74db2157fad5f931231d14",
-      "modified_at": "2026-02-21T09:25:56+00:00"
+      "modified_at": "2026-02-23T07:38:37+00:00"
     },
     {
       "name": "nested_cv_summary",
       "path": "analysis/outputs/next_steps/nested_cv_seed_sweep_summary.csv",
       "sha256": "258cc155eaa7d03c73aa2951412a4917b05210c34c5c740602be4a1cd3d1e348",
-      "modified_at": "2026-02-21T09:28:47+00:00"
+      "modified_at": "2026-02-23T07:40:44+00:00"
+    },
+    {
+      "name": "benchmark_summary",
+      "path": "analysis/outputs/benchmarks/model_benchmark_summary.csv",
+      "sha256": "a9f9915e93e7cf3f9ad653b2a449a9d604f48477c6f660d943ae30dbc00f550d",
+      "modified_at": "2026-02-23T07:45:02+00:00"
+    },
+    {
+      "name": "benchmark_summary_json",
+      "path": "analysis/outputs/benchmarks/model_benchmark_summary.json",
+      "sha256": "e024155688612d7827f6d770a9dc520d30369641cfda1a38227204fa36612cf8",
+      "modified_at": "2026-02-23T07:45:02+00:00"
+    },
+    {
+      "name": "benchmark_env",
+      "path": "analysis/outputs/benchmarks/environment_model_availability.json",
+      "sha256": "b18782a3b228316f19d05b390a9628e24232d105afa9705318868fb1b16e2b51",
+      "modified_at": "2026-02-23T07:45:02+00:00"
+    },
+    {
+      "name": "benchmark_report",
+      "path": "analysis/outputs/benchmarks/MODEL_BENCHMARK_REPORT.md",
+      "sha256": "2aaec46747082f0230c4886f9d23236030ed489bc17bb2a870aad41a37f2aa46",
+      "modified_at": "2026-02-23T07:45:02+00:00"
     },
     {
       "name": "lab_manifest",
       "path": "analysis/outputs/next_steps/production_ranking_manifest.json",
       "sha256": "347b97c3536c7ec5b262d3fefbc83a9a3882d5ea1d27524af28d765d52f22961",
-      "modified_at": "2026-02-21T09:28:51+00:00"
+      "modified_at": "2026-02-23T07:40:48+00:00"
     },
     {
       "name": "sim_results",
       "path": "analysis/outputs/planning_simulations/simulation_results.csv",
       "sha256": "d0cb0162a23581d3e69d12bb83035644b5ab8f4919d7e7f916d1f8f9018b1f76",
-      "modified_at": "2026-02-21T09:28:51+00:00"
+      "modified_at": "2026-02-23T07:40:48+00:00"
     },
     {
       "name": "recommended_targets",
       "path": "analysis/outputs/planning_simulations/recommended_next_screening_targets.md",
       "sha256": "5893af17879c18fbd833e78e808ff2e894550baefa4dd16d93d2bf764977d734",
-      "modified_at": "2026-02-21T09:28:51+00:00"
+      "modified_at": "2026-02-23T07:40:48+00:00"
     },
     {
       "name": "sim_summary",
       "path": "analysis/outputs/planning_simulations/SIMULATION_SUMMARY.md",
       "sha256": "cf452a6a7fbb883e599fc11bb7fadb8f74095dc11955c7482276d7c3f0e54e79",
-      "modified_at": "2026-02-21T09:28:51+00:00"
+      "modified_at": "2026-02-23T07:40:48+00:00"
     }
   ],
   "artifacts": {
     "overview.json": {
       "path": "app/data/artifacts/overview.json",
-      "sha256": "3f3c60fc22e67e6095df6327982a6ca68a29b8320e332c0f16d4967f804c5603",
-      "size_bytes": 1670
+      "sha256": "0884074539245d295131ce824baa648c719a0b4c1f8cb3721d1e7a3f139a71c5",
+      "size_bytes": 1834
     },
     "methods_results.json": {
       "path": "app/data/artifacts/methods_results.json",
-      "sha256": "99167c04e31dba61410f1a357eb983e7bc9021644609e6a332ded628697d4b4f",
-      "size_bytes": 4659
+      "sha256": "6e0f762904f3634aed840bab1aac6046ed649941c281e6750cfc203ce18abcc3",
+      "size_bytes": 17576
     },
     "fn_fp_risk.json": {
       "path": "app/data/artifacts/fn_fp_risk.json",
-      "sha256": "1d166b84a92ca11e57b453adfed42c39d55a8825a2578d8d5b279a4d87cf1336",
+      "sha256": "34b435e4a8915ea1973d27bc6ab09cef422b3b7cb4803a68a5025c0334d8a122",
       "size_bytes": 9510
     },
     "simulation_planner.json": {
       "path": "app/data/artifacts/simulation_planner.json",
-      "sha256": "75e84009a0e2f9d88e43c4dfaa6863b1fe8c39f9e5a02641e7d7d812fea6c4e3",
+      "sha256": "bd5d9fa8a886e9246f76ac92381f2010ae48f5fb934e3b3caf43e99c98b83c66",
       "size_bytes": 24308
     }
   }
